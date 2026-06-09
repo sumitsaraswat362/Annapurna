@@ -76,7 +76,9 @@ export type BidStatus =
   | "accepted"        // Driver accepted this bid
   | "rejected"        // Driver rejected
   | "counter_offered" // Driver sent counter price
-  | "expired";        // Timer ran out
+  | "expired"         // Timer ran out
+  | "delivered"       // Cargo arrived at wholesaler
+  | "payment_cleared"; // Funds transferred
 
 export interface Bid {
   id: string;
