@@ -8,6 +8,7 @@ import CargoHealthMonitor from "@/components/CargoHealthMonitor";
 import AIDecisionCard from "@/components/AIDecisionCard";
 import BidCard from "@/components/BidCard";
 import { useAuth } from "@/lib/auth";
+import { Bid, CargoType } from "@/lib/types";
 import Link from "next/link";
 
 // ============================================================================
@@ -563,16 +564,16 @@ function FleetTrackingView() {
                     cargo: {
                       id: `cargo-${Date.now()}`,
                       truckPlate: newPlate,
-                      type: newType,
+                      type: newType as CargoType,
                       quantityKg: newQty,
                       estimatedCargoValue: newQty * 50,
                       safeTemperatureMax: 10,
                       spoilageTimeMinutes: 1440,
                       status: "in_transit",
-                      origin: { name: "Nashik Hub", lat: 19.99, lng: 73.78 },
-                      originalDestination: { name: "Mumbai APMC", lat: 19.07, lng: 72.87 },
-                      telemetry: { temperature: 4.2, humidity: 85, ethyleneLevel: "low", gps: { lat: 19.5, lng: 73.2 } }
-                    }
+                      origin: { name: "Nashik Hub", location: { lat: 19.99, lng: 73.78 } },
+                      originalDestination: { name: "Mumbai APMC", location: { lat: 19.07, lng: 72.87 } },
+                      telemetry: { temperature: 4.2, humidity: 85, ethyleneLevel: "low", timestamp: Date.now() }
+                    } as any
                   });
                   setShowAddModal(false);
                 }}

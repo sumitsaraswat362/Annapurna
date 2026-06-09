@@ -85,7 +85,7 @@ export interface Bid {
   cargoId: string;
   wholesalerId: string;
   wholesalerName: string;
-  wholesalerLocation: GeoPoint;
+  wholesalerLocation: string;
   distanceKm: number;
   etaMinutes: number;
 

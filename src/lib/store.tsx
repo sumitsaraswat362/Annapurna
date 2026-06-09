@@ -134,9 +134,9 @@ function appReducer(state: AppState, action: Action): AppState {
                 status: "rerouting" as const,
                 selectedMarket: acceptedBid
                   ? {
-                      id: `mkt-${acceptedBid.wholesalerId}`,
+                      id: acceptedBid.wholesalerId,
                       name: acceptedBid.wholesalerName,
-                      location: acceptedBid.wholesalerLocation,
+                      location: acceptedBid.wholesalerLocation as any,
                       distanceKm: acceptedBid.distanceKm,
                       etaMinutes: acceptedBid.etaMinutes,
                       type: "wholesale_market" as const,
@@ -367,7 +367,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const market: Market = {
             id: `mkt-${bid.wholesalerId}`,
             name: bid.wholesalerName,
-            location: bid.wholesalerLocation,
+            location: bid.wholesalerLocation as any,
             distanceKm: bid.distanceKm,
             etaMinutes: bid.etaMinutes,
             type: "wholesale_market"

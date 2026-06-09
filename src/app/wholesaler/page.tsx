@@ -44,6 +44,8 @@ export default function WholesalerDashboard() {
       totalValue: price * qty,
       distanceKm: Math.floor(Math.random() * 30) + 5,
       etaMinutes: Math.floor(Math.random() * 45) + 10,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 5 * 60000,
       status: "pending"
     };
     dispatch({ type: "ADD_BID", bid: newBid });
