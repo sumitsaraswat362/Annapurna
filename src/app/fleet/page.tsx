@@ -138,11 +138,15 @@ export default function FleetApp() {
 // ============================================================================
 function DashboardView() {
   const { state } = useAppState();
+  const { user } = useAuth();
   
-  const totalCargos = state.cargos.length;
-  const totalValue = state.cargos.reduce((acc, c) => acc + c.estimatedCargoValue, 0);
-  const emergencyCargos = state.cargos.filter((c) => c.status === "emergency").length;
-  const reroutedCargos = state.cargos.filter((c) => c.status === "rerouting").length;
+  // Only show cargos owned by this user
+  const myCargos = state.cargos.filter(c => !c.ownerId || c.ownerId === user?.name);
+
+  const totalCargos = myCargos.length;
+  const totalValue = myCargos.reduce((acc, c) => acc + c.estimatedCargoValue, 0);
+  const emergencyCargos = myCargos.filter((c) => c.status === "emergency").length;
+  const reroutedCargos = myCargos.filter((c) => c.status === "rerouting").length;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -218,9 +222,15 @@ function DashboardView() {
 // ============================================================================
 function FleetTrackingView() {
   const { state, dispatch } = useAppState();
-  const [selectedCargoId, setSelectedCargoId] = useState("cargo-001");
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { user } = useAuth();
+  
+  // Only show cargos owned by this user
+  const myCargos = state.cargos.filter(c => !c.ownerId || c.ownerId === user?.name);
+
+  const [selectedCargoId, setSelectedCargoId] = useState<string>("cargo-001");
+  const selectedCargo = myCargos.find((c) => c.id === selectedCargoId);
   const [emergencyTriggered, setEmergencyTriggered] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Modal States
   const [showAddModal, setShowAddModal] = useState(false);
@@ -563,6 +573,7 @@ function FleetTrackingView() {
                     type: "ADD_CARGO",
                     cargo: {
                       id: `cargo-${Date.now()}`,
+                      ownerId: user?.name || "Logistics",
                       truckPlate: newPlate,
                       type: newType as CargoType,
                       quantityKg: newQty,

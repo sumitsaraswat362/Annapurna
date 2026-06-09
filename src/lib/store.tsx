@@ -255,6 +255,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         // Map db columns to camelCase
         const mappedCargos = cargos.map(c => ({
           ...c,
+          ownerId: c.telemetry?.ownerId,
           truckPlate: c.truck_plate,
           quantityKg: c.quantity_kg,
           estimatedCargoValue: c.estimated_cargo_value,
@@ -317,7 +318,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           status: action.cargo.status,
           origin: action.cargo.origin,
           original_destination: action.cargo.originalDestination,
-          telemetry: action.cargo.telemetry,
+          telemetry: { ...action.cargo.telemetry, ownerId: action.cargo.ownerId },
         });
         if (error) console.error("ADD_CARGO DB Error:", error.message, error.details, error.hint, error.code);
       } else if (action.type === 'TRIGGER_MANUAL_EMERGENCY') {

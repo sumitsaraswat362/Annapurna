@@ -13,7 +13,7 @@ export default function WholesalerDashboard() {
 
   // Get cargos that are in emergency mode (available for purchase)
   const emergencyCargos = state.cargos.filter(
-    (c) => c.status === "emergency" || c.status === "rerouting" || (c.askingPricePerKg !== undefined && c.askingPricePerKg !== null)
+    (c) => c.status === "emergency" || (c.askingPricePerKg !== undefined && c.askingPricePerKg !== null && c.status !== "rerouting")
   );
 
   const { user, logout } = useAuth();
