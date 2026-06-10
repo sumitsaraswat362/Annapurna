@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import CountdownTimer from "./CountdownTimer";
-import { Cargo } from "@/lib/types";
+import { Cargo, Bid } from "@/lib/types";
 
 interface CargoOfferCardProps {
   cargo: Cargo;
