@@ -92,7 +92,7 @@ export default function AIDecisionCard({ decision }: AIDecisionCardProps) {
       </div>
 
       {/* Recovery Stats */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 mb-3">
         <div className="glass-card p-3 text-center">
           <p className="text-[10px] text-[#8c909f] uppercase tracking-widest mb-1">Recovery</p>
           <p className={`font-[family-name:var(--font-mono)] text-xl font-bold ${
@@ -109,6 +109,19 @@ export default function AIDecisionCard({ decision }: AIDecisionCardProps) {
           </p>
         </div>
       </div>
+
+      {/* Multi-Modal Rerouting (Gati Shakti) */}
+      {isEmergency && (
+        <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3 mb-3">
+          <div className="flex items-center gap-2 mb-1">
+            <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h1.5C5.496 19.5 6 18.996 6 18.375m-3.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-1.5A1.125 1.125 0 0 1 18 18.375M20.625 4.5H3.375m17.25 0c.621 0 1.125.504 1.125 1.125M20.625 4.5h-1.5C18.504 4.5 18 5.004 18 5.625m3.75 0v1.5c0 .621-.504 1.125-1.125 1.125M3.375 4.5c-.621 0-1.125.504-1.125 1.125M3.375 4.5h1.5C5.496 4.5 6 5.004 6 5.625m-3.75 0v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5" /></svg>
+            <span className="text-xs font-bold text-orange-400">Gati Shakti Multi-Modal Route</span>
+          </div>
+          <p className="text-[10px] text-orange-400/80 leading-relaxed">
+            Alternative detected: Transfer to Indian Railways Cold Chain (Train 12951) at nearest junction. ETA: 4 Hours. Cost-benefit analysis positive.
+          </p>
+        </div>
+      )}
 
       {/* Confidence Bar */}
       <div className="mt-3">

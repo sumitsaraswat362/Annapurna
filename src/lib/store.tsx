@@ -118,12 +118,17 @@ function appReducer(state: AppState, action: Action): AppState {
 
     case "ACCEPT_BID": {
       const acceptedBid = state.bids.find((b) => b.id === action.bidId);
+      const targetCargo = state.cargos.find((c) => c.id === action.cargoId);
+      if (!acceptedBid || !targetCargo) return state;
+
+      const isPartial = acceptedBid.requestedQuantityKg < targetCargo.quantityKg;
+
       return {
         ...state,
         bids: state.bids.map((b) =>
           b.id === action.bidId
             ? { ...b, status: "accepted" as const }
-            : b.cargoId === action.cargoId
+            : (!isPartial && b.cargoId === action.cargoId)
             ? { ...b, status: "rejected" as const }
             : b
         ),
@@ -131,8 +136,9 @@ function appReducer(state: AppState, action: Action): AppState {
           c.id === action.cargoId
             ? {
                 ...c,
-                status: "rerouting" as const,
-                selectedMarket: acceptedBid
+                quantityKg: Math.max(0, c.quantityKg - acceptedBid.requestedQuantityKg),
+                status: isPartial ? c.status : ("rerouting" as const),
+                selectedMarket: isPartial ? c.selectedMarket : (acceptedBid
                   ? {
                       id: acceptedBid.wholesalerId,
                       name: acceptedBid.wholesalerName,
@@ -141,7 +147,7 @@ function appReducer(state: AppState, action: Action): AppState {
                       etaMinutes: acceptedBid.etaMinutes,
                       type: "wholesale_market" as const,
                     }
-                  : null,
+                  : null),
               }
             : c
         ),
@@ -360,22 +366,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }).eq('id', action.bidId);
       } else if (action.type === 'ACCEPT_BID') {
         const bid = state.bids.find(b => b.id === action.bidId);
-        if (bid) {
-          // Update all bids for this cargo
-          await supabase.from('bids').update({ status: 'rejected' }).eq('cargo_id', action.cargoId);
+        const cargo = state.cargos.find(c => c.id === action.cargoId); // This is the OPTIMISTIC cargo (already has new quantity and status)
+        if (bid && cargo) {
+          // Accept the current bid
           await supabase.from('bids').update({ status: 'accepted' }).eq('id', action.bidId);
           
-          const market: Market = {
-            id: `mkt-${bid.wholesalerId}`,
-            name: bid.wholesalerName,
-            location: bid.wholesalerLocation as any,
-            distanceKm: bid.distanceKm,
-            etaMinutes: bid.etaMinutes,
-            type: "wholesale_market"
-          };
+          // If the cargo was fully bought out, reject other bids
+          if (cargo.quantityKg <= 0) {
+            await supabase.from('bids').update({ status: 'rejected' }).eq('cargo_id', action.cargoId).neq('id', action.bidId);
+          }
+          
           await supabase.from('cargos').update({
-            status: 'rerouting',
-            selected_market: market
+            status: cargo.status,
+            quantity_kg: cargo.quantityKg,
+            selected_market: cargo.selectedMarket
           }).eq('id', action.cargoId);
         }
       }

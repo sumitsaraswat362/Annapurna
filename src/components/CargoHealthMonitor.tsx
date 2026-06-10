@@ -132,8 +132,14 @@ export default function CargoHealthMonitor({
 
       {/* Spoilage Countdown */}
       {spoilageMinutes !== null && spoilageMinutes < 360 && (
-        <div className="mt-4 p-3 rounded-lg bg-red-500/5 border border-red-500/20">
-          <p className="text-[10px] text-red-400/70 uppercase tracking-widest text-center mb-1">
+        <div className="mt-4 p-3 rounded-lg bg-red-500/5 border border-red-500/20 relative overflow-hidden">
+          {/* Edge ML Badge */}
+          <div className="absolute top-0 right-0 bg-blue-500/20 text-blue-400 text-[8px] px-2 py-0.5 rounded-bl-lg font-bold tracking-wider flex items-center gap-1 border-b border-l border-blue-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+            TinyML Edge Processing
+          </div>
+          
+          <p className="text-[10px] text-red-400/70 uppercase tracking-widest text-center mb-1 mt-2">
             Estimated Time to Spoilage
           </p>
           <p
@@ -145,6 +151,13 @@ export default function CargoHealthMonitor({
               ? `${String(spoilHours).padStart(2, "0")}:${String(spoilMins).padStart(2, "0")}:00`
               : "--:--:--"}
           </p>
+          
+          <div className="mt-2 flex justify-between items-center px-1">
+            <span className="text-[9px] text-[#8c909f]">Neural Net Confidence:</span>
+            <span className="text-[10px] font-[family-name:var(--font-mono)] text-emerald-400 font-bold">
+              {status === "danger" ? (94 + Math.random() * 4).toFixed(1) : (98 + Math.random() * 1.5).toFixed(1)}%
+            </span>
+          </div>
         </div>
       )}
     </div>

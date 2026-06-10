@@ -156,7 +156,7 @@ function DashboardView() {
       </header>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
         <div className="glass-card p-6 glass-card-hover relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <NavIcon icon="truck" className="w-16 h-16 text-blue-400" />
@@ -195,6 +195,16 @@ function DashboardView() {
           <p className="text-4xl font-[family-name:var(--font-mono)] font-bold text-blue-400">{reroutedCargos}</p>
           <p className="text-xs text-blue-400 mt-2 font-medium">Autonomously rerouted</p>
         </div>
+
+        {/* Feature 7: Carbon Credit Tokenization */}
+        <div className="glass-card p-6 glass-card-hover relative overflow-hidden border-emerald-500/20 glow-green">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <svg className="w-16 h-16 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" /></svg>
+          </div>
+          <p className="text-xs font-semibold text-[#8c909f] uppercase tracking-wider mb-2">Carbon Credits</p>
+          <p className="text-4xl font-[family-name:var(--font-mono)] font-bold text-emerald-400">{reroutedCargos * 45} <span className="text-lg">GCC</span></p>
+          <p className="text-[10px] text-emerald-400 mt-2 font-medium">Methane emissions prevented</p>
+        </div>
       </div>
 
       {/* Large visual placeholder for Dashboard */}
@@ -230,10 +240,13 @@ function FleetTrackingView() {
   const [selectedCargoId, setSelectedCargoId] = useState<string>("cargo-001");
   const selectedCargo = myCargos.find((c) => c.id === selectedCargoId);
   const [emergencyTriggered, setEmergencyTriggered] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [qualityScore, setQualityScore] = useState<string | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Modal States
   const [showAddModal, setShowAddModal] = useState(false);
+  const [isOfflineZone, setIsOfflineZone] = useState(false);
   const [showMarketModal, setShowMarketModal] = useState(false);
   const [activeMapBid, setActiveMapBid] = useState<Bid | null>(null);
   const [driverLocation, setDriverLocation] = useState<string | null>(null);
@@ -247,7 +260,7 @@ function FleetTrackingView() {
   // Market Listing States
   const [askingPrice, setAskingPrice] = useState(25);
 
-  const selectedCargo = state.cargos.find((c) => c.id === selectedCargoId);
+
   const latestDecision = state.aiDecisions.filter((d) => d.cargoId === selectedCargoId).at(-1) ?? null;
   const cargoBids = state.bids.filter((b) => b.cargoId === selectedCargoId);
 
@@ -354,6 +367,15 @@ function FleetTrackingView() {
           <p className="text-[#8c909f] mt-1">Live telemetry and AI oversight for {state.cargos.length} vehicles in transit.</p>
         </div>
         <div className="flex gap-4">
+          <button 
+            onClick={() => setIsOfflineZone(!isOfflineZone)} 
+            className={`btn ${isOfflineZone ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 'bg-black/40 text-[#8c909f] hover:text-white border-white/5'}`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
+            </svg>
+            {isOfflineZone ? "5G Reconnected" : "Simulate Dead Zone"}
+          </button>
           <button onClick={() => setShowAddModal(true)} className="btn btn-success">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             New Consignment
@@ -381,7 +403,13 @@ function FleetTrackingView() {
               <h3 className="text-sm font-bold text-[#e2e2eb] uppercase tracking-widest flex items-center gap-2">
                 <NavIcon icon="grid" className="w-4 h-4 text-blue-400" /> Live Vector Map
               </h3>
-              <span className="badge badge-info shadow-[0_0_12px_rgba(59,130,246,0.3)]">● GPS Sync Active</span>
+              {isOfflineZone ? (
+                <span className="badge border border-orange-500/30 bg-orange-500/10 text-orange-400 shadow-[0_0_12px_rgba(249,115,22,0.3)] flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> LoRaWAN Mesh Sync
+                </span>
+              ) : (
+                <span className="badge badge-info shadow-[0_0_12px_rgba(59,130,246,0.3)]">● 5G GPS Sync Active</span>
+              )}
             </div>
             
             {/* Map Placeholder */}
@@ -429,47 +457,88 @@ function FleetTrackingView() {
             )}
           </div>
 
-          {/* Active Fleet List */}
-          <div className="flex-1 overflow-y-auto pr-2 pb-4">
-            <h3 className="text-sm font-bold text-[#e2e2eb] uppercase tracking-widest mb-4 flex items-center gap-2">
-              <NavIcon icon="truck" className="w-4 h-4 text-[#8c909f]" /> Active Consignments
-            </h3>
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              {state.cargos.map((cargo) => (
-                <button
-                  key={cargo.id}
-                  onClick={() => setSelectedCargoId(cargo.id)}
-                  className={`glass-card p-5 text-left transition-all duration-300 ${
-                    selectedCargoId === cargo.id ? "border-blue-500/50 glow-blue bg-blue-500/5" : "glass-card-hover"
-                  } ${cargo.status === "emergency" ? "border-red-500/50 glow-red" : ""} ${
-                    cargo.status === "rerouting" ? "border-emerald-500/50 glow-green" : ""
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-[#c2c6d6] bg-black/40 px-2 py-1 rounded border border-white/5 tracking-wider">
-                      {cargo.truckPlate}
-                    </span>
-                    <span className={`badge ${cargo.status === "in_transit" ? "badge-safe" : cargo.status === "warning" ? "badge-warning" : cargo.status === "emergency" ? "badge-danger" : cargo.status === "rerouting" ? "badge-safe" : "badge-info"}`}>
-                      {cargo.status === "in_transit" ? "In Transit" : cargo.status === "rerouting" ? "✓ Rerouting" : cargo.status.toUpperCase()}
-                    </span>
+          {/* Active Fleet List & Predictive Maintenance */}
+          <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+            {/* Active Consignments List */}
+            <div className="flex-[2] overflow-y-auto pr-2 pb-4">
+              <h3 className="text-sm font-bold text-[#e2e2eb] uppercase tracking-widest mb-4 flex items-center gap-2">
+                <NavIcon icon="truck" className="w-4 h-4 text-[#8c909f]" /> Active Consignments
+              </h3>
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                {myCargos.map((cargo) => (
+                  <button
+                    key={cargo.id}
+                    onClick={() => setSelectedCargoId(cargo.id)}
+                    className={`glass-card p-5 text-left transition-all duration-300 ${
+                      selectedCargoId === cargo.id ? "border-blue-500/50 glow-blue bg-blue-500/5" : "glass-card-hover"
+                    } ${cargo.status === "emergency" ? "border-red-500/50 glow-red" : ""} ${
+                      cargo.status === "rerouting" ? "border-emerald-500/50 glow-green" : ""
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-[#c2c6d6] bg-black/40 px-2 py-1 rounded border border-white/5 tracking-wider">
+                        {cargo.truckPlate}
+                      </span>
+                      <span className={`badge ${cargo.status === "in_transit" ? "badge-safe" : cargo.status === "warning" ? "badge-warning" : cargo.status === "emergency" ? "badge-danger" : cargo.status === "rerouting" ? "badge-safe" : "badge-info"}`}>
+                        {cargo.status === "in_transit" ? "In Transit" : cargo.status === "rerouting" ? "✓ Rerouting" : cargo.status.toUpperCase()}
+                      </span>
+                    </div>
+                    <p className="text-base font-bold text-[#f8f9fa] capitalize tracking-tight">
+                      {cargo.type} <span className="text-[#8c909f] font-normal mx-1">·</span> {(cargo.quantityKg / 1000).toFixed(1)}T
+                    </p>
+                    <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/5">
+                      <span className={`font-[family-name:var(--font-mono)] text-sm font-bold flex items-center gap-1.5 ${
+                        cargo.telemetry.temperature > cargo.safeTemperatureMax ? "text-red-400" : "text-emerald-400"
+                      }`}>
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.866 8.284 8.284 0 0 0 3 2.48Z" /></svg>
+                        {cargo.telemetry.temperature.toFixed(1)}°C
+                      </span>
+                      <span className="text-xs text-[#8c909f] font-medium flex items-center gap-1.5">
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
+                        {cargo.originalDestination.name.split(" ")[0]}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Feature 8: Predictive Fleet Maintenance AI */}
+            <div className="flex-[1] hidden xl:flex flex-col bg-black/20 rounded-xl border border-white/5 overflow-hidden">
+              <div className="p-4 border-b border-white/5 bg-purple-500/5">
+                <h3 className="text-xs font-bold text-purple-400 uppercase tracking-widest flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.83M11.42 15.17l2.492-3.053c.203-.25.476-.432.793-.52l.983-.272M11.42 15.17l-3.053 2.492c-.25.203-.432.476-.52.793l-.272.983M15.17 11.42l-2.492 3.053c-.203.25-.476.432-.793.52l-.983.272M15.17 11.42l3.053-2.492c.25-.203.432-.476.52-.793l.272-.983" /></svg>
+                  Fleet Health AI
+                </h3>
+              </div>
+              <div className="p-4 space-y-4 overflow-y-auto">
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-[#c2c6d6] font-bold">Tata Signa 4825.TK</span>
+                    <span className="text-red-400 font-bold">85% Risk</span>
                   </div>
-                  <p className="text-base font-bold text-[#f8f9fa] capitalize tracking-tight">
-                    {cargo.type} <span className="text-[#8c909f] font-normal mx-1">·</span> {(cargo.quantityKg / 1000).toFixed(1)}T
-                  </p>
-                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/5">
-                    <span className={`font-[family-name:var(--font-mono)] text-sm font-bold flex items-center gap-1.5 ${
-                      cargo.telemetry.temperature > cargo.safeTemperatureMax ? "text-red-400" : "text-emerald-400"
-                    }`}>
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.866 8.284 8.284 0 0 0 3 2.48Z" /></svg>
-                      {cargo.telemetry.temperature.toFixed(1)}°C
-                    </span>
-                    <span className="text-xs text-[#8c909f] font-medium flex items-center gap-1.5">
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-                      {cargo.originalDestination.name.split(" ")[0]}
-                    </span>
+                  <p className="text-[9px] text-[#8c909f]">Cooling failure predicted on Rajasthan route due to ambient heat threshold.</p>
+                  <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-1"><div className="h-full bg-red-500 w-[85%]"></div></div>
+                </div>
+                
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-[#c2c6d6] font-bold">Ashok Leyland 2820</span>
+                    <span className="text-amber-400 font-bold">42% Risk</span>
                   </div>
-                </button>
-              ))}
+                  <p className="text-[9px] text-[#8c909f]">Compressor vibration anomaly detected over last 3 trips.</p>
+                  <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-1"><div className="h-full bg-amber-500 w-[42%]"></div></div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-[#c2c6d6] font-bold">Eicher Pro 3015</span>
+                    <span className="text-emerald-400 font-bold">12% Risk</span>
+                  </div>
+                  <p className="text-[9px] text-[#8c909f]">All systems nominal. Ideal for high-value cargo assignment.</p>
+                  <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-1"><div className="h-full bg-emerald-500 w-[12%]"></div></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -485,6 +554,63 @@ function FleetTrackingView() {
                 safeMax={selectedCargo.safeTemperatureMax}
                 spoilageMinutes={selectedCargo.spoilageTimeMinutes}
               />
+
+              {/* Computer Vision Quality Assessment */}
+              <div className="glass-card p-5 border-blue-500/20">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold text-[#e2e2eb] uppercase tracking-widest flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" /></svg>
+                    AI Vision Assessment
+                  </h3>
+                  {qualityScore && (
+                    <span className="badge badge-safe">Score: {qualityScore}</span>
+                  )}
+                </div>
+                
+                {qualityScore ? (
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">
+                    <div className="flex gap-3">
+                      <div className="w-16 h-16 rounded-md bg-black/40 overflow-hidden relative">
+                        <div className="absolute inset-0 bg-emerald-500/20 mix-blend-overlay"></div>
+                        <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1590005354167-6da97ce2b4dc?auto=format&fit=crop&q=80&w=200')] bg-cover bg-center"></div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-emerald-400 font-bold mb-1">✓ AI Verification Complete</p>
+                        <p className="text-[10px] text-[#8c909f] leading-relaxed">
+                          Visual analysis indicates minimal surface bruising (2.4%). Coloration is consistent with safe ripeness levels. No mold detected.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      setIsScanning(true);
+                      setTimeout(() => {
+                        setIsScanning(false);
+                        setQualityScore("A- (92%)");
+                      }, 2500);
+                    }}
+                    disabled={isScanning}
+                    className="w-full btn btn-outline py-4 border-dashed relative overflow-hidden group"
+                  >
+                    {isScanning ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                          <div className="h-full bg-blue-500 w-1/2 animate-[pulse_1s_ease-in-out_infinite] translate-x-[-100%] group-hover:animate-[none]"></div>
+                        </div>
+                        <span className="text-xs text-blue-400 animate-pulse">Running YOLOv8 Vision Model...</span>
+                      </div>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2 text-[#8c909f] group-hover:text-blue-400">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
+                        Driver: Upload Photo for Quality Cert
+                      </span>
+                    )}
+                    {isScanning && <div className="absolute top-0 left-0 w-full h-0.5 bg-blue-500 shadow-[0_0_10px_#3b82f6] animate-[scan_2s_ease-in-out_infinite]"></div>}
+                  </button>
+                )}
+              </div>
 
               <AIDecisionCard decision={latestDecision} />
 
@@ -624,7 +750,7 @@ function FleetTrackingView() {
                 }}
                 className="w-full btn btn-primary mt-2 py-3"
               >
-                Broadcast to Market
+                Broadcast to Marketplace
               </button>
             </div>
           </div>

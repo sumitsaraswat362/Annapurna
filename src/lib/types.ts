@@ -28,6 +28,7 @@ export interface TelemetryData {
 
 export interface Cargo {
   id: string;
+  ownerId?: string;
   type: CargoType;
   quantityKg: number;        // Total weight in kg
   truckId: string;

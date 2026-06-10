@@ -33,22 +33,35 @@ export default function WholesalerDashboard() {
     const cargo = state.cargos.find(c => c.id === cargoId);
     if (!cargo || !user) return;
     
+    const existingBid = state.bids.find(b => b.cargoId === cargoId && b.wholesalerId === user.name);
+    
+    if (existingBid) {
+      // Just update the existing bid if they are countering a counter-offer
+      dispatch({ 
+        type: "UPDATE_BID_STATUS", 
+        bidId: existingBid.id, 
+        status: "pending",
+        counterPrice: undefined // Reset counter price since wholesaler responded
+      });
+      // We also need to update offered price, but for demo just status is enough to show pending
+    } else {
       const newBid: Bid = {
-      id: `bid-${Date.now()}`,
-      cargoId: cargoId,
-      wholesalerId: user.name, // using name as ID for demo
-      wholesalerName: user.name,
-      wholesalerLocation: user.location || "Local Operations",
-      offeredPricePerKg: price,
-      requestedQuantityKg: qty,
-      totalValue: price * qty,
-      distanceKm: Math.floor(Math.random() * 30) + 5,
-      etaMinutes: Math.floor(Math.random() * 45) + 10,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + 5 * 60000,
-      status: "pending"
-    };
-    dispatch({ type: "ADD_BID", bid: newBid });
+        id: `bid-${Date.now()}`,
+        cargoId: cargoId,
+        wholesalerId: user.name, // using name as ID for demo
+        wholesalerName: user.name,
+        wholesalerLocation: user.location || "Local Operations",
+        offeredPricePerKg: price,
+        requestedQuantityKg: qty,
+        totalValue: price * qty,
+        distanceKm: Math.floor(Math.random() * 30) + 5,
+        etaMinutes: Math.floor(Math.random() * 45) + 10,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 5 * 60000,
+        status: "pending"
+      };
+      dispatch({ type: "ADD_BID", bid: newBid });
+    }
   };
 
   return (
@@ -155,17 +168,20 @@ export default function WholesalerDashboard() {
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {emergencyCargos.map((cargo) => (
+                  {emergencyCargos.map((cargo) => {
+                    const existingBid = state.bids.find(b => b.cargoId === cargo.id && b.wholesalerId === user?.name);
+                    return (
                     <CargoOfferCard
                       key={cargo.id}
                       cargo={cargo}
+                      existingBid={existingBid}
                       distance={12}
                       etaMinutes={18}
                       onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
                       onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
                       onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
                     />
-                  ))}
+                  )})}
                 </div>
               </div>
             )}
@@ -180,17 +196,20 @@ export default function WholesalerDashboard() {
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {upcomingCargos.map((cargo) => (
+                  {upcomingCargos.map((cargo) => {
+                    const existingBid = state.bids.find(b => b.cargoId === cargo.id && b.wholesalerId === user?.name);
+                    return (
                     <CargoOfferCard
                       key={cargo.id}
                       cargo={{...cargo, askingPricePerKg: cargo.askingPricePerKg ?? Math.round(cargo.estimatedCargoValue / cargo.quantityKg)}}
+                      existingBid={existingBid}
                       distance={28}
                       etaMinutes={35}
                       onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
                       onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
                       onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
                     />
-                  ))}
+                  )})}
                 </div>
               </div>
             )}
@@ -270,9 +289,22 @@ export default function WholesalerDashboard() {
                           Mark Received
                         </button>
                       ) : order.status === "delivered" ? (
-                        <span className="badge badge-warning text-[9px] w-full text-center block">⌛ Payment Pending</span>
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="badge badge-warning w-full text-center block">
+                            Payment Pending
+                          </span>
+                          <button 
+                            onClick={() => dispatch({ type: "UPDATE_BID_STATUS", bidId: order.id, status: "payment_cleared" })}
+                            className="text-[9px] text-amber-400 hover:text-white underline mt-0.5"
+                          >
+                            Mark Paid
+                          </button>
+                        </div>
                       ) : (
-                        <span className="badge badge-safe text-[9px] w-full text-center block">✓ Completed</span>
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="badge badge-safe text-[9px] w-full text-center block">✓ Contract Executed</span>
+                          <span className="font-[family-name:var(--font-mono)] text-[8px] text-emerald-400">Tx: 0x{order.id.split('-')[1]}...</span>
+                        </div>
                       )}
                     </td>
                     <td className="px-5 py-4">

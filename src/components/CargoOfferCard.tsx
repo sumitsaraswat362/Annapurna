@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CountdownTimer from "./CountdownTimer";
 import { Cargo } from "@/lib/types";
 
@@ -11,6 +11,7 @@ interface CargoOfferCardProps {
   onAcceptFull: (cargoId: string) => void;
   onAcceptPartial: (cargoId: string, quantity: number) => void;
   onCounterOffer: (cargoId: string, pricePerKg: number, quantity: number) => void;
+  existingBid?: Bid;
 }
 
 export default function CargoOfferCard({
@@ -20,12 +21,17 @@ export default function CargoOfferCard({
   onAcceptFull,
   onAcceptPartial,
   onCounterOffer,
+  existingBid,
 }: CargoOfferCardProps) {
   const [mode, setMode] = useState<"idle" | "partial" | "counter">("idle");
   const [partialQty, setPartialQty] = useState(Math.floor(cargo.quantityKg / 2));
-  const [counterPrice, setCounterPrice] = useState(
-    cargo.askingPricePerKg ? cargo.askingPricePerKg - 2 : 10
-  );
+  
+  // If there's a counter offer from logistics, use it as default
+  const defaultPrice = existingBid?.status === "counter_offered" && existingBid.counterPricePerKg
+    ? existingBid.counterPricePerKg
+    : (cargo.askingPricePerKg ? cargo.askingPricePerKg - 2 : 10);
+    
+  const [counterPrice, setCounterPrice] = useState(defaultPrice);
   const [counterQty, setCounterQty] = useState(cargo.quantityKg);
   const [accepted, setAccepted] = useState(false);
 
@@ -138,12 +144,47 @@ export default function CargoOfferCard({
       </p>
 
       {/* Asking Price */}
-      <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/15 mb-4">
+      <div className="flex items-center justify-between mt-2 mb-4 bg-black/20 p-3 rounded-lg border border-white/5">
         <span className="text-sm text-[#c2c6d6]">Asking Price</span>
-        <span className="font-[family-name:var(--font-mono)] text-xl font-bold text-emerald-400">
-          ₹{cargo.askingPricePerKg ?? 0}/kg
-        </span>
+        <div className="flex flex-col items-end">
+          <span className="font-[family-name:var(--font-mono)] text-xl font-bold text-emerald-400">
+            ₹{cargo.askingPricePerKg ?? 0}/kg
+          </span>
+        </div>
       </div>
+
+      {/* Counter Offer Status */}
+      {existingBid && existingBid.status === "counter_offered" && existingBid.counterPricePerKg && mode === "idle" && (
+        <div className="mb-4 p-3 rounded-lg bg-purple-500/10 border border-purple-500/30">
+          <p className="text-[10px] text-purple-400 uppercase tracking-widest block mb-2 font-bold">
+            Logistics Countered Your Bid
+          </p>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm text-[#e2e2eb]">They want:</span>
+            <span className="font-[family-name:var(--font-mono)] text-lg font-bold text-purple-400">
+              ₹{existingBid.counterPricePerKg}/kg
+            </span>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <button
+              onClick={() => {
+                onAcceptFull(cargo.id); // This will re-send bid at counter price, handling logic is on page
+                setAccepted(true);
+              }}
+              className="btn bg-purple-500 text-white hover:bg-purple-600 flex-1 text-xs"
+            >
+              Accept at ₹{existingBid.counterPricePerKg}/kg
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Pending Status */}
+      {existingBid && existingBid.status === "pending" && mode === "idle" && (
+        <div className="mb-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-center">
+           <span className="text-sm font-semibold text-blue-400">Your Bid is Pending Review...</span>
+        </div>
+      )}
 
       {/* Partial Order Form */}
       {mode === "partial" && (
@@ -237,7 +278,7 @@ export default function CargoOfferCard({
       )}
 
       {/* Action Buttons */}
-      {mode === "idle" && (
+      {mode === "idle" && (!existingBid || existingBid.status === "counter_offered") && (
         <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => {
