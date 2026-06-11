@@ -258,6 +258,12 @@ button:active:not(:disabled), .ios-card:active, .tactile-item:active {
   justify-content: space-around;
   padding: 6px 0 max(env(safe-area-inset-bottom), 8px) 0;
 }
+
+@media (min-width: 768px) {
+  .ios-tabbar {
+    display: none !important;
+  }
+}
 .ios-tab {
   display: flex;
   flex-direction: column;
