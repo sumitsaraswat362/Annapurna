@@ -18,15 +18,15 @@ export function Hero() {
   const scale = useTransform(scrollYProgress, [0, 0.35], [1.2, 1.4]);
 
   // MacBook → slides OUT to the LEFT
-  const macX = useTransform(scrollYProgress, [0, 0.45], ["0%", "-150%"]);
+  const macX = useTransform(scrollYProgress, [0, 0.45], ["0%", "-20%"]);
   const macOpacity = useTransform(scrollYProgress, [0.1, 0.4], [1, 0]);
 
   // iPad → slides OUT to the TOP
-  const ipadY = useTransform(scrollYProgress, [0, 0.45], ["0%", "-150%"]);
+  const ipadY = useTransform(scrollYProgress, [0, 0.45], ["0%", "-20%"]);
   const ipadOpacity = useTransform(scrollYProgress, [0.1, 0.4], [1, 0]);
 
   // iPhone → slides OUT to the RIGHT
-  const iphoneX = useTransform(scrollYProgress, [0, 0.45], ["0%", "150%"]);
+  const iphoneX = useTransform(scrollYProgress, [0, 0.45], ["0%", "20%"]);
   const iphoneOpacity = useTransform(scrollYProgress, [0.1, 0.4], [1, 0]);
 
   return (
