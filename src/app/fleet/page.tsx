@@ -737,7 +737,7 @@ function FleetTrackingView() {
           {/* Active Fleet List & Predictive Maintenance */}
           <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
             {/* Active Consignments List */}
-            <div className="flex-1 overflow-y-auto pr-2 pb-4">
+            <div className="flex-1 overflow-y-auto pr-2 pb-[120px] md:pb-4">
               <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2">
                 <NavIcon icon="truck" className="w-4 h-4 text-[var(--text-tertiary)]" /> Active Consignments
               </h3>
