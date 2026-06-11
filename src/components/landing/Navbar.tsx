@@ -1,4 +1,5 @@
 import { motion, useScroll, useTransform } from "motion/react";
+import Link from "next/link";
 
 export function Navbar() {
   const { scrollY } = useScroll();
@@ -31,18 +32,18 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
-          <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="#tracking" className="hover:text-white transition-colors">Tracking</a>
-          <a href="#bidding" className="hover:text-white transition-colors">Bidding</a>
+          <Link href="/features" className="hover:text-white transition-colors">Features</Link>
+          <Link href="/tracking" className="hover:text-white transition-colors">Tracking</Link>
+          <Link href="/bidding" className="hover:text-white transition-colors">Bidding</Link>
         </div>
 
         <div className="flex items-center gap-3 text-sm font-medium">
           <button className="px-5 py-2.5 rounded-full border border-white/10 hover:bg-white/5 transition-colors text-white/80 backdrop-blur-md">
             Book Demo
           </button>
-          <button className="px-5 py-2.5 rounded-full bg-gradient-to-b from-[#0A84FF] to-[#005DEB] shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity text-white">
+          <Link href="/login" className="px-5 py-2.5 rounded-full bg-gradient-to-b from-[#0A84FF] to-[#005DEB] shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity text-white">
             Login / Use App
-          </button>
+          </Link>
         </div>
       </motion.nav>
     </motion.div>

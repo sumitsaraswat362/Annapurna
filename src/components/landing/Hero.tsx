@@ -28,7 +28,7 @@ export function Hero() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="text-6xl md:text-8xl font-semibold tracking-tighter mb-6 bg-gradient-to-br from-white via-white/90 to-white/40 bg-clip-text text-transparent pb-2">
+          <h1 className="text-5xl md:text-8xl font-semibold tracking-tighter mb-4 md:mb-6 bg-gradient-to-br from-white via-white/90 to-white/40 bg-clip-text text-transparent pb-2 leading-tight">
             Logistics, <br /> Perfected by AI.
           </h1>
           <p className="text-xl text-white/50 font-medium max-w-2xl mx-auto">
@@ -38,12 +38,12 @@ export function Hero() {
 
         {/* Mockup Container */}
         <motion.div 
-          className="mt-16 w-full max-w-5xl aspect-video mx-auto z-20 flex justify-center"
+          className="mt-8 md:mt-16 w-full max-w-5xl aspect-square md:aspect-video mx-auto z-20 flex justify-center"
           style={{ scale, perspective: "2000px" }}
         >
         {/* iPad Mockup */}
         <motion.div 
-          className="absolute w-[80%] h-[120%] bg-[#1A1A1A] rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden p-[10px]"
+          className="absolute w-[95%] md:w-[80%] max-md:h-[100%] md:h-[120%] bg-[#1A1A1A] rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden p-[10px]"
           style={{ x: ipadX, rotateX: 10, rotateY: -10, rotateZ: 5 }}
         >
           <div className="w-full h-full bg-black rounded-[1.5rem] overflow-hidden relative border border-white/5">
@@ -84,7 +84,7 @@ export function Hero() {
 
         {/* iPhone Mockup */}
         <motion.div 
-          className="absolute right-[5%] bottom-[-20%] w-[30%] aspect-[1/2] bg-[#1A1A1A] rounded-[2.5rem] border border-white/10 shadow-2xl p-[8px]"
+          className="absolute right-[2%] md:right-[5%] bottom-[0%] md:bottom-[-20%] w-[35%] md:w-[30%] max-md:aspect-[1/2.2] md:aspect-[1/2] bg-[#1A1A1A] rounded-[2rem] md:rounded-[2.5rem] border border-white/10 shadow-2xl p-[6px] md:p-[8px]"
           style={{ x: iphoneX, y: iphoneY, rotateX: 10, rotateY: 15, rotateZ: -5 }}
         >
           <div className="w-full h-full bg-black rounded-[2rem] overflow-hidden relative border border-white/5">
