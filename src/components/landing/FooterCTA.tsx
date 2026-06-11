@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export function FooterCTA() {
   return (
@@ -55,8 +56,7 @@ export function FooterCTA() {
           Join industry leaders in minimizing waste and maximizing efficiency with Annapurna's AI logistics platform.
         </motion.p>
 
-        <motion.button 
-          className="group relative flex items-center gap-3 px-8 py-4 bg-gradient-to-b from-[#0A84FF] to-[#005DEB] rounded-full text-white text-lg font-medium shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4),0_0_40px_rgba(0,122,255,0.4)] overflow-hidden"
+        <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           initial={{ opacity: 0, y: 20 }}
@@ -64,12 +64,17 @@ export function FooterCTA() {
           viewport={{ once: true }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
-          <span className="relative z-10">Launch Dashboard</span>
-          <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-          
-          {/* Pulsing effect on hover inside button */}
-          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-        </motion.button>
+          <Link 
+            href="/login"
+            className="group relative flex items-center gap-3 px-8 py-4 bg-gradient-to-b from-[#0A84FF] to-[#005DEB] rounded-full text-white text-lg font-medium shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4),0_0_40px_rgba(0,122,255,0.4)] overflow-hidden"
+          >
+            <span className="relative z-10">Launch Dashboard</span>
+            <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+            
+            {/* Pulsing effect on hover inside button */}
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+          </Link>
+        </motion.div>
       </div>
       
       {/* Footer Links */}

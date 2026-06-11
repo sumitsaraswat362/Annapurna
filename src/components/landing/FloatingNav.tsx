@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import Link from "next/link";
-import { Home } from "lucide-react";
+import { Home, LayoutDashboard, Map, Gavel } from "lucide-react";
 
 interface FloatingNavProps {
   activeTab: "features" | "tracking" | "bidding" | "home";
@@ -8,17 +8,17 @@ interface FloatingNavProps {
 
 export function FloatingNav({ activeTab }: FloatingNavProps) {
   const tabs = [
-    { id: "features", label: "Features", href: "/features" },
-    { id: "tracking", label: "Tracking", href: "/tracking" },
-    { id: "bidding", label: "Bidding", href: "/bidding" },
+    { id: "features", label: "Features", href: "/features", icon: LayoutDashboard },
+    { id: "tracking", label: "Tracking", href: "/tracking", icon: Map },
+    { id: "bidding", label: "Bidding", href: "/bidding", icon: Gavel },
   ] as const;
 
   return (
-    <div className="fixed top-8 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[400px]">
+    <div className="fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 w-auto min-w-[200px] max-w-[95%]">
       <div className="flex items-center justify-between p-1 rounded-full bg-black/40 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] relative">
         <Link
           href="/"
-          className={`relative flex items-center justify-center px-4 py-2.5 text-sm font-medium transition-colors duration-300 z-10 ${
+          className={`relative flex items-center justify-center px-3 py-2 md:px-4 md:py-2.5 text-sm font-medium transition-colors duration-300 z-10 ${
             activeTab === "home" ? "text-white" : "text-zinc-400 hover:text-zinc-200"
           }`}
         >
@@ -37,7 +37,7 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
             <Link
               href={tab.href}
               key={tab.id}
-              className={`relative flex-1 text-center px-4 py-2.5 text-sm font-medium transition-colors duration-300 z-10 ${
+              className={`relative flex-1 flex items-center justify-center text-center px-3 py-2 md:px-4 md:py-2.5 text-sm font-medium transition-colors duration-300 z-10 ${
                 isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"
               }`}
             >
@@ -48,7 +48,8 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
-              <span className="relative z-10">{tab.label}</span>
+              <span className="relative z-10 hidden md:block">{tab.label}</span>
+              <tab.icon className="relative z-10 w-4 h-4 md:hidden" />
             </Link>
           );
         })}

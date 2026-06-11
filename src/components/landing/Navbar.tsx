@@ -38,9 +38,6 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3 text-sm font-medium">
-          <button className="px-5 py-2.5 rounded-full border border-white/10 hover:bg-white/5 transition-colors text-white/80 backdrop-blur-md">
-            Book Demo
-          </button>
           <Link href="/login" className="px-5 py-2.5 rounded-full bg-gradient-to-b from-[#0A84FF] to-[#005DEB] shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity text-white">
             Login / Use App
           </Link>
