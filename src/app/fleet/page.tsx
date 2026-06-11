@@ -695,7 +695,7 @@ function FleetTrackingView() {
             
             {/* Real Map */}
             <div className="relative rounded-xl h-48 md:h-64 border border-[var(--separator)] overflow-hidden shadow-inner z-0">
-              {selectedCargo && selectedCargo.origin?.location && selectedCargo.originalDestination?.location ? (
+              {selectedCargo && selectedCargo.origin?.location ? (
                 <LiveMap
                   origin={selectedCargo.origin}
                   destination={selectedCargo.originalDestination}

@@ -148,8 +148,11 @@ function appReducer(state: AppState, action: Action): AppState {
                 selectedMarket: isPartial ? c.selectedMarket : (acceptedBid
                   ? {
                       id: acceptedBid.wholesalerId,
-                      name: acceptedBid.wholesalerName,
-                      location: acceptedBid.wholesalerLocation as any,
+                      name: acceptedBid.wholesalerLocation,
+                      location: acceptedBid.wholesalerCoords || {
+                        lat: c.origin.location.lat - 0.5,
+                        lng: c.origin.location.lng - 0.5
+                      },
                       distanceKm: acceptedBid.distanceKm,
                       etaMinutes: acceptedBid.etaMinutes,
                       type: "wholesale_market" as const,
