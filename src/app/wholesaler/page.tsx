@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppState } from "@/lib/store";
 import { Bid } from "@/lib/types";
 import CargoOfferCard from "@/components/CargoOfferCard";
@@ -11,10 +11,38 @@ export default function WholesalerDashboard() {
   const { state, dispatch } = useAppState();
   const [activeTab, setActiveTab] = useState<"offers" | "orders">("offers");
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (hash === "offers" || hash === "orders") {
+        setActiveTab(hash as "offers" | "orders");
+      } else {
+        setActiveTab("offers");
+      }
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    if (window.location.hash) handleHashChange();
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  const handleTabClick = (tab: "offers" | "orders") => {
+    window.location.hash = tab;
+  };
+
+  const getAvailableQuantity = (cargoId: string, totalQty: number) => {
+    const bidsForCargo = state.bids.filter(b => b.cargoId === cargoId && (b.status === "pending" || b.status === "accepted"));
+    const orderedQty = bidsForCargo.reduce((sum, bid) => sum + bid.requestedQuantityKg, 0);
+    return Math.max(0, totalQty - orderedQty);
+  };
+
   // Get cargos that are in emergency mode (available for purchase)
-  const emergencyCargos = state.cargos.filter(
+  const emergencyCargosRaw = state.cargos.filter(
     (c) => c.status === "emergency" || (c.askingPricePerKg !== undefined && c.askingPricePerKg !== null && c.status !== "rerouting")
   );
+
+  const emergencyCargos = emergencyCargosRaw
+    .map(c => ({ ...c, quantityKg: getAvailableQuantity(c.id, c.quantityKg) }))
+    .filter(c => c.quantityKg > 0);
 
   const { user, logout } = useAuth();
   
@@ -23,9 +51,13 @@ export default function WholesalerDashboard() {
     (b) => b.wholesalerId === user?.name && (b.status === "accepted" || b.status === "delivered" || b.status === "payment_cleared")
   );
 
-  const upcomingCargos = state.cargos.filter(
+  const upcomingCargosRaw = state.cargos.filter(
     (c) => c.status === "warning"
   );
+
+  const upcomingCargos = upcomingCargosRaw
+    .map(c => ({ ...c, quantityKg: getAvailableQuantity(c.id, c.quantityKg) }))
+    .filter(c => c.quantityKg > 0);
 
   const totalOffers = emergencyCargos.length + upcomingCargos.length;
 
@@ -129,7 +161,7 @@ export default function WholesalerDashboard() {
         {/* Segment Control (Tabs) */}
         <div className="ios-segment w-fit mb-8">
           <button
-            onClick={() => setActiveTab("offers")}
+            onClick={() => handleTabClick("offers")}
             className={`ios-segment-item ${activeTab === "offers" ? "active" : ""}`}
           >
             Live Offers
@@ -140,7 +172,7 @@ export default function WholesalerDashboard() {
             )}
           </button>
           <button
-            onClick={() => setActiveTab("orders")}
+            onClick={() => handleTabClick("orders")}
             className={`ios-segment-item ${activeTab === "orders" ? "active" : ""}`}
           >
             My Orders

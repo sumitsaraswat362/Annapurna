@@ -55,13 +55,27 @@ export default function FleetApp() {
   const [activeNav, setActiveNav] = useState("fleet"); // Default to fleet for hackathon
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (NAV_ITEMS.some(i => i.id === hash) || TAB_ITEMS.some(i => i.id === hash)) {
+        setActiveNav(hash);
+      } else {
+        setActiveNav("fleet");
+      }
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    if (window.location.hash) handleHashChange();
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
   // Derived state for sidebar badges
   const emergencyCount = state.cargos.filter((c) => c.status === "emergency" || c.status === "rerouting").length;
   const newBidsCount = state.bids.filter((b) => b.status === "pending").length;
   const unreadAlerts = state.notifications.filter((n) => !n.read).length;
 
   const handleNavClick = (id: string) => {
-    setActiveNav(id);
+    window.location.hash = id;
     setDrawerOpen(false);
   };
 
@@ -174,7 +188,7 @@ export default function FleetApp() {
         {TAB_ITEMS.map((item) => (
           <button
             key={item.id}
-            onClick={() => setActiveNav(item.id)}
+            onClick={() => handleNavClick(item.id)}
             className={`ios-tab ${activeNav === item.id ? "active" : ""}`}
           >
             <div className="relative">
@@ -208,7 +222,7 @@ export default function FleetApp() {
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveNav(item.id)}
+              onClick={() => handleNavClick(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                 activeNav === item.id
                   ? "bg-[#007AFF]/10 text-[#007AFF] border border-[#007AFF]/20"
@@ -490,6 +504,131 @@ function FleetTrackingView() {
   const handleRejectBid = (bidId: string) => dispatch({ type: "UPDATE_BID_STATUS", bidId, status: "rejected" });
   const handleCounterBid = (bidId: string, counterPrice: number) => dispatch({ type: "UPDATE_BID_STATUS", bidId, status: "counter_offered", counterPrice });
 
+  const renderCargoDetails = () => {
+    if (!selectedCargo) return null;
+    return (
+      <div className="space-y-6">
+        <CargoHealthMonitor
+          temperature={selectedCargo.telemetry.temperature}
+          humidity={selectedCargo.telemetry.humidity}
+          ethyleneLevel={selectedCargo.telemetry.ethyleneLevel}
+          safeMax={selectedCargo.safeTemperatureMax}
+          spoilageMinutes={selectedCargo.spoilageTimeMinutes}
+        />
+
+        {/* Computer Vision Quality Assessment */}
+        <div className="ios-card p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-[#000000] uppercase tracking-widest flex items-center gap-2">
+              <svg className="w-4 h-4 text-[#007AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" /></svg>
+              AI Vision Assessment
+            </h3>
+            {qualityScore && (
+              <span className="badge badge-safe">Score: {qualityScore}</span>
+            )}
+          </div>
+          
+          {qualityScore ? (
+            <div className="bg-[#34C759]/10 border border-[#34C759]/20 rounded-lg p-3">
+              <div className="flex gap-3">
+                <div className="w-16 h-16 rounded-md bg-[#F2F2F7] overflow-hidden relative">
+                  <div className="absolute inset-0 bg-[#34C759]/20 mix-blend-overlay"></div>
+                  <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1590005354167-6da97ce2b4dc?auto=format&fit=crop&q=80&w=200')] bg-cover bg-center"></div>
+                </div>
+                <div>
+                  <p className="text-xs text-[#34C759] font-bold mb-1">✓ AI Verification Complete</p>
+                  <p className="text-[10px] text-[#8E8E93] leading-relaxed">
+                    Visual analysis indicates minimal surface bruising (2.4%). Coloration is consistent with safe ripeness levels. No mold detected.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button 
+              onClick={() => {
+                setIsScanning(true);
+                setTimeout(() => {
+                  setIsScanning(false);
+                  setQualityScore("A- (92%)");
+                }, 2500);
+              }}
+              disabled={isScanning}
+              className="w-full btn btn-ghost py-4 border border-dashed border-[#C6C6C8] relative overflow-hidden group rounded-xl"
+            >
+              {isScanning ? (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-full h-1 bg-[#E5E5EA] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#007AFF] w-1/2 animate-[pulse_1s_ease-in-out_infinite] translate-x-[-100%]"></div>
+                  </div>
+                  <span className="text-xs text-[#007AFF] animate-pulse">Running YOLOv8 Vision Model...</span>
+                </div>
+              ) : (
+                <span className="flex items-center justify-center gap-2 text-[#8E8E93] group-hover:text-[#007AFF]">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
+                  Driver: Upload Photo for Quality Cert
+                </span>
+              )}
+              {isScanning && <div className="absolute top-0 left-0 w-full h-0.5 bg-[#007AFF] shadow-[0_0_10px_#007AFF] animate-[scan_2s_ease-in-out_infinite]"></div>}
+            </button>
+          )}
+        </div>
+
+        <AIDecisionCard decision={latestDecision} />
+
+        {/* Manual Overrides Control Panel */}
+        <div className="ios-card p-5 ring-1 ring-[#FF9500]/30">
+          <h3 className="text-sm font-bold text-[#000000] uppercase tracking-widest mb-4 flex items-center gap-2">
+            <svg className="w-4 h-4 text-[#FF9500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" /></svg>
+            Manual Overrides
+          </h3>
+          <div className="space-y-3">
+            <button 
+              onClick={() => {
+                dispatch({ type: "TRIGGER_MANUAL_EMERGENCY", cargoId: selectedCargoId, newTemperature: 18.5 });
+              }}
+              className="w-full btn bg-[#FF9500]/10 text-[#FF9500] hover:bg-[#FF9500]/20 font-semibold"
+            >
+              Simulate Temp Spike (18.5°C)
+            </button>
+            <button 
+              onClick={() => setShowMarketModal(true)}
+              className="w-full btn btn-primary"
+            >
+              Push to Wholesaler Market
+            </button>
+          </div>
+        </div>
+
+        {cargoBids.length > 0 && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h3 className="text-sm font-bold text-[#000000] uppercase tracking-widest mb-4 flex items-center gap-2">
+              <NavIcon icon="store" className="w-4 h-4 text-[#007AFF]" /> Live Bids
+              <span className="min-w-[20px] h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold px-1.5">
+                {cargoBids.length}
+              </span>
+            </h3>
+            <div className="space-y-4">
+              {cargoBids.map((bid) => (
+                <BidCard 
+                  key={bid.id} 
+                  bid={bid} 
+                  onAccept={handleAcceptBid} 
+                  onReject={handleRejectBid} 
+                  onCounter={handleCounterBid} 
+                  onViewMap={(bidId) => { 
+                    const b = state.bids.find(x => x.id === bidId); 
+                    if (b) setActiveMapBid(b); 
+                  }}
+                  onPaymentReceived={(bidId) => dispatch({ type: "UPDATE_BID_STATUS", bidId, status: "payment_cleared" })}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-full flex flex-col">
       <header className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
@@ -597,39 +736,45 @@ function FleetTrackingView() {
               </h3>
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 {myCargos.map((cargo) => (
-                  <button
-                    key={cargo.id}
-                    onClick={() => setSelectedCargoId(cargo.id)}
-                    className={`ios-card p-5 text-left transition-all duration-300 ${
-                      selectedCargoId === cargo.id ? "ring-2 ring-[#007AFF]/50 bg-[#007AFF]/5" : "hover:bg-[#F2F2F7]"
-                    } ${cargo.status === "emergency" ? "ring-2 ring-[#FF3B30]/50" : ""} ${
-                      cargo.status === "rerouting" ? "ring-2 ring-[#34C759]/50" : ""
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-[#3C3C43] bg-[#F2F2F7] px-2 py-1 rounded border border-[#E5E5EA] tracking-wider">
-                        {cargo.truckPlate}
-                      </span>
-                      <span className={`badge ${cargo.status === "in_transit" ? "badge-safe" : cargo.status === "warning" ? "badge-warning" : cargo.status === "emergency" ? "badge-danger" : cargo.status === "rerouting" ? "badge-safe" : "badge-info"}`}>
-                        {cargo.status === "in_transit" ? "In Transit" : cargo.status === "rerouting" ? "✓ Rerouting" : cargo.status.toUpperCase()}
-                      </span>
-                    </div>
-                    <p className="text-base font-bold text-[#000000] capitalize tracking-tight">
-                      {cargo.type} <span className="text-[#8E8E93] font-normal mx-1">·</span> {(cargo.quantityKg / 1000).toFixed(1)}T
-                    </p>
-                    <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#E5E5EA]">
-                      <span className={`font-[family-name:var(--font-mono)] text-sm font-bold flex items-center gap-1.5 ${
-                        cargo.telemetry.temperature > cargo.safeTemperatureMax ? "text-[#FF3B30]" : "text-[#34C759]"
-                      }`}>
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.866 8.284 8.284 0 0 0 3 2.48Z" /></svg>
-                        {cargo.telemetry.temperature.toFixed(1)}°C
-                      </span>
-                      <span className="text-xs text-[#8E8E93] font-medium flex items-center gap-1.5">
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-                        {cargo.originalDestination.name.split(" ")[0]}
-                      </span>
-                    </div>
-                  </button>
+                  <div key={cargo.id} className="flex flex-col">
+                    <button
+                      onClick={() => setSelectedCargoId(cargo.id)}
+                      className={`ios-card p-5 text-left transition-all duration-300 ${
+                        selectedCargoId === cargo.id ? "ring-2 ring-[#007AFF]/50 bg-[#007AFF]/5" : "hover:bg-[#F2F2F7]"
+                      } ${cargo.status === "emergency" ? "ring-2 ring-[#FF3B30]/50" : ""} ${
+                        cargo.status === "rerouting" ? "ring-2 ring-[#34C759]/50" : ""
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-[#3C3C43] bg-[#F2F2F7] px-2 py-1 rounded border border-[#E5E5EA] tracking-wider">
+                          {cargo.truckPlate}
+                        </span>
+                        <span className={`badge ${cargo.status === "in_transit" ? "badge-safe" : cargo.status === "warning" ? "badge-warning" : cargo.status === "emergency" ? "badge-danger" : cargo.status === "rerouting" ? "badge-safe" : "badge-info"}`}>
+                          {cargo.status === "in_transit" ? "In Transit" : cargo.status === "rerouting" ? "✓ Rerouting" : cargo.status.toUpperCase()}
+                        </span>
+                      </div>
+                      <p className="text-base font-bold text-[#000000] capitalize tracking-tight">
+                        {cargo.type} <span className="text-[#8E8E93] font-normal mx-1">·</span> {(cargo.quantityKg / 1000).toFixed(1)}T
+                      </p>
+                      <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#E5E5EA]">
+                        <span className={`font-[family-name:var(--font-mono)] text-sm font-bold flex items-center gap-1.5 ${
+                          cargo.telemetry.temperature > cargo.safeTemperatureMax ? "text-[#FF3B30]" : "text-[#34C759]"
+                        }`}>
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.866 8.284 8.284 0 0 0 3 2.48Z" /></svg>
+                          {cargo.telemetry.temperature.toFixed(1)}°C
+                        </span>
+                        <span className="text-xs text-[#8E8E93] font-medium flex items-center gap-1.5">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
+                          {cargo.originalDestination.name.split(" ")[0]}
+                        </span>
+                      </div>
+                    </button>
+                    {selectedCargoId === cargo.id && (
+                      <div className="mt-4 lg:hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                        {renderCargoDetails()}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
@@ -675,128 +820,8 @@ function FleetTrackingView() {
         </div>
 
         {/* ===== RIGHT COLUMN (40%) ===== */}
-        <div className="flex-[2] overflow-y-auto space-y-6 pb-6 pr-2 min-w-0">
-          {selectedCargo && (
-            <>
-              <CargoHealthMonitor
-                temperature={selectedCargo.telemetry.temperature}
-                humidity={selectedCargo.telemetry.humidity}
-                ethyleneLevel={selectedCargo.telemetry.ethyleneLevel}
-                safeMax={selectedCargo.safeTemperatureMax}
-                spoilageMinutes={selectedCargo.spoilageTimeMinutes}
-              />
-
-              {/* Computer Vision Quality Assessment */}
-              <div className="ios-card p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-bold text-[#000000] uppercase tracking-widest flex items-center gap-2">
-                    <svg className="w-4 h-4 text-[#007AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" /></svg>
-                    AI Vision Assessment
-                  </h3>
-                  {qualityScore && (
-                    <span className="badge badge-safe">Score: {qualityScore}</span>
-                  )}
-                </div>
-                
-                {qualityScore ? (
-                  <div className="bg-[#34C759]/10 border border-[#34C759]/20 rounded-lg p-3">
-                    <div className="flex gap-3">
-                      <div className="w-16 h-16 rounded-md bg-[#F2F2F7] overflow-hidden relative">
-                        <div className="absolute inset-0 bg-[#34C759]/20 mix-blend-overlay"></div>
-                        <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1590005354167-6da97ce2b4dc?auto=format&fit=crop&q=80&w=200')] bg-cover bg-center"></div>
-                      </div>
-                      <div>
-                        <p className="text-xs text-[#34C759] font-bold mb-1">✓ AI Verification Complete</p>
-                        <p className="text-[10px] text-[#8E8E93] leading-relaxed">
-                          Visual analysis indicates minimal surface bruising (2.4%). Coloration is consistent with safe ripeness levels. No mold detected.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <button 
-                    onClick={() => {
-                      setIsScanning(true);
-                      setTimeout(() => {
-                        setIsScanning(false);
-                        setQualityScore("A- (92%)");
-                      }, 2500);
-                    }}
-                    disabled={isScanning}
-                    className="w-full btn btn-ghost py-4 border border-dashed border-[#C6C6C8] relative overflow-hidden group rounded-xl"
-                  >
-                    {isScanning ? (
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-full h-1 bg-[#E5E5EA] rounded-full overflow-hidden">
-                          <div className="h-full bg-[#007AFF] w-1/2 animate-[pulse_1s_ease-in-out_infinite] translate-x-[-100%]"></div>
-                        </div>
-                        <span className="text-xs text-[#007AFF] animate-pulse">Running YOLOv8 Vision Model...</span>
-                      </div>
-                    ) : (
-                      <span className="flex items-center justify-center gap-2 text-[#8E8E93] group-hover:text-[#007AFF]">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
-                        Driver: Upload Photo for Quality Cert
-                      </span>
-                    )}
-                    {isScanning && <div className="absolute top-0 left-0 w-full h-0.5 bg-[#007AFF] shadow-[0_0_10px_#007AFF] animate-[scan_2s_ease-in-out_infinite]"></div>}
-                  </button>
-                )}
-              </div>
-
-              <AIDecisionCard decision={latestDecision} />
-
-              {/* Manual Overrides Control Panel */}
-              <div className="ios-card p-5 ring-1 ring-[#FF9500]/30">
-                <h3 className="text-sm font-bold text-[#000000] uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-[#FF9500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" /></svg>
-                  Manual Overrides
-                </h3>
-                <div className="space-y-3">
-                  <button 
-                    onClick={() => {
-                      dispatch({ type: "TRIGGER_MANUAL_EMERGENCY", cargoId: selectedCargoId, newTemperature: 18.5 });
-                    }}
-                    className="w-full btn bg-[#FF9500]/10 text-[#FF9500] hover:bg-[#FF9500]/20 font-semibold"
-                  >
-                    Simulate Temp Spike (18.5°C)
-                  </button>
-                  <button 
-                    onClick={() => setShowMarketModal(true)}
-                    className="w-full btn btn-primary"
-                  >
-                    Push to Wholesaler Market
-                  </button>
-                </div>
-              </div>
-
-              {cargoBids.length > 0 && (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <h3 className="text-sm font-bold text-[#000000] uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <NavIcon icon="store" className="w-4 h-4 text-[#007AFF]" /> Live Bids
-                    <span className="min-w-[20px] h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold px-1.5">
-                      {cargoBids.length}
-                    </span>
-                  </h3>
-                  <div className="space-y-4">
-                    {cargoBids.map((bid) => (
-                      <BidCard 
-                        key={bid.id} 
-                        bid={bid} 
-                        onAccept={handleAcceptBid} 
-                        onReject={handleRejectBid} 
-                        onCounter={handleCounterBid} 
-                        onViewMap={(bidId) => { 
-                          const b = state.bids.find(x => x.id === bidId); 
-                          if (b) setActiveMapBid(b); 
-                        }}
-                        onPaymentReceived={(bidId) => dispatch({ type: "UPDATE_BID_STATUS", bidId, status: "payment_cleared" })}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+        <div className="flex-[2] overflow-y-auto space-y-6 pb-6 pr-2 min-w-0 hidden lg:block">
+          {renderCargoDetails()}
         </div>
       </div>
 
@@ -891,7 +916,7 @@ function FleetTrackingView() {
       {/* MAP REROUTE MODAL */}
       {activeMapBid && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="ios-card w-full max-w-4xl p-6 relative shadow-xl ring-1 ring-[#34C759]/30">
+          <div className="ios-card w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative shadow-xl ring-1 ring-[#34C759]/30">
             <button onClick={() => setActiveMapBid(null)} className="absolute top-4 right-4 text-[#8E8E93] hover:text-[#000000]">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -904,7 +929,7 @@ function FleetTrackingView() {
               {locationStatus || "Initializing GPS tracking module..."}
             </p>
             
-            <div className="w-full h-96 rounded-xl overflow-hidden border border-[#E5E5EA] mb-6 bg-[#F2F2F7] relative">
+            <div className="w-full h-[40vh] md:h-96 min-h-[200px] rounded-xl overflow-hidden border border-[#E5E5EA] mb-6 bg-[#F2F2F7] relative">
               <iframe 
                 width="100%" 
                 height="100%" 
