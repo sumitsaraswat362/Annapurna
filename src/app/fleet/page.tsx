@@ -54,6 +54,7 @@ export default function FleetApp() {
   const { user, logout } = useAuth();
   const [activeNav, setActiveNav] = useState("fleet"); // Default to fleet for hackathon
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -203,7 +204,7 @@ export default function FleetApp() {
       </div>
 
       {/* ===== DESKTOP: Sidebar ===== */}
-      <aside className="hidden md:flex w-[280px] h-full bg-white border-r border-[var(--separator)] flex-col shrink-0 z-20">
+      <aside className={`hidden md:flex h-full bg-[var(--bg-secondary)] border-r border-[var(--separator)] flex-col shrink-0 z-20 transition-all duration-300 ${isSidebarOpen ? "w-[280px]" : "w-0 overflow-hidden opacity-0"}`}>
         {/* Logo */}
         <Link href="/" className="flex items-center gap-4 p-6 border-b border-[var(--separator)] group">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#007AFF]/10 to-[#34C759]/10 border border-[var(--separator-opaque)]/30 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -261,8 +262,14 @@ export default function FleetApp() {
       </aside>
 
       {/* ===== MAIN CONTENT WRAPPER ===== */}
-      <main className="flex-1 h-full overflow-y-auto relative z-10 mt-[44px] md:mt-0 has-tabbar pb-[100px] md:pb-0">
-        <div className="p-4 md:p-8 min-h-full">
+      <main className="flex-1 h-full overflow-y-auto relative z-10 mt-[44px] md:mt-0 has-tabbar pb-[100px] md:pb-0 flex flex-col">
+        {/* Desktop Hamburger Toggle */}
+        <div className="hidden md:flex items-center px-8 pt-6 pb-2">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 -ml-2 rounded-lg hover:bg-[var(--fill-secondary)] text-[var(--text-secondary)] transition-colors" aria-label="Toggle Sidebar">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+          </button>
+        </div>
+        <div className="p-4 md:px-8 md:pt-2 md:pb-8 min-h-full">
           {/* View Router */}
           <div className="view-transition-enter-active">
             {activeNav === "dashboard" && <DashboardView />}
@@ -745,17 +752,19 @@ function FleetTrackingView() {
                         cargo.status === "rerouting" ? "ring-2 ring-[#34C759]/50" : ""
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-[var(--text-secondary)] bg-[var(--bg-primary)] px-2 py-1 rounded border border-[var(--separator)] tracking-wider">
-                          {cargo.truckPlate}
-                        </span>
-                        <span className={`badge ${cargo.status === "in_transit" ? "badge-safe" : cargo.status === "warning" ? "badge-warning" : cargo.status === "emergency" ? "badge-danger" : cargo.status === "rerouting" ? "badge-safe" : "badge-info"}`}>
-                          {cargo.status === "in_transit" ? "In Transit" : cargo.status === "rerouting" ? "✓ Rerouting" : cargo.status.toUpperCase()}
-                        </span>
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <p className="text-base font-bold text-[var(--text-primary)] capitalize tracking-tight flex items-center gap-2">
+                            {cargo.type}
+                            <span className={`badge ${cargo.status === "in_transit" ? "badge-safe" : cargo.status === "warning" ? "badge-warning" : cargo.status === "emergency" ? "badge-danger" : cargo.status === "rerouting" ? "badge-safe" : "badge-info"} scale-90 origin-left`}>
+                              {cargo.status === "in_transit" ? "In Transit" : cargo.status === "rerouting" ? "✓ Rerouting" : cargo.status.toUpperCase()}
+                            </span>
+                          </p>
+                          <p className="font-[family-name:var(--font-mono)] text-xs font-medium text-[var(--text-secondary)] mt-1">
+                            {cargo.truckPlate} <span className="mx-1 text-[var(--text-quaternary)]">|</span> {(cargo.quantityKg / 1000).toFixed(1)}T
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-base font-bold text-[var(--text-primary)] capitalize tracking-tight">
-                        {cargo.type} <span className="text-[var(--text-tertiary)] font-normal mx-1">·</span> {(cargo.quantityKg / 1000).toFixed(1)}T
-                      </p>
                       <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[var(--separator)]">
                         <span className={`font-[family-name:var(--font-mono)] text-sm font-bold flex items-center gap-1.5 ${
                           cargo.telemetry.temperature > cargo.safeTemperatureMax ? "text-[#FF3B30]" : "text-[#34C759]"
@@ -780,7 +789,7 @@ function FleetTrackingView() {
             </div>
 
             {/* Feature 8: Predictive Fleet Maintenance AI */}
-            <div className="flex-[1] hidden xl:flex flex-col ios-card overflow-hidden">
+            <div className="h-fit hidden xl:flex flex-col ios-card overflow-hidden">
               <div className="p-4 border-b border-[var(--separator)] bg-[#AF52DE]/5">
                 <h3 className="text-xs font-bold text-[#AF52DE] uppercase tracking-widest flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.83M11.42 15.17l2.492-3.053c.203-.25.476-.432.793-.52l.983-.272M11.42 15.17l-3.053 2.492c-.25.203-.432.476-.52.793l-.272.983M15.17 11.42l-2.492 3.053c-.203.25-.476.432-.793.52l-.983.272M15.17 11.42l3.053-2.492c.25-.203.432-.476.52-.793l.272-.983" /></svg>
