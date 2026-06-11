@@ -22,7 +22,7 @@ export function Hero() {
     <section ref={containerRef} className="relative h-[200vh] w-full">
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center pt-20 px-6">
         <motion.div 
-          className="max-w-4xl mx-auto text-center z-10"
+          className="max-w-4xl mx-auto text-center z-10 mt-16 md:mt-24"
           style={{ y: textY, opacity }}
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
