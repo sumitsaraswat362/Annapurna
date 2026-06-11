@@ -695,7 +695,7 @@ function FleetTrackingView() {
             </div>
             
             {/* Real Map */}
-            <div className="relative rounded-xl h-48 md:h-64 border border-[var(--separator)] overflow-hidden shadow-inner">
+            <div className="relative rounded-xl h-48 md:h-64 border border-[var(--separator)] overflow-hidden shadow-inner z-0">
               {selectedCargo && selectedCargo.origin?.location && selectedCargo.originalDestination?.location ? (
                 <LiveMap
                   origin={selectedCargo.origin}
@@ -906,8 +906,8 @@ function FleetTrackingView() {
               <div>
                 <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Asking Price (₹ per kg)</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-3 text-[var(--text-tertiary)] font-bold">₹</span>
-                  <input type="number" value={askingPrice} onChange={(e) => setAskingPrice(Number(e.target.value))} className="ios-input pl-8 font-[family-name:var(--font-mono)] text-sm" />
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] font-bold text-base">₹</span>
+                  <input type="number" value={askingPrice} onChange={(e) => setAskingPrice(Number(e.target.value))} className="ios-input pl-10 font-[family-name:var(--font-mono)] text-sm" />
                 </div>
               </div>
               
