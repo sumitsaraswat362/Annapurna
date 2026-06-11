@@ -14,6 +14,8 @@ export function LandingPage() {
       <FloatingNav activeTab="home" />
       <main>
         <Hero />
+        {/* Buffer space so devices in Hero never get cut by next section */}
+        <div className="h-[30vh] w-full" />
         <FeatureShowcase />
         <BentoGrid />
       </main>

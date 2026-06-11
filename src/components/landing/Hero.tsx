@@ -8,24 +8,26 @@ export function Hero() {
     offset: ["start start", "end start"]
   });
 
-  const textY = useTransform(scrollYProgress, [0, 0.3], ["0%", "50%"]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
+  const textY = useTransform(scrollYProgress, [0, 0.25], ["0%", "50%"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
-  // Devices animation
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 1.3]);
-  const macX = useTransform(scrollYProgress, [0, 0.5], ["0%", "-15%"]);
-  const ipadX = useTransform(scrollYProgress, [0, 0.5], ["0%", "10%"]);
-  const iphoneX = useTransform(scrollYProgress, [0, 0.5], ["0%", "20%"]);
-  const iphoneY = useTransform(scrollYProgress, [0, 0.5], ["0%", "10%"]);
-  // Fade devices out well before the section ends so they never get clipped
-  const mockupOpacity = useTransform(scrollYProgress, [0.3, 0.5], [1, 0]);
+  // Devices animation — fade out VERY early so they're gone long before section ends
+  const scale = useTransform(scrollYProgress, [0, 0.35], [1, 1.15]);
+  const macX = useTransform(scrollYProgress, [0, 0.35], ["0%", "-10%"]);
+  const ipadX = useTransform(scrollYProgress, [0, 0.35], ["0%", "8%"]);
+  const iphoneX = useTransform(scrollYProgress, [0, 0.35], ["0%", "15%"]);
+  const iphoneY = useTransform(scrollYProgress, [0, 0.35], ["0%", "5%"]);
+  // Fade out completely between 20% and 35% scroll progress
+  // With 300vh section, that's 60vh-105vh of scrolling — devices gone by 105vh
+  // Next section starts at 300vh — huge 195vh buffer of empty space
+  const mockupOpacity = useTransform(scrollYProgress, [0.2, 0.35], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[300vh] w-full">
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center pt-32 px-6 overflow-visible">
+    <section ref={containerRef} className="relative h-[300vh] w-full" style={{ zIndex: 10 }}>
+      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center pt-32 px-6" style={{ overflow: "visible" }}>
         <motion.div 
-          className="max-w-4xl mx-auto text-center z-10 mt-32 md:mt-40"
-          style={{ y: textY, opacity: textOpacity }}
+          className="max-w-4xl mx-auto text-center mt-32 md:mt-40"
+          style={{ y: textY, opacity: textOpacity, zIndex: 10 }}
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
@@ -38,10 +40,10 @@ export function Hero() {
           </p>
         </motion.div>
 
-        {/* Mockup Container - NO mix-blend-screen, images now have real transparency */}
+        {/* Mockup Container — images have real PNG transparency, no blend modes */}
         <motion.div 
-          className="mt-12 md:mt-16 w-full max-w-6xl max-md:h-[320px] md:aspect-[21/9] mx-auto z-20 flex justify-center relative"
-          style={{ scale, perspective: "2000px", opacity: mockupOpacity }}
+          className="mt-12 md:mt-16 w-full max-w-6xl max-md:h-[320px] md:aspect-[21/9] mx-auto flex justify-center relative"
+          style={{ scale, perspective: "2000px", opacity: mockupOpacity, zIndex: 20 }}
         >
           {/* MacBook Mockup */}
           <motion.div 
