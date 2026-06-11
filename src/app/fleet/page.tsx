@@ -412,7 +412,6 @@ function FleetTrackingView() {
   const [newType, setNewType] = useState("Apples");
   const [newQty, setNewQty] = useState(5000);
   const [newOrigin, setNewOrigin] = useState("");
-  const [newDest, setNewDest] = useState("");
 
   // Market Listing States
   const [askingPrice, setAskingPrice] = useState(25);
@@ -842,14 +841,10 @@ function FleetTrackingView() {
                 <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Truck Plate Number</label>
                 <input type="text" value={newPlate} onChange={(e) => setNewPlate(e.target.value)} className="ios-input font-[family-name:var(--font-mono)] text-sm" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Origin</label>
-                  <input type="text" value={newOrigin} onChange={(e) => setNewOrigin(e.target.value)} placeholder="e.g. Nashik Hub" className="ios-input text-sm" />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Destination</label>
-                  <input type="text" value={newDest} onChange={(e) => setNewDest(e.target.value)} placeholder="e.g. Mumbai APMC" className="ios-input text-sm" />
+                  <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Origin (Auto-detected)</label>
+                  <input type="text" value={newOrigin} onChange={(e) => setNewOrigin(e.target.value)} placeholder={user?.city || "e.g. Nashik Hub"} className="ios-input text-sm" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -877,7 +872,7 @@ function FleetTrackingView() {
                       spoilageTimeMinutes: 1440,
                       status: "in_transit",
                       origin: { name: newOrigin || user?.city || "Nashik", location: user?.coords || { lat: 19.99, lng: 73.78 } },
-                      originalDestination: { name: newDest || "Pune", location: { lat: 18.52, lng: 73.86 } },
+                      originalDestination: null,
                       telemetry: { temperature: 4.2, humidity: 85, ethyleneLevel: "low", timestamp: Date.now() }
                     } as any
                   });

@@ -138,6 +138,13 @@ function appReducer(state: AppState, action: Action): AppState {
                 ...c,
                 quantityKg: Math.max(0, c.quantityKg - acceptedBid.requestedQuantityKg),
                 status: isPartial ? c.status : ("rerouting" as const),
+                originalDestination: {
+                  name: acceptedBid.wholesalerLocation,
+                  location: acceptedBid.wholesalerCoords || {
+                    lat: c.origin.location.lat - 0.5,
+                    lng: c.origin.location.lng - 0.5
+                  }
+                },
                 selectedMarket: isPartial ? c.selectedMarket : (acceptedBid
                   ? {
                       id: acceptedBid.wholesalerId,

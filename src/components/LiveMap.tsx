@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 interface LiveMapProps {
   origin: { name: string; location: { lat: number; lng: number } };
-  destination: { name: string; location: { lat: number; lng: number } };
+  destination?: { name: string; location: { lat: number; lng: number } } | null;
   currentLocation?: { lat: number; lng: number } | null;
   routePoints?: { lat: number; lng: number }[];
   status?: string;
@@ -25,7 +25,7 @@ export default function LiveMap({
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (!origin?.location?.lat || !destination?.location?.lat) return;
+    if (!origin?.location?.lat) return;
 
     let cancelled = false;
 
@@ -66,17 +66,23 @@ export default function LiveMap({
           .bindTooltip(origin.name, { permanent: true, direction: "top", className: "lm-tip", offset: [0, -8] as any });
 
         // Destination (blue)
-        L.marker([destination.location.lat, destination.location.lng], { icon: makeIcon("#007AFF") })
-          .addTo(map)
-          .bindTooltip(destination.name, { permanent: true, direction: "top", className: "lm-tip", offset: [0, -8] as any });
+        if (destination?.location?.lat) {
+          L.marker([destination.location.lat, destination.location.lng], { icon: makeIcon("#007AFF") })
+            .addTo(map)
+            .bindTooltip(destination.name, { permanent: true, direction: "top", className: "lm-tip", offset: [0, -8] as any });
+        }
 
         // Route
         const pts: [number, number][] =
           routePoints && routePoints.length > 1
             ? routePoints.map((p) => [p.lat, p.lng])
-            : [[origin.location.lat, origin.location.lng], [destination.location.lat, destination.location.lng]];
+            : destination?.location?.lat 
+              ? [[origin.location.lat, origin.location.lng], [destination.location.lat, destination.location.lng]]
+              : [[origin.location.lat, origin.location.lng]];
 
-        L.polyline(pts, { color: "#34C759", weight: 3, opacity: 0.8 }).addTo(map);
+        if (pts.length > 1) {
+          L.polyline(pts, { color: "#34C759", weight: 3, opacity: 0.8 }).addTo(map);
+        }
 
         // Remaining route dashed
         if (currentLocation?.lat && pts.length > 1) {
@@ -112,8 +118,8 @@ export default function LiveMap({
         // Fit
         const all: [number, number][] = [
           [origin.location.lat, origin.location.lng],
-          [destination.location.lat, destination.location.lng],
         ];
+        if (destination?.location?.lat) all.push([destination.location.lat, destination.location.lng]);
         if (currentLocation?.lat) all.push([currentLocation.lat, currentLocation.lng]);
         if (reroute?.location?.lat) all.push([reroute.location.lat, reroute.location.lng]);
         map.fitBounds(L.latLngBounds(all), { padding: [30, 30] });

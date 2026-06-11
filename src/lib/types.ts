@@ -38,7 +38,7 @@ export interface Cargo {
 
   // Route
   origin: { name: string; location: GeoPoint };
-  originalDestination: { name: string; location: GeoPoint };
+  originalDestination: { name: string; location: GeoPoint } | null;
   currentLocation: GeoPoint;
   routePolyline: GeoPoint[]; // Encoded route points
 
@@ -87,6 +87,7 @@ export interface Bid {
   wholesalerId: string;
   wholesalerName: string;
   wholesalerLocation: string;
+  wholesalerCoords?: GeoPoint;
   distanceKm: number;
   etaMinutes: number;
 
