@@ -135,7 +135,7 @@ body {
 }
 
 /* ============================================================
-   CARD STYLES (Grouped Inset)
+   CARD STYLES (Grouped Inset & Premium Glass)
    ============================================================ */
 .ios-card {
   background: var(--bg-secondary);
@@ -143,6 +143,25 @@ body {
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }
+
+.glass-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.glass-panel {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 
 .ios-card-inset {
   background: var(--bg-secondary);
