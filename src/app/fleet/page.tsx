@@ -408,6 +408,8 @@ function FleetTrackingView() {
   const [newPlate, setNewPlate] = useState("MH-04-XX-9999");
   const [newType, setNewType] = useState("Apples");
   const [newQty, setNewQty] = useState(5000);
+  const [newOrigin, setNewOrigin] = useState("Nashik");
+  const [newDest, setNewDest] = useState("Mumbai");
 
   // Market Listing States
   const [askingPrice, setAskingPrice] = useState(25);
@@ -702,7 +704,7 @@ function FleetTrackingView() {
                     <path d="M 280 100 Q 310 130, 340 145" stroke="#FF3B30" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.9" />
                     <circle cx="340" cy="145" r="6" fill="#FF3B30" opacity="0.3" className="animate-pulse-dot" />
                     <circle cx="340" cy="145" r="3" fill="#FF3B30" />
-                    <text x="350" y="150" fill="#FF3B30" fontSize="10" fontFamily="monospace" fontWeight="bold">Kalyan Mandi</text>
+                    <text x="350" y="150" fill="#FF3B30" fontSize="10" fontFamily="monospace" fontWeight="bold">{selectedCargo?.selectedMarket?.name?.split(" ")[0] || "Reroute Hub"}</text>
                   </>
                 ) : (
                   <path d="M 280 100 Q 350 70, 420 50 Q 490 30, 550 40" stroke="#007AFF" strokeWidth="2" fill="none" strokeLinecap="round" strokeDasharray="8 6" opacity="0.5" />
@@ -712,9 +714,9 @@ function FleetTrackingView() {
                 <circle cx="280" cy="100" r="4" fill={selectedCargo?.status === "emergency" ? "#FF3B30" : "#007AFF"} />
 
                 <circle cx="50" cy="220" r="4" fill="#34C759" />
-                <text x="60" y="225" fill="#8E8E93" fontSize="10" fontFamily="monospace">Nashik</text>
+                <text x="60" y="225" fill="#8E8E93" fontSize="10" fontFamily="monospace">{selectedCargo?.origin.name.split(" ")[0] || "Origin"}</text>
                 <circle cx="550" cy="40" r="4" fill="#007AFF" opacity="0.5" />
-                <text x="500" y="35" fill="#8E8E93" fontSize="10" fontFamily="monospace">Mumbai</text>
+                <text x="500" y="35" fill="#8E8E93" fontSize="10" fontFamily="monospace">{selectedCargo?.originalDestination.name.split(" ")[0] || "Destination"}</text>
               </svg>
             </div>
 
@@ -850,6 +852,16 @@ function FleetTrackingView() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Origin</label>
+                  <input type="text" value={newOrigin} onChange={(e) => setNewOrigin(e.target.value)} placeholder="e.g. Nashik Hub" className="ios-input text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Destination</label>
+                  <input type="text" value={newDest} onChange={(e) => setNewDest(e.target.value)} placeholder="e.g. Mumbai APMC" className="ios-input text-sm" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
                   <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Cargo Type</label>
                   <input type="text" value={newType} onChange={(e) => setNewType(e.target.value)} className="ios-input text-sm" />
                 </div>
@@ -872,8 +884,8 @@ function FleetTrackingView() {
                       safeTemperatureMax: 10,
                       spoilageTimeMinutes: 1440,
                       status: "in_transit",
-                      origin: { name: "Nashik Hub", location: { lat: 19.99, lng: 73.78 } },
-                      originalDestination: { name: "Mumbai APMC", location: { lat: 19.07, lng: 72.87 } },
+                      origin: { name: newOrigin || "Nashik Hub", location: { lat: 19.99, lng: 73.78 } },
+                      originalDestination: { name: newDest || "Mumbai APMC", location: { lat: 19.07, lng: 72.87 } },
                       telemetry: { temperature: 4.2, humidity: 85, ethyleneLevel: "low", timestamp: Date.now() }
                     } as any
                   });

@@ -66,7 +66,7 @@ export default function BidCard({ bid, onAccept, onReject, onCounter, onViewMap,
 
         {isAccepted && (
           <div className="text-right flex flex-col items-end">
-            <span className="badge badge-safe mb-1">✓ En Route</span>
+            <span className="badge badge-safe mb-1">✓ In Route</span>
             <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-[#FF9500] animate-pulse">
               ETA: {Math.floor(fastSeconds / 60)}m {fastSeconds % 60}s
             </span>
