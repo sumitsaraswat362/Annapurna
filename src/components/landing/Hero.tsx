@@ -44,26 +44,26 @@ export function Hero() {
         >
           {/* MacBook Mockup */}
           <motion.div 
-            className="absolute left-0 md:left-[5%] top-0 md:top-[10%] w-[90%] md:w-[65%] aspect-[16/9] drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]"
+            className="absolute left-0 md:left-0 top-[5%] md:top-[10%] w-[100%] md:w-[85%] aspect-[16/9] drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]"
             style={{ x: macX }}
           >
-            <img src="/images/macbook_hardware.png" alt="MacBook Fleet Dashboard" className="w-full h-full object-contain" />
+            <img src="/images/macbook_hardware.png" alt="MacBook Fleet Dashboard" className="w-full h-full object-contain mix-blend-screen" />
           </motion.div>
 
           {/* iPad Mockup */}
           <motion.div 
-            className="absolute right-[10%] md:right-[15%] bottom-[-5%] md:bottom-[0%] w-[50%] md:w-[45%] aspect-[4/3] drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
+            className="absolute right-[5%] md:right-[5%] bottom-[5%] md:bottom-[0%] w-[60%] md:w-[55%] aspect-[4/3] drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
             style={{ x: ipadX }}
           >
-            <img src="/images/ipad_hardware.png" alt="iPad Fleet Dashboard" className="w-full h-full object-contain" />
+            <img src="/images/ipad_hardware.png" alt="iPad Fleet Dashboard" className="w-full h-full object-contain mix-blend-screen" />
           </motion.div>
 
           {/* iPhone Mockup */}
           <motion.div 
-            className="absolute right-[0%] md:right-[5%] bottom-[-15%] md:bottom-[-10%] w-[25%] md:w-[15%] aspect-[9/16] drop-shadow-[0_30px_60px_rgba(0,0,0,0.9)]"
+            className="absolute right-[0%] md:right-[0%] bottom-[10%] md:bottom-[0%] w-[35%] md:w-[25%] aspect-[9/16] drop-shadow-[0_30px_60px_rgba(0,0,0,0.9)]"
             style={{ x: iphoneX, y: iphoneY }}
           >
-            <img src="/images/iphone_hardware.png" alt="iPhone Fleet App" className="w-full h-full object-contain" />
+            <img src="/images/iphone_hardware.png" alt="iPhone Fleet App" className="w-full h-full object-contain mix-blend-screen" />
           </motion.div>
         </motion.div>
       </div>
