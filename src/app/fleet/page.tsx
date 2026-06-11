@@ -737,11 +737,11 @@ function FleetTrackingView() {
           {/* Active Fleet List & Predictive Maintenance */}
           <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
             {/* Active Consignments List */}
-            <div className="flex-[2] overflow-y-auto pr-2 pb-4">
+            <div className="flex-1 overflow-y-auto pr-2 pb-4">
               <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2">
                 <NavIcon icon="truck" className="w-4 h-4 text-[var(--text-tertiary)]" /> Active Consignments
               </h3>
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
                 {myCargos.map((cargo) => (
                   <div key={cargo.id} className="flex flex-col">
                     <button
@@ -789,7 +789,7 @@ function FleetTrackingView() {
             </div>
 
             {/* Feature 8: Predictive Fleet Maintenance AI */}
-            <div className="h-fit hidden xl:flex flex-col ios-card overflow-hidden">
+            <div className="h-fit w-[300px] shrink-0 hidden lg:flex flex-col ios-card overflow-hidden">
               <div className="p-4 border-b border-[var(--separator)] bg-[#AF52DE]/5">
                 <h3 className="text-xs font-bold text-[#AF52DE] uppercase tracking-widest flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.83M11.42 15.17l2.492-3.053c.203-.25.476-.432.793-.52l.983-.272M11.42 15.17l-3.053 2.492c-.25.203-.432.476-.52.793l-.272.983M15.17 11.42l-2.492 3.053c-.203.25-.476.432-.793.52l-.983.272M15.17 11.42l3.053-2.492c.25-.203.432-.476.52-.793l.272-.983" /></svg>
