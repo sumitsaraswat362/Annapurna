@@ -37,7 +37,7 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
     return {
       cargoId: cargo.id,
       timestamp: Date.now(),
-      reasoning: `All systems nominal. Temperature ${telemetry.temperature}°C is within safe range (≤${safeTemperatureMax}°C). Humidity at ${telemetry.humidity}%. Ethylene levels: ${telemetry.ethyleneLevel}. Continuing delivery to ${cargo.originalDestination.name}.`,
+      reasoning: `All systems nominal. Temperature ${telemetry.temperature}°C is within safe range (≤${safeTemperatureMax}°C). Humidity at ${telemetry.humidity}%. Ethylene levels: ${telemetry.ethyleneLevel}. Continuing delivery to ${cargo.originalDestination?.name || "its destination"}.`,
       recommendation: "continue",
       suggestedMarket: null,
       estimatedRecoveryPercent: 100,
