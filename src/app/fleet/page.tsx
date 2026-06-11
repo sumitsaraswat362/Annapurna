@@ -11,6 +11,9 @@ import BidCard from "@/components/BidCard";
 import { useAuth } from "@/lib/auth";
 import { Bid, CargoType } from "@/lib/types";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const LiveMap = dynamic(() => import("@/components/LiveMap"), { ssr: false });
 
 // ============================================================================
 // ICONS & NAVIGATION
@@ -680,7 +683,7 @@ function FleetTrackingView() {
           <div className="ios-card p-4 md:p-6 relative overflow-hidden flex-shrink-0">
             <div className="flex items-center justify-between mb-4 md:mb-6">
               <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest flex items-center gap-2">
-                <NavIcon icon="grid" className="w-4 h-4 text-[#007AFF]" /> Live Vector Map
+                <NavIcon icon="grid" className="w-4 h-4 text-[#007AFF]" /> Live Map
               </h3>
               {isOfflineZone ? (
                 <span className="badge badge-warning flex items-center gap-1.5">
@@ -691,33 +694,18 @@ function FleetTrackingView() {
               )}
             </div>
             
-            {/* Map Placeholder */}
-            <div className="relative bg-[var(--bg-primary)] rounded-xl h-48 md:h-64 border border-[var(--separator)] overflow-hidden shadow-inner">
-              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-              
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 600 260">
-                <path d="M 50 220 Q 120 180, 180 150 Q 240 120, 280 100" stroke="#34C759" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.8" />
-                
-                {selectedCargo?.status === "rerouting" || selectedCargo?.status === "emergency" ? (
-                  <>
-                    <path d="M 280 100 Q 350 70, 420 50 Q 490 30, 550 40" stroke="#8E8E93" strokeWidth="2" fill="none" strokeLinecap="round" strokeDasharray="8 6" opacity="0.3" />
-                    <path d="M 280 100 Q 310 130, 340 145" stroke="#FF3B30" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.9" />
-                    <circle cx="340" cy="145" r="6" fill="#FF3B30" opacity="0.3" className="animate-pulse-dot" />
-                    <circle cx="340" cy="145" r="3" fill="#FF3B30" />
-                    <text x="350" y="150" fill="#FF3B30" fontSize="10" fontFamily="monospace" fontWeight="bold">{selectedCargo?.selectedMarket?.name?.split(" ")[0] || "Reroute Hub"}</text>
-                  </>
-                ) : (
-                  <path d="M 280 100 Q 350 70, 420 50 Q 490 30, 550 40" stroke="#007AFF" strokeWidth="2" fill="none" strokeLinecap="round" strokeDasharray="8 6" opacity="0.5" />
-                )}
-
-                <circle cx="280" cy="100" r="8" fill={selectedCargo?.status === "emergency" ? "#FF3B30" : "#007AFF"} opacity="0.2" className="animate-pulse-dot" />
-                <circle cx="280" cy="100" r="4" fill={selectedCargo?.status === "emergency" ? "#FF3B30" : "#007AFF"} />
-
-                <circle cx="50" cy="220" r="4" fill="#34C759" />
-                <text x="60" y="225" fill="#8E8E93" fontSize="10" fontFamily="monospace">{selectedCargo?.origin.name.split(" ")[0] || "Origin"}</text>
-                <circle cx="550" cy="40" r="4" fill="#007AFF" opacity="0.5" />
-                <text x="500" y="35" fill="#8E8E93" fontSize="10" fontFamily="monospace">{selectedCargo?.originalDestination.name.split(" ")[0] || "Destination"}</text>
-              </svg>
+            {/* Real Map */}
+            <div className="relative rounded-xl h-48 md:h-64 border border-[var(--separator)] overflow-hidden shadow-inner">
+              {selectedCargo && (
+                <LiveMap
+                  origin={selectedCargo.origin}
+                  destination={selectedCargo.originalDestination}
+                  currentLocation={selectedCargo.currentLocation}
+                  routePoints={selectedCargo.routePolyline}
+                  status={selectedCargo.status}
+                  reroute={selectedCargo.selectedMarket ? { name: selectedCargo.selectedMarket.name, location: selectedCargo.selectedMarket.location } : null}
+                />
+              )}
             </div>
 
             {/* Route Info Bar */}
@@ -776,7 +764,7 @@ function FleetTrackingView() {
                         </span>
                         <span className="text-xs text-[var(--text-tertiary)] font-medium flex items-center gap-1.5">
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-                          {cargo.originalDestination.name.split(" ")[0]}
+                          {cargo.origin.name.split(" ")[0]} → {cargo.originalDestination.name.split(" ")[0]}
                         </span>
                       </div>
                     </button>
