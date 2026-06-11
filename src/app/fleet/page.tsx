@@ -696,15 +696,19 @@ function FleetTrackingView() {
             
             {/* Real Map */}
             <div className="relative rounded-xl h-48 md:h-64 border border-[var(--separator)] overflow-hidden shadow-inner">
-              {selectedCargo && (
+              {selectedCargo && selectedCargo.origin?.location && selectedCargo.originalDestination?.location ? (
                 <LiveMap
                   origin={selectedCargo.origin}
                   destination={selectedCargo.originalDestination}
-                  currentLocation={selectedCargo.currentLocation}
-                  routePoints={selectedCargo.routePolyline}
+                  currentLocation={selectedCargo.currentLocation || null}
+                  routePoints={selectedCargo.routePolyline || []}
                   status={selectedCargo.status}
                   reroute={selectedCargo.selectedMarket ? { name: selectedCargo.selectedMarket.name, location: selectedCargo.selectedMarket.location } : null}
                 />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)] text-xs bg-[var(--bg-primary)]">
+                  Select a consignment to view route
+                </div>
               )}
             </div>
 
