@@ -13,12 +13,12 @@ export function Hero() {
   const textOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
   // Devices animation
-  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 1.4]);
-  const macX = useTransform(scrollYProgress, [0, 0.6], ["0%", "-15%"]);
-  const ipadX = useTransform(scrollYProgress, [0, 0.6], ["0%", "10%"]);
-  const iphoneX = useTransform(scrollYProgress, [0, 0.6], ["0%", "20%"]);
-  const iphoneY = useTransform(scrollYProgress, [0, 0.6], ["0%", "10%"]);
-  const mockupOpacity = useTransform(scrollYProgress, [0.45, 0.65], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.55], [1, 1.4]);
+  const macX = useTransform(scrollYProgress, [0, 0.55], ["0%", "-15%"]);
+  const ipadX = useTransform(scrollYProgress, [0, 0.55], ["0%", "10%"]);
+  const iphoneX = useTransform(scrollYProgress, [0, 0.55], ["0%", "20%"]);
+  const iphoneY = useTransform(scrollYProgress, [0, 0.55], ["0%", "10%"]);
+  const mockupOpacity = useTransform(scrollYProgress, [0.35, 0.50], [1, 0]);
 
   return (
     <section ref={containerRef} className="relative h-[300vh] w-full">
@@ -45,26 +45,26 @@ export function Hero() {
         >
           {/* MacBook Mockup */}
           <motion.div 
-            className="absolute left-0 md:left-0 top-[5%] md:top-[10%] w-[100%] md:w-[85%] aspect-[16/9] drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]"
+            className="absolute left-0 md:left-0 top-[5%] md:top-[10%] w-[100%] md:w-[85%] aspect-[16/9] mix-blend-screen"
             style={{ x: macX }}
           >
-            <img src="/images/macbook_hardware.png" alt="MacBook Fleet Dashboard" className="w-full h-full object-contain mix-blend-screen" />
+            <img src="/images/macbook_hardware.png" alt="MacBook Fleet Dashboard" className="w-full h-full object-contain" />
           </motion.div>
 
           {/* iPad Mockup */}
           <motion.div 
-            className="absolute right-[5%] md:right-[5%] bottom-[5%] md:bottom-[0%] w-[60%] md:w-[55%] aspect-[4/3] drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
+            className="absolute right-[5%] md:right-[5%] bottom-[5%] md:bottom-[0%] w-[60%] md:w-[55%] aspect-[4/3] mix-blend-screen"
             style={{ x: ipadX }}
           >
-            <img src="/images/ipad_hardware.png" alt="iPad Fleet Dashboard" className="w-full h-full object-contain mix-blend-screen" />
+            <img src="/images/ipad_hardware.png" alt="iPad Fleet Dashboard" className="w-full h-full object-contain" />
           </motion.div>
 
           {/* iPhone Mockup */}
           <motion.div 
-            className="absolute right-[0%] md:right-[0%] bottom-[10%] md:bottom-[0%] w-[35%] md:w-[25%] aspect-[9/16] drop-shadow-[0_30px_60px_rgba(0,0,0,0.9)]"
+            className="absolute right-[0%] md:right-[0%] bottom-[10%] md:bottom-[0%] w-[35%] md:w-[25%] aspect-[9/16] mix-blend-screen"
             style={{ x: iphoneX, y: iphoneY }}
           >
-            <img src="/images/iphone_hardware.png" alt="iPhone Fleet App" className="w-full h-full object-contain mix-blend-screen" />
+            <img src="/images/iphone_hardware.png" alt="iPhone Fleet App" className="w-full h-full object-contain" />
           </motion.div>
         </motion.div>
       </div>
