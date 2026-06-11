@@ -51,7 +51,7 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
     return {
       cargoId: cargo.id,
       timestamp: Date.now(),
-      reasoning: `⚠️ WARNING: Temperature ${telemetry.temperature}°C exceeds safe limit of ${safeTemperatureMax}°C. However, estimated spoilage in ${spoilageMinutes} minutes. ETA to ${cargo.originalDestination.name}: ${etaMinutes} minutes. Cargo will survive transit. Continuing delivery with elevated monitoring.`,
+      reasoning: `⚠️ WARNING: Temperature ${telemetry.temperature}°C exceeds safe limit of ${safeTemperatureMax}°C. However, estimated spoilage in ${spoilageMinutes} minutes. ETA to ${cargo.originalDestination?.name || "its destination"}: ${etaMinutes} minutes. Cargo will survive transit. Continuing delivery with elevated monitoring.`,
       recommendation: "continue",
       suggestedMarket: null,
       estimatedRecoveryPercent: 90,
@@ -67,7 +67,7 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
     return {
       cargoId: cargo.id,
       timestamp: Date.now(),
-      reasoning: `🚨 CRITICAL: Cold chain failure detected. Temperature ${telemetry.temperature}°C far exceeds safe limit of ${safeTemperatureMax}°C. Ethylene levels: ${telemetry.ethyleneLevel.toUpperCase()}. Estimated spoilage in ${spoilageMinutes} minutes. ETA to ${cargo.originalDestination.name}: ${etaMinutes} minutes. NO viable markets found within spoilage window. Cargo at severe risk.`,
+      reasoning: `🚨 CRITICAL: Cold chain failure detected. Temperature ${telemetry.temperature}°C far exceeds safe limit of ${safeTemperatureMax}°C. Ethylene levels: ${telemetry.ethyleneLevel.toUpperCase()}. Estimated spoilage in ${spoilageMinutes} minutes. ETA to ${cargo.originalDestination?.name || "its destination"}: ${etaMinutes} minutes. NO viable markets found within spoilage window. Cargo at severe risk.`,
       recommendation: "emergency_sell",
       suggestedMarket: null,
       estimatedRecoveryPercent: 20,
@@ -86,7 +86,7 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
 
 Current temperature: ${telemetry.temperature}°C — exceeds safe limit of ${safeTemperatureMax}°C
 Humidity: ${telemetry.humidity}% | Ethylene: ${telemetry.ethyleneLevel.toUpperCase()}
-ETA to ${cargo.originalDestination.name}: ${etaMinutes} min
+ETA to ${cargo.originalDestination?.name || "its destination"}: ${etaMinutes} min
 Estimated spoilage in: ${spoilageMinutes} min
 
 ⛔ Cargo WILL NOT survive transit to original destination.
