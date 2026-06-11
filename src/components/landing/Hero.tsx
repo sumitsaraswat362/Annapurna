@@ -40,7 +40,7 @@ export function Hero() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
           <h1 className="text-5xl md:text-8xl font-semibold tracking-tighter mb-4 md:mb-6 bg-gradient-to-br from-white via-white/90 to-white/40 bg-clip-text text-transparent pb-2 leading-tight">
-            Logistics, <br /> Perfected by AI.
+            Logistics <br /> Perfected by AI.
           </h1>
           <p className="text-xl text-white/50 font-medium max-w-2xl mx-auto">
             The ultimate Food Logistics & Fleet Tracking platform. Built for precision, designed for scale.
