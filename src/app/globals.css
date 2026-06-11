@@ -532,11 +532,148 @@ body {
   padding-bottom: calc(56px + env(safe-area-inset-bottom, 8px) + 16px);
 }
 
-/* Desktop: hide mobile-only elements */
-@media (min-width: 768px) {
-  .mobile-only { display: none !important; }
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+html.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #1C1C1E;
+  --bg-tertiary: #2C2C2E;
+  --bg-elevated: #1C1C1E;
+  --text-primary: #FFFFFF;
+  --text-secondary: #EBEBF5;
+  --text-tertiary: #8E8E93;
+  --text-quaternary: #636366;
+  --separator: #38383A;
+  --separator-opaque: rgba(84, 84, 88, 0.65);
+  --fill-primary: rgba(120, 120, 128, 0.36);
+  --fill-secondary: rgba(120, 120, 128, 0.32);
+  --fill-tertiary: rgba(118, 118, 128, 0.24);
 }
-/* Mobile: hide desktop-only elements */
-@media (max-width: 767px) {
-  .desktop-only { display: none !important; }
+
+html.dark body {
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+html.dark .ios-card {
+  background: #1C1C1E;
+  box-shadow: none;
+  border: 0.5px solid rgba(84, 84, 88, 0.3);
+}
+
+html.dark .kpi-card {
+  background: #1C1C1E;
+  box-shadow: none;
+  border: 0.5px solid rgba(84, 84, 88, 0.3);
+}
+
+html.dark .ios-navbar {
+  background: rgba(0, 0, 0, 0.85);
+  border-bottom-color: rgba(84, 84, 88, 0.65);
+}
+
+html.dark .ios-tabbar {
+  background: rgba(28, 28, 30, 0.94);
+  border-top-color: rgba(84, 84, 88, 0.65);
+}
+
+html.dark .ios-tab {
+  color: #8E8E93;
+}
+html.dark .ios-tab.active {
+  color: #007AFF;
+}
+
+html.dark .drawer-panel {
+  background: #1C1C1E;
+}
+
+html.dark .drawer-nav-item {
+  color: #FFFFFF;
+}
+html.dark .drawer-nav-item.active {
+  background: rgba(0, 122, 255, 0.15);
+  color: #0A84FF;
+}
+
+html.dark .ios-segment {
+  background: rgba(118, 118, 128, 0.24);
+}
+html.dark .ios-segment-item.active {
+  background: #2C2C2E;
+}
+
+html.dark .ios-input {
+  background: #1C1C1E;
+  border-color: #38383A;
+  color: #FFFFFF;
+}
+html.dark .ios-input:focus {
+  border-color: #0A84FF;
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.15);
+}
+
+html.dark .ios-select {
+  background: #1C1C1E;
+  border-color: #38383A;
+  color: #FFFFFF;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================================
+   DARK MODE — Tailwind hardcoded color overrides
+   These catch bg-[#F2F2F7], bg-white, text-[#000000], etc.
+   used in component files without needing to edit each one.
+   ============================================================ */
+html.dark .bg-\[\#F2F2F7\] {
+  background-color: #000000 !important;
+}
+html.dark .bg-white {
+  background-color: #1C1C1E !important;
+}
+html.dark .text-\[\#000000\] {
+  color: #FFFFFF !important;
+}
+html.dark .text-\[\#3C3C43\] {
+  color: #EBEBF5 !important;
+}
+html.dark .text-black {
+  color: #FFFFFF !important;
+}
+html.dark .border-\[\#E5E5EA\] {
+  border-color: #38383A !important;
+}
+html.dark .border-\[\#C6C6C8\]\/30 {
+  border-color: rgba(84, 84, 88, 0.5) !important;
+}
+html.dark .border-\[\#C6C6C8\]\/20 {
+  border-color: rgba(84, 84, 88, 0.4) !important;
+}
+html.dark .shadow-inner {
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4) !important;
+}
+
+/* Badge overrides */
+html.dark .badge-safe {
+  background: rgba(52, 199, 89, 0.2);
+  color: #30D158;
+}
+html.dark .badge-warning {
+  background: rgba(255, 149, 0, 0.2);
+  color: #FF9F0A;
+}
+html.dark .badge-danger {
+  background: rgba(255, 59, 48, 0.2);
+  color: #FF453A;
+}
+html.dark .badge-info {
+  background: rgba(10, 132, 255, 0.15);
+  color: #0A84FF;
 }

@@ -67,8 +67,8 @@ export default function FleetApp() {
   return (
     <div className="flex h-screen overflow-hidden bg-[#F2F2F7]">
 
-      {/* ===== MOBILE: Top Navbar ===== */}
-      <div className="mobile-only fixed top-0 left-0 right-0 z-40 ios-navbar">
+      {/* ===== MOBILE: Top Navbar (hamburger only, no title) ===== */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 ios-navbar">
         {/* Hamburger */}
         <button
           onClick={() => setDrawerOpen(true)}
@@ -79,8 +79,7 @@ export default function FleetApp() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </button>
-        {/* Center Title */}
-        <p className="text-base font-bold bg-gradient-to-r from-[#007AFF] to-[#34C759] bg-clip-text text-transparent">Annapurna</p>
+        <div className="flex-1" />
         {/* User Avatar */}
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#007AFF]/30 to-[#34C759]/30 border border-[#C6C6C8]/30 flex items-center justify-center text-sm font-bold text-[#007AFF]">
           {user?.name?.charAt(0).toUpperCase() || "D"}
@@ -89,12 +88,12 @@ export default function FleetApp() {
 
       {/* ===== MOBILE: Drawer Overlay ===== */}
       <div
-        className={`mobile-only drawer-overlay ${drawerOpen ? "open" : ""}`}
+        className={`md:hidden drawer-overlay ${drawerOpen ? "open" : ""}`}
         onClick={() => setDrawerOpen(false)}
       />
 
       {/* ===== MOBILE: Drawer Panel ===== */}
-      <div className={`mobile-only drawer-panel ${drawerOpen ? "open" : ""}`}>
+      <div className={`md:hidden drawer-panel ${drawerOpen ? "open" : ""}`}>
         {/* Drawer Header: User Profile */}
         <div className="p-5 pb-4 border-b border-[#C6C6C8]/20">
           <div className="flex items-center gap-3">
@@ -145,7 +144,7 @@ export default function FleetApp() {
       </div>
 
       {/* ===== MOBILE: Bottom Tab Bar ===== */}
-      <div className="mobile-only ios-tabbar">
+      <div className="md:hidden ios-tabbar">
         {TAB_ITEMS.map((item) => (
           <button
             key={item.id}
@@ -164,7 +163,7 @@ export default function FleetApp() {
       </div>
 
       {/* ===== DESKTOP: Sidebar ===== */}
-      <aside className="desktop-only w-[280px] h-full bg-white border-r border-[#E5E5EA] flex flex-col shrink-0 z-20">
+      <aside className="hidden md:flex w-[280px] h-full bg-white border-r border-[#E5E5EA] flex-col shrink-0 z-20">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-4 p-6 border-b border-[#E5E5EA] group">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#007AFF]/10 to-[#34C759]/10 border border-[#C6C6C8]/30 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -1108,40 +1107,82 @@ function AnalyticsView() {
 // VIEW 6: SETTINGS
 // ============================================================================
 function SettingsView() {
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
+
+  const toggleDarkMode = () => {
+    const next = !isDark;
+    setIsDark(next);
+    if (next) {
+      document.documentElement.classList.add('dark');
+      document.body.style.backgroundColor = '#000000';
+      document.body.style.color = '#FFFFFF';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.style.backgroundColor = '#F2F2F7';
+      document.body.style.color = '#000000';
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#000000] tracking-tight">Preferences & Settings</h1>
-        <p className="text-[#8E8E93] mt-1">Manage AI decision boundaries and notification routing.</p>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Preferences & Settings</h1>
+        <p className="text-[#8E8E93] mt-1">Manage appearance, AI rules, and notifications.</p>
       </header>
 
       <div className="space-y-6">
+        {/* Appearance */}
         <div className="ios-card p-6">
-          <h3 className="text-lg font-bold text-[#000000] mb-4">Autonomous AI Rules</h3>
+          <h3 className="text-lg font-bold mb-4">Appearance</h3>
+          <div className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--bg-primary)' }}>
+            <div>
+              <p className="font-semibold">Dark Mode</p>
+              <p className="text-sm text-[#8E8E93] mt-1">Switch between light and dark appearance.</p>
+            </div>
+            <button
+              onClick={toggleDarkMode}
+              className={`w-[51px] h-[31px] rounded-full relative cursor-pointer transition-colors duration-300 ${isDark ? 'bg-[#34C759]' : 'bg-[#E5E5EA]'}`}
+            >
+              <div className={`absolute top-[2px] w-[27px] h-[27px] bg-white rounded-full shadow-md transition-transform duration-300 ${isDark ? 'translate-x-[22px]' : 'translate-x-[2px]'}`} />
+            </button>
+          </div>
+        </div>
+
+        {/* AI Rules */}
+        <div className="ios-card p-6">
+          <h3 className="text-lg font-bold mb-4">Autonomous AI Rules</h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-lg bg-[#F2F2F7] border border-[#E5E5EA]">
+            <div className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--bg-primary)' }}>
               <div>
-                <p className="font-semibold text-[#000000]">Auto-Accept Optimal Bids</p>
+                <p className="font-semibold">Auto-Accept Optimal Bids</p>
                 <p className="text-sm text-[#8E8E93] mt-1">Allow AI to immediately accept bids &gt; 90% of asking price.</p>
               </div>
-              <div className="w-12 h-7 bg-[#34C759] rounded-full relative cursor-pointer">
-                <div className="absolute right-0.5 top-0.5 w-6 h-6 bg-white rounded-full shadow-sm" />
+              <div className="w-[51px] h-[31px] bg-[#34C759] rounded-full relative cursor-pointer">
+                <div className="absolute top-[2px] right-[2px] w-[27px] h-[27px] bg-white rounded-full shadow-md" />
               </div>
             </div>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-[#F2F2F7] border border-[#E5E5EA]">
+            <div className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--bg-primary)' }}>
               <div>
-                <p className="font-semibold text-[#000000]">Automated Counter-Offers</p>
-                <p className="text-sm text-[#8E8E93] mt-1">AI will automatically counter low-ball bids based on spoilage curve.</p>
+                <p className="font-semibold">Automated Counter-Offers</p>
+                <p className="text-sm text-[#8E8E93] mt-1">AI will auto-counter low bids based on spoilage curve.</p>
               </div>
-              <div className="w-12 h-7 bg-[#34C759] rounded-full relative cursor-pointer">
-                <div className="absolute right-0.5 top-0.5 w-6 h-6 bg-white rounded-full shadow-sm" />
+              <div className="w-[51px] h-[31px] bg-[#34C759] rounded-full relative cursor-pointer">
+                <div className="absolute top-[2px] right-[2px] w-[27px] h-[27px] bg-white rounded-full shadow-md" />
               </div>
             </div>
           </div>
         </div>
 
+        {/* API */}
         <div className="ios-card p-6 opacity-50 grayscale pointer-events-none">
-          <h3 className="text-lg font-bold text-[#000000] mb-4 flex items-center gap-3">
+          <h3 className="text-lg font-bold mb-4 flex items-center gap-3">
             API Integrations
             <span className="badge badge-warning text-[9px]">Locked in Demo</span>
           </h3>
@@ -1160,3 +1201,4 @@ function SettingsView() {
     </div>
   );
 }
+
