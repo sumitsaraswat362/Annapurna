@@ -11,21 +11,21 @@
 
 :root {
   /* iOS System Colors */
-  --bg-primary: #F2F2F7;          /* systemGroupedBackground */
-  --bg-secondary: #FFFFFF;         /* secondarySystemGroupedBackground */
-  --bg-tertiary: #F2F2F7;         /* tertiarySystemGroupedBackground */
+  --bg-primary: #F4F5F8;          /* Vibrant cool off-white */
+  --bg-secondary: rgba(255, 255, 255, 0.75); /* Frosted glass */
+  --bg-tertiary: #EBECEF;         
   --bg-elevated: #FFFFFF;
 
-  --text-primary: #000000;
-  --text-secondary: #3C3C43;
-  --text-tertiary: #8E8E93;
+  --text-primary: #1D1D1F;        /* Rich black */
+  --text-secondary: #4B4B52;
+  --text-tertiary: #86868B;
   --text-quaternary: #C7C7CC;
 
-  --separator: #C6C6C8;
-  --separator-opaque: rgba(60, 60, 67, 0.12);
-  --fill-primary: rgba(120, 120, 128, 0.2);
-  --fill-secondary: rgba(120, 120, 128, 0.16);
-  --fill-tertiary: rgba(118, 118, 128, 0.12);
+  --separator: #D1D1D6;
+  --separator-opaque: rgba(60, 60, 67, 0.08);
+  --fill-primary: rgba(120, 120, 128, 0.12);
+  --fill-secondary: rgba(120, 120, 128, 0.08);
+  --fill-tertiary: rgba(118, 118, 128, 0.04);
 
   /* iOS Tint Colors */
   --tint-blue: #007AFF;
@@ -38,8 +38,8 @@
   --tint-teal: #5AC8FA;
 
   /* Shadows (Apple-style subtle elevation) */
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-elevated: 0 4px 14px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-card: 0 4px 24px -6px rgba(0, 122, 255, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
+  --shadow-elevated: 0 10px 30px -4px rgba(0, 122, 255, 0.08), 0 4px 10px rgba(0,0,0,0.04);
   --shadow-drawer: 4px 0 24px rgba(0,0,0,0.15);
 
   /* Spacing (8pt grid) */
@@ -83,6 +83,10 @@
    ============================================================ */
 body {
   background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(0, 122, 255, 0.04) 0px, transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(52, 199, 89, 0.04) 0px, transparent 50%);
+  background-attachment: fixed;
   color: var(--text-primary);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
@@ -90,6 +94,12 @@ body {
   font-size: 17px;
   line-height: 1.47;
   letter-spacing: -0.01em;
+}
+
+html.dark body {
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(0, 122, 255, 0.12) 0px, transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(52, 199, 89, 0.12) 0px, transparent 50%);
 }
 
 /* iOS Large Title style */
@@ -162,7 +172,14 @@ body {
   background: var(--bg-secondary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 0, 0, 0.02);
   overflow: hidden;
+}
+
+.dark .ios-card {
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .glass-card {
