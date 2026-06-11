@@ -18,8 +18,8 @@ export function FeatureShowcase() {
   const card2Opacity = useTransform(scrollYProgress, [0.3, 0.5, 0.8, 1], [0, 1, 1, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[300vh] w-full bg-black">
-      <div className="sticky top-0 h-screen w-full flex flex-col md:flex-row items-center justify-center px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
+    <section ref={containerRef} className="relative h-[300vh] w-full">
+      <div className="sticky top-0 h-screen w-full flex flex-col md:flex-row items-center justify-center px-6 md:px-12 max-w-7xl mx-auto">
         
         {/* Pinned Text */}
         <div className="flex-1 w-full flex flex-col justify-center h-full z-20">
