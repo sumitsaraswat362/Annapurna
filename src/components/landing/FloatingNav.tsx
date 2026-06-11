@@ -15,14 +15,14 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
 
   return (
     <>
-    <div className="fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-[95%] md:max-w-fit">
+    <div className="fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 w-fit max-w-[95%] md:max-w-fit">
       <div className="flex items-center justify-between p-1 rounded-full bg-black/40 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] relative">
         
         {/* Navigation Links */}
-        <div className="flex items-center flex-1 justify-center max-md:gap-0">
+        <div className="flex items-center gap-0.5 md:gap-2">
           <Link
             href="/"
-            className={`relative flex items-center justify-center px-2 py-2 md:px-4 md:py-2.5 text-xs md:text-sm font-medium transition-colors duration-300 z-10 ${
+            className={`relative flex items-center justify-center px-2 py-1.5 md:px-4 md:py-2.5 text-[11px] md:text-sm font-medium transition-colors duration-300 z-10 ${
               activeTab === "home" ? "text-white" : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
@@ -41,7 +41,7 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
             <Link
               href={tab.href}
               key={tab.id}
-              className={`relative flex items-center justify-center text-center px-2 py-2 md:px-4 md:py-2.5 text-xs md:text-sm font-medium transition-colors duration-300 z-10 ${
+              className={`relative flex items-center justify-center text-center px-2 py-1.5 md:px-4 md:py-2.5 text-[11px] md:text-sm font-medium transition-colors duration-300 z-10 ${
                 isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"
               }`}
             >
@@ -59,8 +59,8 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
         </div>
 
         {/* Login Button */}
-        <div>
-          <Link href="/login" className="flex items-center whitespace-nowrap px-3 py-1.5 md:px-5 md:py-2.5 rounded-full bg-gradient-to-b from-[#0A84FF] to-[#005DEB] shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity text-white text-[11px] md:text-sm font-medium">
+        <div className="pl-1 md:pl-2">
+          <Link href="/login" className="flex items-center whitespace-nowrap px-3 py-1.5 md:px-5 md:py-2.5 rounded-full bg-gradient-to-b from-[#0A84FF] to-[#005DEB] shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity text-white text-[10px] md:text-sm font-medium">
             Use App
           </Link>
         </div>
