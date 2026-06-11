@@ -15,6 +15,7 @@ export function Hero() {
   // === DEVICE EXIT ANIMATIONS ===
   // Each device slides out in its own direction + fades out.
   // Once gone, they stay gone (useTransform clamps at final value).
+  const scale = useTransform(scrollYProgress, [0, 0.35], [1.2, 1.4]);
 
   // MacBook → slides OUT to the LEFT
   const macX = useTransform(scrollYProgress, [0, 0.45], ["0%", "-150%"]);
@@ -29,7 +30,7 @@ export function Hero() {
   const iphoneOpacity = useTransform(scrollYProgress, [0.1, 0.4], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[250vh] w-full" style={{ zIndex: 10 }}>
+    <section ref={containerRef} className="relative h-[250vh] w-full overflow-x-clip" style={{ zIndex: 10 }}>
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center pt-32 px-6" style={{ overflow: "visible" }}>
         {/* Hero Text */}
         <motion.div 
@@ -48,7 +49,10 @@ export function Hero() {
         </motion.div>
 
         {/* Device Mockups — transparent PNGs, no blend modes */}
-        <div className="mt-12 md:mt-16 w-full max-w-6xl max-md:h-[320px] md:aspect-[21/9] mx-auto flex justify-center relative" style={{ zIndex: 20 }}>
+        <motion.div 
+          className="mt-12 md:mt-24 w-full max-w-[1400px] max-md:h-[380px] md:aspect-[21/9] mx-auto flex justify-center relative" 
+          style={{ zIndex: 20, scale, transformOrigin: "top center" }}
+        >
           
           {/* MacBook — exits LEFT */}
           <motion.div 
@@ -73,7 +77,7 @@ export function Hero() {
           >
             <img src="/images/iphone_hardware.png" alt="iPhone Fleet App" className="w-full h-full object-contain" />
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
