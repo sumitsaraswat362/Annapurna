@@ -80,7 +80,7 @@ export default function FleetApp() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#050505]">
+    <div className="flex h-screen overflow-hidden bg-[var(--bg-primary)]">
 
       {/* ===== MOBILE: Top Navbar (hamburger only) ===== */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-[var(--bg-primary)]/85 backdrop-blur-md border-b border-[var(--separator-opaque)] px-4 h-[44px] flex items-center">
@@ -203,17 +203,17 @@ export default function FleetApp() {
       </div>
 
       {/* ===== DESKTOP: Sidebar ===== */}
-      <aside className="hidden md:flex w-[280px] h-full bg-[#141414] border-r border-white/10 flex-col shrink-0 z-20">
+      <aside className="hidden md:flex w-[280px] h-full bg-white border-r border-[var(--separator)] flex-col shrink-0 z-20">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-4 p-6 border-b border-white/10 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#007AFF]/10 to-[#34C759]/10 border border-white/20/30 flex items-center justify-center group-hover:scale-105 transition-transform">
+        <Link href="/" className="flex items-center gap-4 p-6 border-b border-[var(--separator)] group">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#007AFF]/10 to-[#34C759]/10 border border-[var(--separator-opaque)]/30 flex items-center justify-center group-hover:scale-105 transition-transform">
             <svg className="w-5 h-5 text-[#007AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
             </svg>
           </div>
           <div>
             <p className="text-base font-bold bg-gradient-to-r from-[#007AFF] to-[#34C759] bg-clip-text text-transparent">Annapurna</p>
-            <p className="text-[11px] font-medium text-white/50 uppercase tracking-wider mt-0.5">Fleet Command</p>
+            <p className="text-[11px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mt-0.5">Fleet Command</p>
           </div>
         </Link>
 
@@ -226,10 +226,10 @@ export default function FleetApp() {
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                 activeNav === item.id
                   ? "bg-[#007AFF]/10 text-[#007AFF] border border-[#007AFF]/20"
-                  : "text-white/50 hover:text-white hover:bg-[#050505] border border-transparent"
+                  : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] border border-transparent"
               }`}
             >
-              <NavIcon icon={item.icon} className={activeNav === item.id ? "text-[#007AFF]" : "text-white/50"} />
+              <NavIcon icon={item.icon} className={activeNav === item.id ? "text-[#007AFF]" : "text-[var(--text-tertiary)]"} />
               <span>{item.label}</span>
               {item.id === "alerts" && unreadAlerts > 0 && (
                 <span className="ml-auto badge-count">{unreadAlerts}</span>
@@ -244,16 +244,16 @@ export default function FleetApp() {
         </nav>
 
         {/* User Profile Footer */}
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-[var(--separator)]">
           <div onClick={logout} className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer border border-transparent hover:border-[#FF3B30]/30 hover:bg-[#FF3B30]/5 group transition-all">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#007AFF]/20 to-[#34C759]/20 border border-white/20/30 flex items-center justify-center text-sm font-bold text-[#007AFF] group-hover:border-[#FF3B30]/50">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#007AFF]/20 to-[#34C759]/20 border border-[var(--separator-opaque)]/30 flex items-center justify-center text-sm font-bold text-[#007AFF] group-hover:border-[#FF3B30]/50">
               {user?.name?.charAt(0).toUpperCase() || "D"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-white truncate group-hover:text-[#FF3B30]">{user?.name || "Director"}</p>
-              <p className="text-xs text-white/50 truncate">Logistics Director</p>
+              <p className="text-sm font-bold text-[var(--text-primary)] truncate group-hover:text-[#FF3B30]">{user?.name || "Director"}</p>
+              <p className="text-xs text-[var(--text-tertiary)] truncate">Logistics Director</p>
             </div>
-            <svg className="w-4 h-4 text-white/50 group-hover:text-[#FF3B30]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#FF3B30]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
             </svg>
           </div>
@@ -296,8 +296,8 @@ function DashboardView() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header>
-        <h1 className="text-3xl font-bold text-white tracking-tight">System Overview</h1>
-        <p className="text-white/50 mt-1">Real-time aggregate view of your entire logistics network.</p>
+        <h1 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">System Overview</h1>
+        <p className="text-[var(--text-tertiary)] mt-1">Real-time aggregate view of your entire logistics network.</p>
       </header>
 
       {/* KPI Cards */}
@@ -307,7 +307,7 @@ function DashboardView() {
             <NavIcon icon="truck" className="w-16 h-16 text-[#007AFF]" />
           </div>
           <p className="kpi-label uppercase tracking-wider">Active Fleet</p>
-          <p className="kpi-value text-white">{totalCargos}</p>
+          <p className="kpi-value text-[var(--text-primary)]">{totalCargos}</p>
           <p className="text-xs text-[#34C759] mt-2 flex items-center gap-1 font-medium">
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" /></svg>
             All systems nominal
@@ -320,7 +320,7 @@ function DashboardView() {
           </div>
           <p className="kpi-label uppercase tracking-wider">Total Cargo Value</p>
           <p className="kpi-value text-[#34C759]">₹{(totalValue / 100000).toFixed(2)}L</p>
-          <p className="text-xs text-white/50 mt-2 font-medium">Insured up to ₹1.0Cr</p>
+          <p className="text-xs text-[var(--text-tertiary)] mt-2 font-medium">Insured up to ₹1.0Cr</p>
         </div>
 
         <div className={`kpi-card relative overflow-hidden transition-all duration-500 ${emergencyCargos > 0 ? 'ring-2 ring-[#FF3B30]/40' : ''}`}>
@@ -328,8 +328,8 @@ function DashboardView() {
             <NavIcon icon="bell" className={`w-16 h-16 ${emergencyCargos > 0 ? 'text-[#FF3B30]' : 'text-[#FF9500]'}`} />
           </div>
           <p className="kpi-label uppercase tracking-wider">Critical Alerts</p>
-          <p className={`kpi-value ${emergencyCargos > 0 ? 'text-[#FF3B30] animate-pulse-danger' : 'text-white'}`}>{emergencyCargos}</p>
-          <p className="text-xs text-white/50 mt-2 font-medium">Requiring immediate attention</p>
+          <p className={`kpi-value ${emergencyCargos > 0 ? 'text-[#FF3B30] animate-pulse-danger' : 'text-[var(--text-primary)]'}`}>{emergencyCargos}</p>
+          <p className="text-xs text-[var(--text-tertiary)] mt-2 font-medium">Requiring immediate attention</p>
         </div>
 
         <div className="kpi-card relative overflow-hidden">
@@ -353,17 +353,17 @@ function DashboardView() {
       </div>
 
       {/* Large visual placeholder for Dashboard */}
-      <div className="glass-card p-8 h-96 flex items-center justify-center relative overflow-hidden group">
+      <div className="ios-card p-8 h-96 flex items-center justify-center relative overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-tr from-[#007AFF]/5 to-[#34C759]/5 opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
         <div className="text-center relative z-10">
-          <div className="w-24 h-24 mx-auto bg-[#050505] rounded-3xl border border-white/10 flex items-center justify-center mb-6 shadow-lg">
+          <div className="w-24 h-24 mx-auto bg-[var(--bg-primary)] rounded-3xl border border-[var(--separator)] flex items-center justify-center mb-6 shadow-lg">
             <svg className="w-12 h-12 text-[#007AFF] opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">Network Topology Map</h3>
-          <p className="text-white/50 max-w-sm mx-auto">
+          <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">Network Topology Map</h3>
+          <p className="text-[var(--text-tertiary)] max-w-sm mx-auto">
             Comprehensive multi-node visualization is disabled in demo mode. Switch to the Fleet Tracking tab to run the single-vehicle simulation.
           </p>
         </div>
@@ -517,9 +517,9 @@ function FleetTrackingView() {
         />
 
         {/* Computer Vision Quality Assessment */}
-        <div className="glass-card p-5">
+        <div className="ios-card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-2">
+            <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest flex items-center gap-2">
               <svg className="w-4 h-4 text-[#007AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" /></svg>
               AI Vision Assessment
             </h3>
@@ -531,13 +531,13 @@ function FleetTrackingView() {
           {qualityScore ? (
             <div className="bg-[#34C759]/10 border border-[#34C759]/20 rounded-lg p-3">
               <div className="flex gap-3">
-                <div className="w-16 h-16 rounded-md bg-[#050505] overflow-hidden relative">
+                <div className="w-16 h-16 rounded-md bg-[var(--bg-primary)] overflow-hidden relative">
                   <div className="absolute inset-0 bg-[#34C759]/20 mix-blend-overlay"></div>
                   <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1590005354167-6da97ce2b4dc?auto=format&fit=crop&q=80&w=200')] bg-cover bg-center"></div>
                 </div>
                 <div>
                   <p className="text-xs text-[#34C759] font-bold mb-1">✓ AI Verification Complete</p>
-                  <p className="text-[10px] text-white/50 leading-relaxed">
+                  <p className="text-[10px] text-[var(--text-tertiary)] leading-relaxed">
                     Visual analysis indicates minimal surface bruising (2.4%). Coloration is consistent with safe ripeness levels. No mold detected.
                   </p>
                 </div>
@@ -553,17 +553,17 @@ function FleetTrackingView() {
                 }, 2500);
               }}
               disabled={isScanning}
-              className="w-full btn btn-ghost py-4 border border-dashed border-white/20 relative overflow-hidden group rounded-xl"
+              className="w-full btn btn-ghost py-4 border border-dashed border-[var(--separator-opaque)] relative overflow-hidden group rounded-xl"
             >
               {isScanning ? (
                 <div className="flex flex-col items-center gap-2">
-                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                  <div className="w-full h-1 bg-[var(--fill-secondary)] rounded-full overflow-hidden">
                     <div className="h-full bg-[#007AFF] w-1/2 animate-[pulse_1s_ease-in-out_infinite] translate-x-[-100%]"></div>
                   </div>
                   <span className="text-xs text-[#007AFF] animate-pulse">Running YOLOv8 Vision Model...</span>
                 </div>
               ) : (
-                <span className="flex items-center justify-center gap-2 text-white/50 group-hover:text-[#007AFF]">
+                <span className="flex items-center justify-center gap-2 text-[var(--text-tertiary)] group-hover:text-[#007AFF]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
                   Driver: Upload Photo for Quality Cert
                 </span>
@@ -576,8 +576,8 @@ function FleetTrackingView() {
         <AIDecisionCard decision={latestDecision} />
 
         {/* Manual Overrides Control Panel */}
-        <div className="glass-card p-5 ring-1 ring-[#FF9500]/30">
-          <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
+        <div className="ios-card p-5 ring-1 ring-[#FF9500]/30">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2">
             <svg className="w-4 h-4 text-[#FF9500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" /></svg>
             Manual Overrides
           </h3>
@@ -601,7 +601,7 @@ function FleetTrackingView() {
 
         {cargoBids.length > 0 && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2">
               <NavIcon icon="store" className="w-4 h-4 text-[#007AFF]" /> Live Bids
               <span className="min-w-[20px] h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold px-1.5">
                 {cargoBids.length}
@@ -633,8 +633,8 @@ function FleetTrackingView() {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-full flex flex-col">
       <header className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Active Operations</h1>
-          <p className="text-white/50 mt-1 text-sm md:text-base">Live telemetry and AI oversight for {state.cargos.length} vehicles in transit.</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Active Operations</h1>
+          <p className="text-[var(--text-tertiary)] mt-1 text-sm md:text-base">Live telemetry and AI oversight for {state.cargos.length} vehicles in transit.</p>
         </div>
         <div className="flex gap-3 flex-wrap">
           <button 
@@ -668,9 +668,9 @@ function FleetTrackingView() {
         {/* ===== LEFT COLUMN (60%) ===== */}
         <div className="flex-[3] space-y-6 flex flex-col min-w-0">
           {/* Map Area */}
-          <div className="glass-card p-4 md:p-6 relative overflow-hidden flex-shrink-0">
+          <div className="ios-card p-4 md:p-6 relative overflow-hidden flex-shrink-0">
             <div className="flex items-center justify-between mb-4 md:mb-6">
-              <h3 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest flex items-center gap-2">
                 <NavIcon icon="grid" className="w-4 h-4 text-[#007AFF]" /> Live Vector Map
               </h3>
               {isOfflineZone ? (
@@ -683,7 +683,7 @@ function FleetTrackingView() {
             </div>
             
             {/* Map Placeholder */}
-            <div className="relative bg-[#050505] rounded-xl h-48 md:h-64 border border-white/10 overflow-hidden shadow-inner">
+            <div className="relative bg-[var(--bg-primary)] rounded-xl h-48 md:h-64 border border-[var(--separator)] overflow-hidden shadow-inner">
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
               
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 600 260">
@@ -713,15 +713,15 @@ function FleetTrackingView() {
 
             {/* Route Info Bar */}
             {selectedCargo && (
-              <div className="mt-4 flex items-center gap-4 text-xs font-medium text-white/50 bg-[#050505] p-3 rounded-lg border border-white/10">
-                <span className="flex items-center gap-2 text-white"><span className="w-2 h-2 rounded-full bg-[#34C759]" /> {selectedCargo.origin.name}</span>
+              <div className="mt-4 flex items-center gap-4 text-xs font-medium text-[var(--text-tertiary)] bg-[var(--bg-primary)] p-3 rounded-lg border border-[var(--separator)]">
+                <span className="flex items-center gap-2 text-[var(--text-primary)]"><span className="w-2 h-2 rounded-full bg-[#34C759]" /> {selectedCargo.origin.name}</span>
                 <svg className="w-4 h-4 text-[#C6C6C8]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 {selectedCargo.status === "rerouting" && selectedCargo.selectedMarket ? (
                   <span className="flex items-center gap-2 text-[#34C759] font-bold"><span className="w-2 h-2 rounded-full bg-[#34C759] animate-pulse-dot" /> {selectedCargo.selectedMarket.name} (Rerouted)</span>
                 ) : selectedCargo.status === "emergency" ? (
                   <span className="flex items-center gap-2 text-[#FF3B30] font-bold"><span className="w-2 h-2 rounded-full bg-[#FF3B30] animate-pulse-dot" /> {selectedCargo.originalDestination.name} (At Risk)</span>
                 ) : (
-                  <span className="flex items-center gap-2 text-white"><span className="w-2 h-2 rounded-full bg-[#007AFF]" /> {selectedCargo.originalDestination.name}</span>
+                  <span className="flex items-center gap-2 text-[var(--text-primary)]"><span className="w-2 h-2 rounded-full bg-[#007AFF]" /> {selectedCargo.originalDestination.name}</span>
                 )}
               </div>
             )}
@@ -731,39 +731,39 @@ function FleetTrackingView() {
           <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
             {/* Active Consignments List */}
             <div className="flex-[2] overflow-y-auto pr-2 pb-4">
-              <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
-                <NavIcon icon="truck" className="w-4 h-4 text-white/50" /> Active Consignments
+              <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2">
+                <NavIcon icon="truck" className="w-4 h-4 text-[var(--text-tertiary)]" /> Active Consignments
               </h3>
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 {myCargos.map((cargo) => (
                   <div key={cargo.id} className="flex flex-col">
                     <button
                       onClick={() => setSelectedCargoId(cargo.id)}
-                      className={`glass-card p-5 text-left transition-all duration-300 ${
-                        selectedCargoId === cargo.id ? "ring-2 ring-[#007AFF]/50 bg-[#007AFF]/5" : "hover:bg-[#050505]"
+                      className={`ios-card p-5 text-left transition-all duration-300 ${
+                        selectedCargoId === cargo.id ? "ring-2 ring-[#007AFF]/50 bg-[#007AFF]/5" : "hover:bg-[var(--bg-primary)]"
                       } ${cargo.status === "emergency" ? "ring-2 ring-[#FF3B30]/50" : ""} ${
                         cargo.status === "rerouting" ? "ring-2 ring-[#34C759]/50" : ""
                       }`}
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-white/90 bg-[#050505] px-2 py-1 rounded border border-white/10 tracking-wider">
+                        <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-[var(--text-secondary)] bg-[var(--bg-primary)] px-2 py-1 rounded border border-[var(--separator)] tracking-wider">
                           {cargo.truckPlate}
                         </span>
                         <span className={`badge ${cargo.status === "in_transit" ? "badge-safe" : cargo.status === "warning" ? "badge-warning" : cargo.status === "emergency" ? "badge-danger" : cargo.status === "rerouting" ? "badge-safe" : "badge-info"}`}>
                           {cargo.status === "in_transit" ? "In Transit" : cargo.status === "rerouting" ? "✓ Rerouting" : cargo.status.toUpperCase()}
                         </span>
                       </div>
-                      <p className="text-base font-bold text-white capitalize tracking-tight">
-                        {cargo.type} <span className="text-white/50 font-normal mx-1">·</span> {(cargo.quantityKg / 1000).toFixed(1)}T
+                      <p className="text-base font-bold text-[var(--text-primary)] capitalize tracking-tight">
+                        {cargo.type} <span className="text-[var(--text-tertiary)] font-normal mx-1">·</span> {(cargo.quantityKg / 1000).toFixed(1)}T
                       </p>
-                      <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/10">
+                      <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[var(--separator)]">
                         <span className={`font-[family-name:var(--font-mono)] text-sm font-bold flex items-center gap-1.5 ${
                           cargo.telemetry.temperature > cargo.safeTemperatureMax ? "text-[#FF3B30]" : "text-[#34C759]"
                         }`}>
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.866 8.284 8.284 0 0 0 3 2.48Z" /></svg>
                           {cargo.telemetry.temperature.toFixed(1)}°C
                         </span>
-                        <span className="text-xs text-white/50 font-medium flex items-center gap-1.5">
+                        <span className="text-xs text-[var(--text-tertiary)] font-medium flex items-center gap-1.5">
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
                           {cargo.originalDestination.name.split(" ")[0]}
                         </span>
@@ -780,8 +780,8 @@ function FleetTrackingView() {
             </div>
 
             {/* Feature 8: Predictive Fleet Maintenance AI */}
-            <div className="flex-[1] hidden xl:flex flex-col glass-card overflow-hidden">
-              <div className="p-4 border-b border-white/10 bg-[#AF52DE]/5">
+            <div className="flex-[1] hidden xl:flex flex-col ios-card overflow-hidden">
+              <div className="p-4 border-b border-[var(--separator)] bg-[#AF52DE]/5">
                 <h3 className="text-xs font-bold text-[#AF52DE] uppercase tracking-widest flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.83M11.42 15.17l2.492-3.053c.203-.25.476-.432.793-.52l.983-.272M11.42 15.17l-3.053 2.492c-.25.203-.432.476-.52.793l-.272.983M15.17 11.42l-2.492 3.053c-.203.25-.476.432-.793.52l-.983.272M15.17 11.42l3.053-2.492c.25-.203.432-.476.52-.793l.272-.983" /></svg>
                   Fleet Health AI
@@ -790,29 +790,29 @@ function FleetTrackingView() {
               <div className="p-4 space-y-4 overflow-y-auto">
                 <div className="space-y-1">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-white/90 font-bold">Tata Signa 4825.TK</span>
+                    <span className="text-[var(--text-secondary)] font-bold">Tata Signa 4825.TK</span>
                     <span className="text-[#FF3B30] font-bold">85% Risk</span>
                   </div>
-                  <p className="text-[9px] text-white/50">Cooling failure predicted on Rajasthan route due to ambient heat threshold.</p>
-                  <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-1"><div className="h-full bg-[#FF3B30] w-[85%]"></div></div>
+                  <p className="text-[9px] text-[var(--text-tertiary)]">Cooling failure predicted on Rajasthan route due to ambient heat threshold.</p>
+                  <div className="h-1 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden mt-1"><div className="h-full bg-[#FF3B30] w-[85%]"></div></div>
                 </div>
                 
                 <div className="space-y-1">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-white/90 font-bold">Ashok Leyland 2820</span>
+                    <span className="text-[var(--text-secondary)] font-bold">Ashok Leyland 2820</span>
                     <span className="text-[#FF9500] font-bold">42% Risk</span>
                   </div>
-                  <p className="text-[9px] text-white/50">Compressor vibration anomaly detected over last 3 trips.</p>
-                  <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-1"><div className="h-full bg-[#FF9500] w-[42%]"></div></div>
+                  <p className="text-[9px] text-[var(--text-tertiary)]">Compressor vibration anomaly detected over last 3 trips.</p>
+                  <div className="h-1 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden mt-1"><div className="h-full bg-[#FF9500] w-[42%]"></div></div>
                 </div>
 
                 <div className="space-y-1">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-white/90 font-bold">Eicher Pro 3015</span>
+                    <span className="text-[var(--text-secondary)] font-bold">Eicher Pro 3015</span>
                     <span className="text-[#34C759] font-bold">12% Risk</span>
                   </div>
-                  <p className="text-[9px] text-white/50">All systems nominal. Ideal for high-value cargo assignment.</p>
-                  <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-1"><div className="h-full bg-[#34C759] w-[12%]"></div></div>
+                  <p className="text-[9px] text-[var(--text-tertiary)]">All systems nominal. Ideal for high-value cargo assignment.</p>
+                  <div className="h-1 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden mt-1"><div className="h-full bg-[#34C759] w-[12%]"></div></div>
                 </div>
               </div>
             </div>
@@ -828,24 +828,24 @@ function FleetTrackingView() {
       {/* ADD CARGO MODAL */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="glass-card w-full max-w-md p-6 relative shadow-xl">
-            <button onClick={() => setShowAddModal(false)} className="absolute top-4 right-4 text-white/50 hover:text-white">
+          <div className="ios-card w-full max-w-md p-6 relative shadow-xl">
+            <button onClick={() => setShowAddModal(false)} className="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <h2 className="text-xl font-bold text-white mb-6">Register New Consignment</h2>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-6">Register New Consignment</h2>
             
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-white/50 uppercase tracking-widest mb-1 block">Truck Plate Number</label>
+                <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Truck Plate Number</label>
                 <input type="text" value={newPlate} onChange={(e) => setNewPlate(e.target.value)} className="ios-input font-[family-name:var(--font-mono)] text-sm" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-white/50 uppercase tracking-widest mb-1 block">Cargo Type</label>
+                  <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Cargo Type</label>
                   <input type="text" value={newType} onChange={(e) => setNewType(e.target.value)} className="ios-input text-sm" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-white/50 uppercase tracking-widest mb-1 block">Quantity (kg)</label>
+                  <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Quantity (kg)</label>
                   <input type="number" value={newQty} onChange={(e) => setNewQty(Number(e.target.value))} className="ios-input font-[family-name:var(--font-mono)] text-sm" />
                 </div>
               </div>
@@ -882,18 +882,18 @@ function FleetTrackingView() {
       {/* MARKETPLACE LISTING MODAL */}
       {showMarketModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="glass-card w-full max-w-md p-6 relative shadow-xl ring-1 ring-[#007AFF]/20">
-            <button onClick={() => setShowMarketModal(false)} className="absolute top-4 right-4 text-white/50 hover:text-white">
+          <div className="ios-card w-full max-w-md p-6 relative shadow-xl ring-1 ring-[#007AFF]/20">
+            <button onClick={() => setShowMarketModal(false)} className="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <h2 className="text-xl font-bold text-white mb-2">Push to Marketplace</h2>
-            <p className="text-sm text-white/50 mb-6">Instantly broadcast this cargo to nearby wholesalers for emergency liquidation.</p>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Push to Marketplace</h2>
+            <p className="text-sm text-[var(--text-tertiary)] mb-6">Instantly broadcast this cargo to nearby wholesalers for emergency liquidation.</p>
             
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-white/50 uppercase tracking-widest mb-1 block">Asking Price (₹ per kg)</label>
+                <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1 block">Asking Price (₹ per kg)</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-3 text-white/50 font-bold">₹</span>
+                  <span className="absolute left-3 top-3 text-[var(--text-tertiary)] font-bold">₹</span>
                   <input type="number" value={askingPrice} onChange={(e) => setAskingPrice(Number(e.target.value))} className="ios-input pl-8 font-[family-name:var(--font-mono)] text-sm" />
                 </div>
               </div>
@@ -916,20 +916,20 @@ function FleetTrackingView() {
       {/* MAP REROUTE MODAL */}
       {activeMapBid && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="glass-card w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative shadow-xl ring-1 ring-[#34C759]/30">
-            <button onClick={() => setActiveMapBid(null)} className="absolute top-4 right-4 text-white/50 hover:text-white">
+          <div className="ios-card w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative shadow-xl ring-1 ring-[#34C759]/30">
+            <button onClick={() => setActiveMapBid(null)} className="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-            <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#34C759] animate-pulse-dot" />
               Rerouting Driver
             </h2>
-            <p className="text-sm text-white/50 mb-2">Live navigation instructions transmitted to Truck {selectedCargo?.truckPlate || "Unknown"}. Destination: {activeMapBid.wholesalerLocation}</p>
+            <p className="text-sm text-[var(--text-tertiary)] mb-2">Live navigation instructions transmitted to Truck {selectedCargo?.truckPlate || "Unknown"}. Destination: {activeMapBid.wholesalerLocation}</p>
             <p className="text-xs font-bold text-[#34C759] mb-6 bg-[#34C759]/10 inline-block px-3 py-1.5 rounded-full border border-[#34C759]/20">
               {locationStatus || "Initializing GPS tracking module..."}
             </p>
             
-            <div className="w-full h-[40vh] md:h-96 min-h-[200px] rounded-xl overflow-hidden border border-white/10 mb-6 bg-[#050505] relative">
+            <div className="w-full h-[40vh] md:h-96 min-h-[200px] rounded-xl overflow-hidden border border-[var(--separator)] mb-6 bg-[var(--bg-primary)] relative">
               <iframe 
                 width="100%" 
                 height="100%" 
@@ -976,16 +976,16 @@ function AlertsView() {
   
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <header className="mb-8 border-b border-white/10 pb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Active Alerts & Event Log</h1>
-        <p className="text-white/50 mt-1">System notifications, AI interventions, and critical warnings.</p>
+      <header className="mb-8 border-b border-[var(--separator)] pb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Active Alerts & Event Log</h1>
+        <p className="text-[var(--text-tertiary)] mt-1">System notifications, AI interventions, and critical warnings.</p>
       </header>
 
       {state.notifications.length === 0 ? (
-        <div className="glass-card p-16 text-center border border-dashed border-white/20">
-          <NavIcon icon="bell" className="w-12 h-12 text-white/50 mx-auto mb-4 opacity-50" />
-          <h3 className="text-lg font-bold text-white">No alerts to display</h3>
-          <p className="text-white/50 mt-2 text-sm">All systems are nominal. Critical alerts will appear here.</p>
+        <div className="ios-card p-16 text-center border border-dashed border-[var(--separator-opaque)]">
+          <NavIcon icon="bell" className="w-12 h-12 text-[var(--text-tertiary)] mx-auto mb-4 opacity-50" />
+          <h3 className="text-lg font-bold text-[var(--text-primary)]">No alerts to display</h3>
+          <p className="text-[var(--text-tertiary)] mt-2 text-sm">All systems are nominal. Critical alerts will appear here.</p>
         </div>
       ) : (
         <div className="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-[#C6C6C8]/30 before:to-transparent">
@@ -1000,18 +1000,18 @@ function AlertsView() {
               </div>
               
               {/* Card */}
-              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] glass-card p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] ios-card p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-[10px] font-bold uppercase tracking-widest ${
                     notif.type === 'system' ? 'text-[#FF3B30]' :
                     notif.type === 'new_cargo' ? 'text-[#007AFF]' : 'text-[#34C759]'
                   }`}>{notif.type.replace('_', ' ')}</span>
-                  <span className="font-[family-name:var(--font-mono)] text-[10px] text-white/50">
+                  <span className="font-[family-name:var(--font-mono)] text-[10px] text-[var(--text-tertiary)]">
                     {new Date(notif.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
-                <h4 className="text-base font-bold text-white mb-1">{notif.title}</h4>
-                <p className="text-sm text-white/50 leading-relaxed">{notif.message}</p>
+                <h4 className="text-base font-bold text-[var(--text-primary)] mb-1">{notif.title}</h4>
+                <p className="text-sm text-[var(--text-tertiary)] leading-relaxed">{notif.message}</p>
               </div>
             </div>
           ))}
@@ -1036,20 +1036,20 @@ function MarketplaceView() {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Marketplace Activity</h1>
-        <p className="text-white/50 mt-1">Review all incoming wholesaler bids and negotiation history.</p>
+        <p className="text-[var(--text-tertiary)] mt-1">Review all incoming wholesaler bids and negotiation history.</p>
       </header>
 
       {/* MOBILE VIEW (Accordion Cards) */}
       <div className="md:hidden space-y-3">
         {state.bids.length === 0 ? (
-          <div className="glass-card p-6 text-center text-white/50">
+          <div className="ios-card p-6 text-center text-[var(--text-tertiary)]">
             No bids recorded in the current session. Run a simulation to generate activity.
           </div>
         ) : (
           state.bids.map((bid) => {
             const isExpanded = expandedBidId === bid.id;
             return (
-              <div key={bid.id} className="relative rounded-2xl overflow-hidden mb-3 bg-white/10 shadow-inner">
+              <div key={bid.id} className="relative rounded-2xl overflow-hidden mb-3 bg-[var(--fill-secondary)] shadow-inner">
                 {/* Background Swipe Actions */}
                 <div className="absolute inset-0 flex items-center justify-between px-6">
                   <span className="text-[#34C759] font-bold tracking-widest text-xs uppercase">Accept</span>
@@ -1061,7 +1061,7 @@ function MarketplaceView() {
                   dragConstraints={{ left: 0, right: 0 }}
                   dragElastic={0.2}
                   whileTap={{ scale: 0.98 }}
-                  className="glass-card p-4 relative z-10 w-full bg-[var(--bg-primary)]"
+                  className="ios-card p-4 relative z-10 w-full bg-[var(--bg-primary)]"
                 >
                   {/* Header (Always visible) */}
                   <div 
@@ -1074,7 +1074,7 @@ function MarketplaceView() {
                     </div>
                     <div>
                       <h3 className="font-bold text-base capitalize">{bid.wholesalerName}</h3>
-                      <p className="font-[family-name:var(--font-mono)] text-xs text-white/50 mt-0.5">
+                      <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--text-tertiary)] mt-0.5">
                         ID: {bid.cargoId.split('-')[0]}-{bid.cargoId.split('-')[1]?.slice(0,4) || bid.cargoId}
                       </p>
                     </div>
@@ -1088,7 +1088,7 @@ function MarketplaceView() {
                     }`}>
                       {bid.status === 'counter_offered' ? 'Counter' : bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
                     </span>
-                    <svg className={`w-5 h-5 text-white/50 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className={`w-5 h-5 text-[var(--text-tertiary)] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                   </div>
@@ -1098,15 +1098,15 @@ function MarketplaceView() {
                 {isExpanded && (
                   <div className="mt-4 pt-4 border-t border-[var(--separator-opaque)] grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 fade-in duration-300">
                     <div>
-                      <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1">Price/kg</p>
+                      <p className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1">Price/kg</p>
                       <p className="font-[family-name:var(--font-mono)] font-bold text-[#34C759] text-lg">₹{bid.offeredPricePerKg}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1">Quantity</p>
+                      <p className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1">Quantity</p>
                       <p className="font-[family-name:var(--font-mono)] text-lg">{(bid.requestedQuantityKg/1000).toFixed(1)}T</p>
                     </div>
                     <div className="col-span-2 bg-[var(--bg-primary)] p-3 rounded-lg border border-[var(--separator-opaque)]">
-                      <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1">Total Value</p>
+                      <p className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-1">Total Value</p>
                       <p className="font-[family-name:var(--font-mono)] text-xl font-bold text-[#007AFF]">₹{(bid.totalValue/1000).toFixed(0)}K</p>
                     </div>
                   </div>
@@ -1119,22 +1119,22 @@ function MarketplaceView() {
       </div>
 
       {/* DESKTOP VIEW (Table) */}
-      <div className="hidden md:block glass-card overflow-hidden">
+      <div className="hidden md:block ios-card overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-[var(--separator-opaque)] bg-[var(--bg-primary)]">
-              <th className="px-6 py-4 text-xs font-bold text-white/50 uppercase tracking-widest">Wholesaler</th>
-              <th className="px-6 py-4 text-xs font-bold text-white/50 uppercase tracking-widest">Cargo ID</th>
-              <th className="px-6 py-4 text-xs font-bold text-white/50 uppercase tracking-widest">Price/kg</th>
-              <th className="px-6 py-4 text-xs font-bold text-white/50 uppercase tracking-widest">Quantity</th>
-              <th className="px-6 py-4 text-xs font-bold text-white/50 uppercase tracking-widest">Total Value</th>
-              <th className="px-6 py-4 text-xs font-bold text-white/50 uppercase tracking-widest">Status</th>
+              <th className="px-6 py-4 text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest">Wholesaler</th>
+              <th className="px-6 py-4 text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest">Cargo ID</th>
+              <th className="px-6 py-4 text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest">Price/kg</th>
+              <th className="px-6 py-4 text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest">Quantity</th>
+              <th className="px-6 py-4 text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest">Total Value</th>
+              <th className="px-6 py-4 text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--separator-opaque)]">
             {state.bids.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-white/50">
+                <td colSpan={6} className="px-6 py-12 text-center text-[var(--text-tertiary)]">
                   No bids recorded in the current session. Run a simulation to generate activity.
                 </td>
               </tr>
@@ -1149,7 +1149,7 @@ function MarketplaceView() {
                       <span className="font-medium capitalize">{bid.wholesalerName}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 font-[family-name:var(--font-mono)] text-xs text-white/50">
+                  <td className="px-6 py-4 font-[family-name:var(--font-mono)] text-xs text-[var(--text-tertiary)]">
                     {bid.cargoId.split('-')[0]}-{bid.cargoId.split('-')[1]?.slice(0,4) || bid.cargoId}
                   </td>
                   <td className="px-6 py-4 font-[family-name:var(--font-mono)] text-sm font-bold text-[#34C759]">₹{bid.offeredPricePerKg}</td>
@@ -1182,15 +1182,15 @@ function AnalyticsView() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Performance Analytics</h1>
-        <p className="text-white/50 mt-1">Financial recovery metrics and cold chain reliability scores.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Performance Analytics</h1>
+        <p className="text-[var(--text-tertiary)] mt-1">Financial recovery metrics and cold chain reliability scores.</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chart 1 */}
-        <div className="glass-card p-6">
-          <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-6">Spoilage Prevented (₹)</h3>
-          <div className="h-64 flex items-end gap-2 bg-[#050505] rounded-xl p-4 border border-white/10 relative">
+        <div className="ios-card p-6">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-6">Spoilage Prevented (₹)</h3>
+          <div className="h-64 flex items-end gap-2 bg-[var(--bg-primary)] rounded-xl p-4 border border-[var(--separator)] relative">
             {/* Grid lines */}
             <div className="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none opacity-20">
               <div className="border-t border-[#8E8E93] border-dashed w-full" />
@@ -1208,15 +1208,15 @@ function AnalyticsView() {
               </div>
             ))}
           </div>
-          <div className="flex justify-between mt-4 text-[10px] text-white/50 font-[family-name:var(--font-mono)] uppercase">
+          <div className="flex justify-between mt-4 text-[10px] text-[var(--text-tertiary)] font-[family-name:var(--font-mono)] uppercase">
             <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
           </div>
         </div>
 
         {/* Chart 2 */}
-        <div className="glass-card p-6">
-          <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-6">Cold Chain Failures by Region</h3>
-          <div className="h-64 flex items-center justify-center bg-[#050505] rounded-xl border border-white/10 relative">
+        <div className="ios-card p-6">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-6">Cold Chain Failures by Region</h3>
+          <div className="h-64 flex items-center justify-center bg-[var(--bg-primary)] rounded-xl border border-[var(--separator)] relative">
             {/* Fake Donut Chart SVG */}
             <svg viewBox="0 0 100 100" className="w-48 h-48">
               <circle cx="50" cy="50" r="40" fill="transparent" stroke="#34C759" strokeWidth="16" strokeDasharray="60 191" strokeDashoffset="0" className="opacity-80" />
@@ -1225,15 +1225,15 @@ function AnalyticsView() {
               <circle cx="50" cy="50" r="40" fill="transparent" stroke="#FF9500" strokeWidth="16" strokeDasharray="71.3 180" strokeDashoffset="-180" className="opacity-80" />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-2xl font-[family-name:var(--font-mono)] font-bold text-white">24</span>
-              <span className="text-[10px] uppercase text-white/50 tracking-widest mt-1">Total Events</span>
+              <span className="text-2xl font-[family-name:var(--font-mono)] font-bold text-[var(--text-primary)]">24</span>
+              <span className="text-[10px] uppercase text-[var(--text-tertiary)] tracking-widest mt-1">Total Events</span>
             </div>
           </div>
           <div className="flex justify-center gap-6 mt-4 flex-wrap">
-            <div className="flex items-center gap-2 text-xs text-white/90"><span className="w-2.5 h-2.5 rounded-full bg-[#007AFF]" /> North</div>
-            <div className="flex items-center gap-2 text-xs text-white/90"><span className="w-2.5 h-2.5 rounded-full bg-[#34C759]" /> West</div>
-            <div className="flex items-center gap-2 text-xs text-white/90"><span className="w-2.5 h-2.5 rounded-full bg-[#FF9500]" /> South</div>
-            <div className="flex items-center gap-2 text-xs text-white/90"><span className="w-2.5 h-2.5 rounded-full bg-[#FF3B30]" /> East</div>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]"><span className="w-2.5 h-2.5 rounded-full bg-[#007AFF]" /> North</div>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]"><span className="w-2.5 h-2.5 rounded-full bg-[#34C759]" /> West</div>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]"><span className="w-2.5 h-2.5 rounded-full bg-[#FF9500]" /> South</div>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]"><span className="w-2.5 h-2.5 rounded-full bg-[#FF3B30]" /> East</div>
           </div>
         </div>
       </div>
@@ -1272,65 +1272,65 @@ function SettingsView() {
     <div className="max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Preferences & Settings</h1>
-        <p className="text-white/50 mt-1">Manage appearance, AI rules, and notifications.</p>
+        <p className="text-[var(--text-tertiary)] mt-1">Manage appearance, AI rules, and notifications.</p>
       </header>
 
       <div className="space-y-6">
         {/* Appearance */}
-        <div className="glass-card p-6">
+        <div className="ios-card p-6">
           <h3 className="text-lg font-bold mb-4">Appearance</h3>
           <div className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--bg-primary)' }}>
             <div>
               <p className="font-semibold">Dark Mode</p>
-              <p className="text-sm text-white/50 mt-1">Switch between light and dark appearance.</p>
+              <p className="text-sm text-[var(--text-tertiary)] mt-1">Switch between light and dark appearance.</p>
             </div>
             <button
               onClick={toggleDarkMode}
-              className={`w-[51px] h-[31px] rounded-full relative cursor-pointer transition-colors duration-300 ${isDark ? 'bg-[#34C759]' : 'bg-white/10'}`}
+              className={`w-[51px] h-[31px] rounded-full relative cursor-pointer transition-colors duration-300 ${isDark ? 'bg-[#34C759]' : 'bg-[var(--fill-secondary)]'}`}
             >
-              <div className={`absolute top-[2px] w-[27px] h-[27px] bg-[#141414] rounded-full shadow-md transition-transform duration-300 ${isDark ? 'translate-x-[22px]' : 'translate-x-[2px]'}`} />
+              <div className={`absolute top-[2px] w-[27px] h-[27px] bg-white rounded-full shadow-md transition-transform duration-300 ${isDark ? 'translate-x-[22px]' : 'translate-x-[2px]'}`} />
             </button>
           </div>
         </div>
 
         {/* AI Rules */}
-        <div className="glass-card p-6">
+        <div className="ios-card p-6">
           <h3 className="text-lg font-bold mb-4">Autonomous AI Rules</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--bg-primary)' }}>
               <div>
                 <p className="font-semibold">Auto-Accept Optimal Bids</p>
-                <p className="text-sm text-white/50 mt-1">Allow AI to immediately accept bids &gt; 90% of asking price.</p>
+                <p className="text-sm text-[var(--text-tertiary)] mt-1">Allow AI to immediately accept bids &gt; 90% of asking price.</p>
               </div>
               <div className="w-[51px] h-[31px] bg-[#34C759] rounded-full relative cursor-pointer">
-                <div className="absolute top-[2px] right-[2px] w-[27px] h-[27px] bg-[#141414] rounded-full shadow-md" />
+                <div className="absolute top-[2px] right-[2px] w-[27px] h-[27px] bg-white rounded-full shadow-md" />
               </div>
             </div>
             <div className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--bg-primary)' }}>
               <div>
                 <p className="font-semibold">Automated Counter-Offers</p>
-                <p className="text-sm text-white/50 mt-1">AI will auto-counter low bids based on spoilage curve.</p>
+                <p className="text-sm text-[var(--text-tertiary)] mt-1">AI will auto-counter low bids based on spoilage curve.</p>
               </div>
               <div className="w-[51px] h-[31px] bg-[#34C759] rounded-full relative cursor-pointer">
-                <div className="absolute top-[2px] right-[2px] w-[27px] h-[27px] bg-[#141414] rounded-full shadow-md" />
+                <div className="absolute top-[2px] right-[2px] w-[27px] h-[27px] bg-white rounded-full shadow-md" />
               </div>
             </div>
           </div>
         </div>
 
         {/* API */}
-        <div className="glass-card p-6 opacity-50 grayscale pointer-events-none">
+        <div className="ios-card p-6 opacity-50 grayscale pointer-events-none">
           <h3 className="text-lg font-bold mb-4 flex items-center gap-3">
             API Integrations
             <span className="badge badge-warning text-[9px]">Locked in Demo</span>
           </h3>
           <div className="space-y-4">
             <div>
-              <label className="text-xs font-bold text-white/50 uppercase tracking-widest mb-2 block">Google Maps API Key</label>
+              <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-2 block">Google Maps API Key</label>
               <input type="password" value="************************" readOnly className="ios-input font-[family-name:var(--font-mono)]" />
             </div>
             <div>
-              <label className="text-xs font-bold text-white/50 uppercase tracking-widest mb-2 block">Gemini AI Project ID</label>
+              <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-2 block">Gemini AI Project ID</label>
               <input type="text" value="annapurna-prod-v2" readOnly className="ios-input font-[family-name:var(--font-mono)]" />
             </div>
           </div>
