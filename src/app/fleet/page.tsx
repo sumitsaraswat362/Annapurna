@@ -411,8 +411,8 @@ function FleetTrackingView() {
   const [newPlate, setNewPlate] = useState("MH-04-XX-9999");
   const [newType, setNewType] = useState("Apples");
   const [newQty, setNewQty] = useState(5000);
-  const [newOrigin, setNewOrigin] = useState("Nashik");
-  const [newDest, setNewDest] = useState("Mumbai");
+  const [newOrigin, setNewOrigin] = useState("");
+  const [newDest, setNewDest] = useState("");
 
   // Market Listing States
   const [askingPrice, setAskingPrice] = useState(25);
@@ -876,8 +876,8 @@ function FleetTrackingView() {
                       safeTemperatureMax: 10,
                       spoilageTimeMinutes: 1440,
                       status: "in_transit",
-                      origin: { name: newOrigin || "Nashik Hub", location: { lat: 19.99, lng: 73.78 } },
-                      originalDestination: { name: newDest || "Mumbai APMC", location: { lat: 19.07, lng: 72.87 } },
+                      origin: { name: newOrigin || user?.city || "Nashik", location: user?.coords || { lat: 19.99, lng: 73.78 } },
+                      originalDestination: { name: newDest || "Pune", location: { lat: 18.52, lng: 73.86 } },
                       telemetry: { temperature: 4.2, humidity: 85, ethyleneLevel: "low", timestamp: Date.now() }
                     } as any
                   });

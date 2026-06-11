@@ -10,11 +10,14 @@ interface AuthUser {
   role: UserRole;
   password?: string;
   location?: string;
+  city?: string;
+  address?: string;
+  coords?: { lat: number; lng: number };
 }
 
 interface AuthContextType {
   user: AuthUser | null;
-  login: (name: string, role: UserRole, password?: string, location?: string) => string | null;
+  login: (name: string, role: UserRole, password?: string, location?: string, city?: string, address?: string, coords?: { lat: number; lng: number }) => string | null;
   logout: () => void;
 }
 
@@ -33,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const login = (name: string, role: UserRole, password?: string, location?: string) => {
+  const login = (name: string, role: UserRole, password?: string, location?: string, city?: string, address?: string, coords?: { lat: number; lng: number }) => {
     // Basic persistent user registry in localStorage
     const savedProfilesRaw = localStorage.getItem("annapurna_profiles");
     const profiles: AuthUser[] = savedProfilesRaw ? JSON.parse(savedProfilesRaw) : [];
@@ -49,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       finalUser = existingUser;
     } else {
       // Register new user
-      finalUser = { name, role, password, location };
+      finalUser = { name, role, password, location, city, address, coords };
       profiles.push(finalUser);
       localStorage.setItem("annapurna_profiles", JSON.stringify(profiles));
     }
