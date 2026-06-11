@@ -5,9 +5,38 @@ import { useAuth } from "@/lib/auth";
 import { motion, AnimatePresence } from "motion/react";
 
 const INDIAN_CITIES = [
-  "Mumbai", "Delhi", "Pune", "Nashik", "Kolhapur", "Nagpur",
-  "Ahmedabad", "Bengaluru", "Chennai", "Hyderabad", "Jaipur", "Lucknow",
-  "Kalyan", "Thane", "Navi Mumbai", "Ratnagiri", "Solapur", "Aurangabad"
+  // Maharashtra
+  "Mumbai", "Pune", "Nashik", "Nagpur", "Thane", "Navi Mumbai", "Kalyan", "Aurangabad", "Solapur", "Kolhapur", "Ratnagiri", "Sangli", "Satara", "Amravati", "Akola", "Latur", "Jalgaon", "Ahmednagar", "Bhiwandi", "Malegaon", "Panvel", "Vasai-Virar",
+  // Delhi NCR
+  "New Delhi", "Delhi", "Noida", "Gurgaon", "Faridabad", "Ghaziabad", "Greater Noida",
+  // Karnataka
+  "Bengaluru", "Mysuru", "Hubli", "Mangaluru", "Belgaum", "Davangere", "Shimoga",
+  // Tamil Nadu
+  "Chennai", "Coimbatore", "Madurai", "Salem", "Tiruchirappalli", "Tirunelveli", "Erode", "Vellore",
+  // Telangana & Andhra Pradesh
+  "Hyderabad", "Vijayawada", "Visakhapatnam", "Warangal", "Guntur", "Nellore", "Tirupati", "Kakinada",
+  // Gujarat
+  "Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar", "Bhavnagar", "Junagadh", "Anand", "Vapi", "Morbi",
+  // Rajasthan
+  "Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer", "Bikaner", "Alwar", "Bhilwara",
+  // Uttar Pradesh
+  "Lucknow", "Kanpur", "Agra", "Varanasi", "Prayagraj", "Meerut", "Bareilly", "Aligarh", "Moradabad", "Gorakhpur", "Mathura", "Jhansi",
+  // Madhya Pradesh
+  "Bhopal", "Indore", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Rewa",
+  // West Bengal
+  "Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri", "Kharagpur",
+  // Bihar & Jharkhand
+  "Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Ranchi", "Jamshedpur", "Dhanbad", "Bokaro",
+  // Punjab & Haryana
+  "Chandigarh", "Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Karnal", "Panipat", "Hisar", "Ambala",
+  // Kerala
+  "Kochi", "Thiruvananthapuram", "Kozhikode", "Thrissur", "Kannur", "Kollam",
+  // Odisha
+  "Bhubaneswar", "Cuttack", "Rourkela", "Berhampur",
+  // Assam & NE
+  "Guwahati", "Silchar", "Dibrugarh", "Imphal", "Shillong", "Agartala", "Aizawl", "Itanagar",
+  // Others
+  "Dehradun", "Haridwar", "Rishikesh", "Shimla", "Jammu", "Srinagar", "Raipur", "Bilaspur", "Goa", "Panaji", "Margao"
 ];
 
 export default function Home() {
@@ -168,14 +197,16 @@ export default function Home() {
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden space-y-5">
                   <div>
                     <label className="block mb-2 text-sm font-medium text-white/70 ml-1">City</label>
-                    <select value={city} onChange={(e) => setCity(e.target.value)} required
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-[#34C759]/50 focus:border-[#34C759]/50 transition-all shadow-inner appearance-none"
-                    >
-                      <option value="" className="bg-black text-white/40">Select your city</option>
+                    <input type="text" list="city-list" value={city} onChange={(e) => setCity(e.target.value)}
+                      placeholder="Type your city name..."
+                      required autoComplete="off"
+                      className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-[#34C759]/50 focus:border-[#34C759]/50 transition-all shadow-inner"
+                    />
+                    <datalist id="city-list">
                       {INDIAN_CITIES.map((c) => (
-                        <option key={c} value={c} className="bg-black text-white">{c}</option>
+                        <option key={c} value={c} />
                       ))}
-                    </select>
+                    </datalist>
                   </div>
                   <div>
                     <label className="block mb-2 text-sm font-medium text-white/70 ml-1">Delivery Address</label>
