@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAppState } from "@/lib/store";
 import { getSimulationFrame, calculateSpoilageTime, shouldTriggerEmergency, getTotalFrames } from "@/lib/simulator";
 import { makeDecision } from "@/lib/ai-agent";
@@ -81,62 +82,92 @@ export default function FleetApp() {
         </button>
       </div>
 
-      {/* ===== MOBILE: Drawer Overlay ===== */}
-      <div
-        className={`md:hidden drawer-overlay ${drawerOpen ? "open" : ""}`}
-        onClick={() => setDrawerOpen(false)}
-      />
-
-      {/* ===== MOBILE: Drawer Panel ===== */}
-      <div className={`md:hidden drawer-panel ${drawerOpen ? "open" : ""}`}>
-        {/* Drawer Header: User Profile */}
-        <div className="p-5 pb-4 border-b border-[#C6C6C8]/20">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#007AFF]/20 to-[#34C759]/20 border border-[#C6C6C8]/30 flex items-center justify-center text-lg font-bold text-[#007AFF]">
-              {user?.name?.charAt(0).toUpperCase() || "D"}
-            </div>
-            <div>
-              <p className="text-base font-semibold text-[#000000]">{user?.name || "Director"}</p>
-              <p className="text-sm text-[#8E8E93]">Logistics Director</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Drawer Nav Items */}
-        <nav className="py-2">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNavClick(item.id)}
-              className={`drawer-nav-item w-full ${activeNav === item.id ? "active" : ""}`}
+      {/* ===== MOBILE: Bottom Sheet (Drawer) ===== */}
+      <AnimatePresence>
+        {drawerOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden drawer-overlay open"
+              onClick={() => setDrawerOpen(false)}
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              drag="y"
+              dragConstraints={{ top: 0 }}
+              dragElastic={0.2}
+              onDragEnd={(e, info) => {
+                if (info.offset.y > 100) setDrawerOpen(false);
+              }}
+              className="md:hidden fixed bottom-0 left-0 right-0 z-[101] bg-[var(--bg-primary)] rounded-t-3xl overflow-hidden flex flex-col max-h-[85vh] shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
             >
-              <NavIcon icon={item.icon} className={activeNav === item.id ? "text-[#007AFF]" : "text-[#8E8E93]"} />
-              <span className="flex-1 text-left">{item.label}</span>
-              {item.id === "alerts" && unreadAlerts > 0 && (
-                <span className="badge-count">{unreadAlerts}</span>
-              )}
-              {item.id === "marketplace" && newBidsCount > 0 && (
-                <span className="min-w-[20px] h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold px-1.5">
-                  {newBidsCount}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
+              {/* Drag Handle */}
+              <div className="w-full flex justify-center py-3 bg-[var(--bg-primary)] z-10 touch-none">
+                <div className="w-12 h-1.5 rounded-full bg-[var(--separator-opaque)]" />
+              </div>
 
-        {/* Drawer Footer: Sign Out */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#C6C6C8]/20">
-          <button
-            onClick={logout}
-            className="drawer-nav-item w-full text-[#FF3B30] font-medium"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-            </svg>
-            <span>Sign Out</span>
-          </button>
-        </div>
-      </div>
+              <div className="flex-1 overflow-y-auto pb-[80px]">
+                {/* Drawer Header: User Profile */}
+                <div className="p-5 pb-4 border-b border-[var(--separator-opaque)]">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center text-lg font-bold">
+                      {user?.name?.charAt(0).toUpperCase() || "D"}
+                    </div>
+                    <div>
+                      <p className="text-base font-semibold text-[var(--text-primary)]">{user?.name || "Director"}</p>
+                      <p className="text-sm text-[var(--text-secondary)]">Logistics Director</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Drawer Nav Items */}
+                <nav className="py-2">
+                  {NAV_ITEMS.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        handleNavClick(item.id);
+                        setDrawerOpen(false);
+                      }}
+                      className={`drawer-nav-item w-full ${activeNav === item.id ? "active" : ""}`}
+                    >
+                      <NavIcon icon={item.icon} className={activeNav === item.id ? "text-[var(--tint-blue)]" : "text-[var(--text-tertiary)]"} />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      {item.id === "alerts" && unreadAlerts > 0 && (
+                        <span className="badge-count">{unreadAlerts}</span>
+                      )}
+                      {item.id === "marketplace" && newBidsCount > 0 && (
+                        <span className="min-w-[20px] h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold px-1.5">
+                          {newBidsCount}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Drawer Footer: Sign Out */}
+              <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-[var(--separator-opaque)] bg-[var(--bg-primary)] pb-safe">
+                <button
+                  onClick={logout}
+                  className="drawer-nav-item w-full text-[#FF3B30] font-medium"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                  </svg>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* ===== MOBILE: Bottom Tab Bar ===== */}
       <div className="md:hidden ios-tabbar">
@@ -993,13 +1024,26 @@ function MarketplaceView() {
           state.bids.map((bid) => {
             const isExpanded = expandedBidId === bid.id;
             return (
-              <div key={bid.id} className="ios-card p-4 transition-all duration-300">
-                {/* Header (Always visible) */}
-                <div 
-                  className="flex justify-between items-center cursor-pointer select-none"
-                  onClick={() => toggleExpand(bid.id)}
+              <div key={bid.id} className="relative rounded-2xl overflow-hidden mb-3 bg-[#E5E5EA] shadow-inner">
+                {/* Background Swipe Actions */}
+                <div className="absolute inset-0 flex items-center justify-between px-6">
+                  <span className="text-[#34C759] font-bold tracking-widest text-xs uppercase">Accept</span>
+                  <span className="text-[#FF3B30] font-bold tracking-widest text-xs uppercase">Reject</span>
+                </div>
+
+                <motion.div 
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  whileTap={{ scale: 0.98 }}
+                  className="ios-card p-4 relative z-10 w-full bg-[var(--bg-primary)]"
                 >
-                  <div className="flex items-center gap-3">
+                  {/* Header (Always visible) */}
+                  <div 
+                    className="flex justify-between items-center cursor-pointer select-none"
+                    onClick={() => toggleExpand(bid.id)}
+                  >
+                    <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center font-bold">
                       {bid.wholesalerName.charAt(0).toUpperCase()}
                     </div>
@@ -1042,6 +1086,7 @@ function MarketplaceView() {
                     </div>
                   </div>
                 )}
+                </motion.div>
               </div>
             );
           })
