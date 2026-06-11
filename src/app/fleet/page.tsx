@@ -970,27 +970,98 @@ function AlertsView() {
 // ============================================================================
 function MarketplaceView() {
   const { state } = useAppState();
+  const [expandedBidId, setExpandedBidId] = useState<string | null>(null);
+
+  const toggleExpand = (id: string) => {
+    setExpandedBidId(prev => prev === id ? null : id);
+  };
   
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#000000] tracking-tight">Marketplace Activity</h1>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Marketplace Activity</h1>
         <p className="text-[#8E8E93] mt-1">Review all incoming wholesaler bids and negotiation history.</p>
       </header>
 
-      <div className="ios-card overflow-hidden overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[700px]">
+      {/* MOBILE VIEW (Accordion Cards) */}
+      <div className="md:hidden space-y-3">
+        {state.bids.length === 0 ? (
+          <div className="ios-card p-6 text-center text-[#8E8E93]">
+            No bids recorded in the current session. Run a simulation to generate activity.
+          </div>
+        ) : (
+          state.bids.map((bid) => {
+            const isExpanded = expandedBidId === bid.id;
+            return (
+              <div key={bid.id} className="ios-card p-4 transition-all duration-300">
+                {/* Header (Always visible) */}
+                <div 
+                  className="flex justify-between items-center cursor-pointer select-none"
+                  onClick={() => toggleExpand(bid.id)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center font-bold">
+                      {bid.wholesalerName.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-base capitalize">{bid.wholesalerName}</h3>
+                      <p className="font-[family-name:var(--font-mono)] text-xs text-[#8E8E93] mt-0.5">
+                        ID: {bid.cargoId.split('-')[0]}-{bid.cargoId.split('-')[1]?.slice(0,4) || bid.cargoId}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`badge text-[9px] px-1.5 py-0.5 ${
+                      bid.status === 'accepted' ? 'badge-safe' :
+                      bid.status === 'rejected' ? 'badge-danger opacity-70' :
+                      bid.status === 'counter_offered' ? 'badge-warning' :
+                      'badge-info'
+                    }`}>
+                      {bid.status === 'counter_offered' ? 'Counter' : bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
+                    </span>
+                    <svg className={`w-5 h-5 text-[#8E8E93] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Expanded Content */}
+                {isExpanded && (
+                  <div className="mt-4 pt-4 border-t border-[var(--separator-opaque)] grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 fade-in duration-300">
+                    <div>
+                      <p className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-widest mb-1">Price/kg</p>
+                      <p className="font-[family-name:var(--font-mono)] font-bold text-[#34C759] text-lg">₹{bid.offeredPricePerKg}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-widest mb-1">Quantity</p>
+                      <p className="font-[family-name:var(--font-mono)] text-lg">{(bid.requestedQuantityKg/1000).toFixed(1)}T</p>
+                    </div>
+                    <div className="col-span-2 bg-[var(--bg-primary)] p-3 rounded-lg border border-[var(--separator-opaque)]">
+                      <p className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-widest mb-1">Total Value</p>
+                      <p className="font-[family-name:var(--font-mono)] text-xl font-bold text-[#007AFF]">₹{(bid.totalValue/1000).toFixed(0)}K</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* DESKTOP VIEW (Table) */}
+      <div className="hidden md:block ios-card overflow-hidden">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#E5E5EA] bg-[#F2F2F7]">
-              <th className="px-4 md:px-6 py-4 text-xs font-bold text-[#3C3C43] uppercase tracking-widest">Wholesaler</th>
-              <th className="px-4 md:px-6 py-4 text-xs font-bold text-[#3C3C43] uppercase tracking-widest">Cargo ID</th>
-              <th className="px-4 md:px-6 py-4 text-xs font-bold text-[#3C3C43] uppercase tracking-widest">Price/kg</th>
-              <th className="px-4 md:px-6 py-4 text-xs font-bold text-[#3C3C43] uppercase tracking-widest">Quantity</th>
-              <th className="px-4 md:px-6 py-4 text-xs font-bold text-[#3C3C43] uppercase tracking-widest">Total Value</th>
-              <th className="px-4 md:px-6 py-4 text-xs font-bold text-[#3C3C43] uppercase tracking-widest">Status</th>
+            <tr className="border-b border-[var(--separator-opaque)] bg-[var(--bg-primary)]">
+              <th className="px-6 py-4 text-xs font-bold text-[#8E8E93] uppercase tracking-widest">Wholesaler</th>
+              <th className="px-6 py-4 text-xs font-bold text-[#8E8E93] uppercase tracking-widest">Cargo ID</th>
+              <th className="px-6 py-4 text-xs font-bold text-[#8E8E93] uppercase tracking-widest">Price/kg</th>
+              <th className="px-6 py-4 text-xs font-bold text-[#8E8E93] uppercase tracking-widest">Quantity</th>
+              <th className="px-6 py-4 text-xs font-bold text-[#8E8E93] uppercase tracking-widest">Total Value</th>
+              <th className="px-6 py-4 text-xs font-bold text-[#8E8E93] uppercase tracking-widest">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E5E5EA]">
+          <tbody className="divide-y divide-[var(--separator-opaque)]">
             {state.bids.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-12 text-center text-[#8E8E93]">
@@ -999,27 +1070,29 @@ function MarketplaceView() {
               </tr>
             ) : (
               state.bids.map((bid) => (
-                <tr key={bid.id} className="hover:bg-[#F2F2F7] transition-colors">
-                  <td className="px-4 md:px-6 py-4">
+                <tr key={bid.id} className="hover:bg-[var(--bg-primary)] transition-colors cursor-default">
+                  <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center font-bold text-xs">
-                        {bid.wholesalerName.charAt(0)}
+                        {bid.wholesalerName.charAt(0).toUpperCase()}
                       </div>
-                      <span className="font-medium text-[#000000]">{bid.wholesalerName}</span>
+                      <span className="font-medium capitalize">{bid.wholesalerName}</span>
                     </div>
                   </td>
-                  <td className="px-4 md:px-6 py-4 font-[family-name:var(--font-mono)] text-xs text-[#8E8E93]">{bid.cargoId}</td>
-                  <td className="px-4 md:px-6 py-4 font-[family-name:var(--font-mono)] text-sm font-bold text-[#34C759]">₹{bid.offeredPricePerKg}</td>
-                  <td className="px-4 md:px-6 py-4 font-[family-name:var(--font-mono)] text-sm text-[#000000]">{(bid.requestedQuantityKg/1000).toFixed(1)}T</td>
-                  <td className="px-4 md:px-6 py-4 font-[family-name:var(--font-mono)] text-sm font-bold text-[#007AFF]">₹{(bid.totalValue/1000).toFixed(0)}K</td>
-                  <td className="px-4 md:px-6 py-4">
+                  <td className="px-6 py-4 font-[family-name:var(--font-mono)] text-xs text-[#8E8E93]">
+                    {bid.cargoId.split('-')[0]}-{bid.cargoId.split('-')[1]?.slice(0,4) || bid.cargoId}
+                  </td>
+                  <td className="px-6 py-4 font-[family-name:var(--font-mono)] text-sm font-bold text-[#34C759]">₹{bid.offeredPricePerKg}</td>
+                  <td className="px-6 py-4 font-[family-name:var(--font-mono)] text-sm">{(bid.requestedQuantityKg/1000).toFixed(1)}T</td>
+                  <td className="px-6 py-4 font-[family-name:var(--font-mono)] text-sm font-bold text-[#007AFF]">₹{(bid.totalValue/1000).toFixed(0)}K</td>
+                  <td className="px-6 py-4">
                     <span className={`badge ${
                       bid.status === 'accepted' ? 'badge-safe' :
                       bid.status === 'rejected' ? 'badge-danger opacity-70' :
                       bid.status === 'counter_offered' ? 'badge-warning' :
                       'badge-info'
                     }`}>
-                      {bid.status.replace('_', ' ')}
+                      {bid.status === 'counter_offered' ? 'Counter Offered' : bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
                     </span>
                   </td>
                 </tr>
