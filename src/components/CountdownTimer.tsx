@@ -39,8 +39,8 @@ export default function CountdownTimer({
   if (expired) {
     return (
       <span
-        className={`font-[family-name:var(--font-mono)] font-bold text-red-500 animate-pulse-fast ${
-          size === "lg" ? "text-2xl" : "text-sm"
+        className={`font-[family-name:var(--font-mono)] font-bold text-[#FF3B30] animate-pulse ${
+          size === "lg" ? "text-2xl" : "text-[13px]"
         }`}
       >
         EXPIRED
@@ -52,11 +52,11 @@ export default function CountdownTimer({
     <span
       className={`font-[family-name:var(--font-mono)] font-semibold tabular-nums tracking-tight transition-colors duration-300 ${
         isCritical
-          ? "text-red-500 animate-pulse-fast"
+          ? "text-[#FF3B30] animate-pulse"
           : isUrgent
-          ? "text-red-400 animate-pulse-danger"
-          : "text-amber-400"
-      } ${size === "lg" ? "text-3xl" : "text-sm"}`}
+          ? "text-[#FF3B30] animate-pulse-danger"
+          : "text-[#FF9500]"
+      } ${size === "lg" ? "text-3xl" : "text-[13px]"}`}
     >
       {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
     </span>

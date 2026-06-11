@@ -51,26 +51,26 @@ export default function CargoOfferCard({
       ? "Good if sold within 2hrs"
       : "Excellent";
 
-  const borderGlow =
+  const borderColor =
     urgency === "critical"
-      ? "border-red-500/30 glow-red"
+      ? "border-[#FF3B30]/30"
       : urgency === "warning"
-      ? "border-amber-500/30 glow-amber"
-      : "border-blue-500/20 glow-blue";
+      ? "border-[#FF9500]/30"
+      : "border-[#E5E5EA]";
 
   const expiresAt = Date.now() + (urgency === "critical" ? 5 * 60 * 1000 : 15 * 60 * 1000);
 
   if (accepted) {
     return (
-      <div className="glass-card p-5 border-emerald-500/40 glow-green">
+      <div className="ios-card p-5 border border-[#34C759]/40">
         <div className="text-center py-6">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-3">
-            <svg className="w-8 h-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="w-16 h-16 rounded-full bg-[#34C759]/10 border border-[#34C759]/30 flex items-center justify-center mx-auto mb-3">
+            <svg className="w-8 h-8 text-[#34C759]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-emerald-400 mb-1">Order Placed!</h3>
-          <p className="text-sm text-[#8c909f]">
+          <h3 className="text-lg font-semibold text-[#34C759] mb-1">Order Placed!</h3>
+          <p className="text-sm text-[#8E8E93]">
             {cargo.type.charAt(0).toUpperCase() + cargo.type.slice(1)} · Truck arriving in ~{etaMinutes} min
           </p>
         </div>
@@ -79,13 +79,22 @@ export default function CargoOfferCard({
   }
 
   return (
-    <div className={`glass-card p-5 transition-all duration-300 ${borderGlow}`}>
+    <div className={`ios-card p-5 transition-all duration-300 border ${borderColor}`}>
       {/* Urgency Strip */}
       {urgency === "critical" && (
-        <div className="flex items-center gap-2 mb-3 px-3 py-1.5 rounded-md bg-red-500/10 border border-red-500/20 animate-pulse-danger">
-          <span className="w-2 h-2 rounded-full bg-red-500" />
-          <span className="text-[11px] font-semibold text-red-400 uppercase tracking-wider">
+        <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-[#FF3B30] animate-pulse-danger">
+          <span className="w-2 h-2 rounded-full bg-white" />
+          <span className="text-[11px] font-semibold text-white uppercase tracking-wider">
             Urgent — Respond Immediately
+          </span>
+        </div>
+      )}
+
+      {urgency === "warning" && (
+        <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-[#FF9500]">
+          <span className="w-2 h-2 rounded-full bg-white" />
+          <span className="text-[11px] font-semibold text-white uppercase tracking-wider">
+            Warning — Cold Chain at Risk
           </span>
         </div>
       )}
@@ -93,61 +102,61 @@ export default function CargoOfferCard({
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-[#e2e2eb]">
+          <h3 className="text-lg font-semibold text-[#000000]">
             {cargo.type.charAt(0).toUpperCase() + cargo.type.slice(1)}
-            <span className="font-[family-name:var(--font-mono)] text-[#8c909f] text-sm ml-2">
+            <span className="font-[family-name:var(--font-mono)] text-[#8E8E93] text-sm ml-2">
               {(cargo.quantityKg / 1000).toFixed(0)} Tonnes
             </span>
           </h3>
-          <p className="text-xs text-[#8c909f] mt-0.5">
+          <p className="text-xs text-[#8E8E93] mt-0.5">
             Truck: {cargo.truckPlate} · From {cargo.origin.name}
           </p>
         </div>
         <CountdownTimer expiresAt={expiresAt} size="sm" />
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-4 gap-2 mb-4">
-        <div className="text-center p-2 rounded-md bg-black/20">
-          <p className="text-[9px] text-[#8c909f] uppercase tracking-widest">Temp</p>
+      {/* Stats Grid — 2 cols on mobile, 4 on desktop */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
+          <p className="text-[9px] text-[#8E8E93] uppercase tracking-widest">Temp</p>
           <p className={`font-[family-name:var(--font-mono)] text-sm font-bold mt-0.5 ${
-            urgency === "critical" ? "text-red-400" : urgency === "warning" ? "text-amber-400" : "text-emerald-400"
+            urgency === "critical" ? "text-[#FF3B30]" : urgency === "warning" ? "text-[#FF9500]" : "text-[#34C759]"
           }`}>
             {cargo.telemetry.temperature.toFixed(1)}°C
           </p>
         </div>
-        <div className="text-center p-2 rounded-md bg-black/20">
-          <p className="text-[9px] text-[#8c909f] uppercase tracking-widest">Quality</p>
+        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
+          <p className="text-[9px] text-[#8E8E93] uppercase tracking-widest">Quality</p>
           <p className={`font-[family-name:var(--font-mono)] text-sm font-bold mt-0.5 ${
-            qualityPercent > 85 ? "text-emerald-400" : qualityPercent > 70 ? "text-amber-400" : "text-red-400"
+            qualityPercent > 85 ? "text-[#34C759]" : qualityPercent > 70 ? "text-[#FF9500]" : "text-[#FF3B30]"
           }`}>
             {qualityPercent}%
           </p>
         </div>
-        <div className="text-center p-2 rounded-md bg-black/20">
-          <p className="text-[9px] text-[#8c909f] uppercase tracking-widest">Distance</p>
-          <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-[#e2e2eb] mt-0.5">
+        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
+          <p className="text-[9px] text-[#8E8E93] uppercase tracking-widest">Distance</p>
+          <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-[#000000] mt-0.5">
             {distance} km
           </p>
         </div>
-        <div className="text-center p-2 rounded-md bg-black/20">
-          <p className="text-[9px] text-[#8c909f] uppercase tracking-widest">ETA</p>
-          <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-[#e2e2eb] mt-0.5">
+        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
+          <p className="text-[9px] text-[#8E8E93] uppercase tracking-widest">ETA</p>
+          <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-[#000000] mt-0.5">
             {etaMinutes}m
           </p>
         </div>
       </div>
 
       {/* Quality Note */}
-      <p className="text-xs text-[#8c909f] mb-3 italic">
+      <p className="text-xs text-[#8E8E93] mb-3 italic">
         Quality estimate: {qualityLabel}
       </p>
 
       {/* Asking Price */}
-      <div className="flex items-center justify-between mt-2 mb-4 bg-black/20 p-3 rounded-lg border border-white/5">
-        <span className="text-sm text-[#c2c6d6]">Asking Price</span>
+      <div className="flex items-center justify-between mt-2 mb-4 bg-[#F2F2F7] p-3 rounded-lg border border-[#E5E5EA]">
+        <span className="text-sm text-[#3C3C43]">Asking Price</span>
         <div className="flex flex-col items-end">
-          <span className="font-[family-name:var(--font-mono)] text-xl font-bold text-emerald-400">
+          <span className="font-[family-name:var(--font-mono)] text-xl font-bold text-[#34C759]">
             ₹{cargo.askingPricePerKg ?? 0}/kg
           </span>
         </div>
@@ -155,13 +164,13 @@ export default function CargoOfferCard({
 
       {/* Counter Offer Status */}
       {existingBid && existingBid.status === "counter_offered" && existingBid.counterPricePerKg && mode === "idle" && (
-        <div className="mb-4 p-3 rounded-lg bg-purple-500/10 border border-purple-500/30">
-          <p className="text-[10px] text-purple-400 uppercase tracking-widest block mb-2 font-bold">
+        <div className="mb-4 p-3 rounded-lg bg-[#AF52DE]/10 border border-[#AF52DE]/30">
+          <p className="text-[10px] text-[#AF52DE] uppercase tracking-widest block mb-2 font-bold">
             Logistics Countered Your Bid
           </p>
           <div className="flex justify-between items-center mb-3">
-            <span className="text-sm text-[#e2e2eb]">They want:</span>
-            <span className="font-[family-name:var(--font-mono)] text-lg font-bold text-purple-400">
+            <span className="text-sm text-[#000000]">They want:</span>
+            <span className="font-[family-name:var(--font-mono)] text-lg font-bold text-[#AF52DE]">
               ₹{existingBid.counterPricePerKg}/kg
             </span>
           </div>
@@ -171,7 +180,7 @@ export default function CargoOfferCard({
                 onAcceptFull(cargo.id); // This will re-send bid at counter price, handling logic is on page
                 setAccepted(true);
               }}
-              className="btn bg-purple-500 text-white hover:bg-purple-600 flex-1 text-xs"
+              className="btn btn-primary flex-1 text-xs"
             >
               Accept at ₹{existingBid.counterPricePerKg}/kg
             </button>
@@ -181,15 +190,15 @@ export default function CargoOfferCard({
       
       {/* Pending Status */}
       {existingBid && existingBid.status === "pending" && mode === "idle" && (
-        <div className="mb-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-center">
-           <span className="text-sm font-semibold text-blue-400">Your Bid is Pending Review...</span>
+        <div className="mb-4 p-3 rounded-lg bg-[#007AFF]/10 border border-[#007AFF]/30 text-center">
+           <span className="text-sm font-semibold text-[#007AFF]">Your Bid is Pending Review...</span>
         </div>
       )}
 
       {/* Partial Order Form */}
       {mode === "partial" && (
-        <div className="mb-4 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
-          <label className="text-[10px] text-blue-400 uppercase tracking-widest block mb-2">
+        <div className="mb-4 p-3 rounded-lg bg-[#007AFF]/5 border border-[#007AFF]/20">
+          <label className="text-[10px] text-[#007AFF] uppercase tracking-widest block mb-2">
             How much do you want? (kg)
           </label>
           <div className="flex gap-2 items-center">
@@ -200,13 +209,13 @@ export default function CargoOfferCard({
               step={500}
               value={partialQty}
               onChange={(e) => setPartialQty(Number(e.target.value))}
-              className="flex-1 accent-blue-500"
+              className="flex-1 accent-[#007AFF]"
             />
-            <span className="font-[family-name:var(--font-mono)] text-sm text-blue-400 w-20 text-right">
+            <span className="font-[family-name:var(--font-mono)] text-sm text-[#007AFF] w-20 text-right">
               {(partialQty / 1000).toFixed(1)}T
             </span>
           </div>
-          <div className="flex justify-between mt-2 text-xs text-[#8c909f]">
+          <div className="flex justify-between mt-2 text-xs text-[#8E8E93]">
             <span>Total: ₹{((cargo.askingPricePerKg ?? 0) * partialQty).toLocaleString("en-IN")}</span>
           </div>
           <div className="flex gap-2 mt-3">
@@ -228,37 +237,37 @@ export default function CargoOfferCard({
 
       {/* Counter Offer Form */}
       {mode === "counter" && (
-        <div className="mb-4 p-3 rounded-lg bg-amber-500/5 border border-amber-500/20">
-          <label className="text-[10px] text-amber-400 uppercase tracking-widest block mb-2">
+        <div className="mb-4 p-3 rounded-lg bg-[#FF9500]/5 border border-[#FF9500]/20">
+          <label className="text-[10px] text-[#FF9500] uppercase tracking-widest block mb-2">
             Your offer
           </label>
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div>
-              <span className="text-[10px] text-[#8c909f] block mb-1">Price (₹/kg)</span>
+              <span className="text-[10px] text-[#8E8E93] block mb-1">Price (₹/kg)</span>
               <input
                 type="number"
                 value={counterPrice}
                 onChange={(e) => setCounterPrice(Number(e.target.value))}
-                className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-2 font-[family-name:var(--font-mono)] text-sm text-[#e2e2eb] focus:outline-none focus:border-amber-500/50 transition-colors"
+                className="ios-input font-[family-name:var(--font-mono)] text-sm"
                 min={1}
                 step={0.5}
               />
             </div>
             <div>
-              <span className="text-[10px] text-[#8c909f] block mb-1">Quantity (kg)</span>
+              <span className="text-[10px] text-[#8E8E93] block mb-1">Quantity (kg)</span>
               <input
                 type="number"
                 value={counterQty}
                 onChange={(e) => setCounterQty(Number(e.target.value))}
-                className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-2 font-[family-name:var(--font-mono)] text-sm text-[#e2e2eb] focus:outline-none focus:border-amber-500/50 transition-colors"
+                className="ios-input font-[family-name:var(--font-mono)] text-sm"
                 min={500}
                 max={cargo.quantityKg}
                 step={500}
               />
             </div>
           </div>
-          <p className="text-xs text-[#8c909f] mb-3">
-            Total offer: <span className="font-[family-name:var(--font-mono)] text-amber-400">₹{(counterPrice * counterQty).toLocaleString("en-IN")}</span>
+          <p className="text-xs text-[#8E8E93] mb-3">
+            Total offer: <span className="font-[family-name:var(--font-mono)] text-[#FF9500]">₹{(counterPrice * counterQty).toLocaleString("en-IN")}</span>
           </p>
           <div className="flex gap-2">
             <button

@@ -1,253 +1,542 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-mono), "SF Mono", ui-monospace, monospace;
 }
 
 /* ============================================================
-   ANNAPURNA — Global Styles & Design System (Glassmorphism 2.0)
+   ANNAPURNA — Apple HIG Light Mode Design System
    ============================================================ */
 
 :root {
-  --bg-primary: #0a0c12; /* Deeper black for ultra-premium feel */
-  --bg-surface: rgba(18, 20, 28, 0.6);
-  --bg-surface-hover: rgba(28, 32, 44, 0.7);
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-strong: rgba(255, 255, 255, 0.1);
-  --border-active: rgba(59, 130, 246, 0.4);
-  --text-primary: #f8f9fa;
-  --text-secondary: #c2c6d6;
-  --text-muted: #8c909f;
-  
-  --color-safe: #10b981;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-primary: #3b82f6;
+  /* iOS System Colors */
+  --bg-primary: #F2F2F7;          /* systemGroupedBackground */
+  --bg-secondary: #FFFFFF;         /* secondarySystemGroupedBackground */
+  --bg-tertiary: #F2F2F7;         /* tertiarySystemGroupedBackground */
+  --bg-elevated: #FFFFFF;
+
+  --text-primary: #000000;
+  --text-secondary: #3C3C43;
+  --text-tertiary: #8E8E93;
+  --text-quaternary: #C7C7CC;
+
+  --separator: #C6C6C8;
+  --separator-opaque: rgba(60, 60, 67, 0.12);
+  --fill-primary: rgba(120, 120, 128, 0.2);
+  --fill-secondary: rgba(120, 120, 128, 0.16);
+  --fill-tertiary: rgba(118, 118, 128, 0.12);
+
+  /* iOS Tint Colors */
+  --tint-blue: #007AFF;
+  --tint-green: #34C759;
+  --tint-red: #FF3B30;
+  --tint-orange: #FF9500;
+  --tint-yellow: #FFD60A;
+  --tint-purple: #AF52DE;
+  --tint-indigo: #5856D6;
+  --tint-teal: #5AC8FA;
+
+  /* Shadows (Apple-style subtle elevation) */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-elevated: 0 4px 14px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-drawer: 4px 0 24px rgba(0,0,0,0.15);
+
+  /* Spacing (8pt grid) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 20px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
 }
 
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.01em;
 }
 
-/* Typography Enhancements */
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: -0.02em;
+/* iOS Large Title style */
+.ios-large-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.37px;
+  line-height: 1.2;
+  color: var(--text-primary);
 }
 
-/* Glassmorphism 2.0 Card */
-.glass-card {
-  background: var(--bg-surface);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 1rem;
-  box-shadow: 
-    0 4px 24px -1px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+/* iOS Title styles */
+.ios-title1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.36px;
+  line-height: 1.2;
+}
+.ios-title2 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  line-height: 1.3;
+}
+.ios-title3 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.38px;
+  line-height: 1.3;
+}
+.ios-headline {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+  line-height: 1.3;
+}
+.ios-body {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+  line-height: 1.47;
+}
+.ios-callout {
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.32px;
+}
+.ios-subheadline {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.24px;
+}
+.ios-footnote {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.08px;
+  color: var(--text-tertiary);
+}
+.ios-caption {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--text-tertiary);
 }
 
-.glass-card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.glass-card-hover:hover {
-  background: var(--bg-surface-hover);
-  border-color: var(--border-strong);
-  transform: translateY(-2px);
-  box-shadow: 
-    0 12px 32px -4px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+/* ============================================================
+   CARD STYLES (Grouped Inset)
+   ============================================================ */
+.ios-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
 }
 
-/* Smooth Tab Transitions */
-.view-transition-enter {
+.ios-card-inset {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-inline: var(--space-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+/* Row inside a card (like Settings app rows) */
+.ios-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 12px var(--space-md);
+  min-height: 44px;
+  background: var(--bg-secondary);
+  transition: background 0.15s ease;
+}
+.ios-row:active {
+  background: var(--fill-tertiary);
+}
+.ios-row + .ios-row {
+  border-top: 0.5px solid var(--separator-opaque);
+  margin-left: var(--space-md);
+}
+
+/* ============================================================
+   NAVIGATION BAR (Top)
+   ============================================================ */
+.ios-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(242, 242, 247, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 0.5px solid var(--separator-opaque);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+
+/* ============================================================
+   BOTTOM TAB BAR
+   ============================================================ */
+.ios-tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(249, 249, 249, 0.94);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 0.5px solid var(--separator-opaque);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  padding: 6px 0 max(env(safe-area-inset-bottom), 8px) 0;
+}
+.ios-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 0;
+  min-width: 56px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  transition: color 0.2s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ios-tab.active {
+  color: var(--tint-blue);
+}
+.ios-tab svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ============================================================
+   HAMBURGER DRAWER
+   ============================================================ */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.3);
   opacity: 0;
-  transform: translateY(8px) scale(0.98);
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-.view-transition-enter-active {
+.drawer-overlay.open {
   opacity: 1;
-  transform: translateY(0) scale(1);
-  transition: opacity 300ms, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  visibility: visible;
+}
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 101;
+  width: min(300px, 80vw);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-drawer);
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.drawer-panel.open {
+  transform: translateX(0);
+}
+.drawer-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 14px var(--space-lg);
+  min-height: 52px;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text-primary);
+  transition: background 0.15s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.drawer-nav-item:active {
+  background: var(--fill-tertiary);
+}
+.drawer-nav-item.active {
+  color: var(--tint-blue);
+  font-weight: 600;
+  background: rgba(0, 122, 255, 0.08);
+  border-radius: var(--radius-sm);
+  margin-inline: var(--space-sm);
+  padding-inline: calc(var(--space-lg) - var(--space-sm));
+}
+.drawer-nav-item svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
 }
 
-/* Glow Effects */
-.glow-blue {
-  box-shadow: 0 0 24px rgba(59, 130, 246, 0.15), inset 0 0 12px rgba(59, 130, 246, 0.05);
-  border-color: rgba(59, 130, 246, 0.3);
-}
-
-.glow-red {
-  box-shadow: 0 0 24px rgba(239, 68, 68, 0.15), inset 0 0 12px rgba(239, 68, 68, 0.05);
-  border-color: rgba(239, 68, 68, 0.3);
-}
-
-.glow-green {
-  box-shadow: 0 0 24px rgba(16, 185, 129, 0.15), inset 0 0 12px rgba(16, 185, 129, 0.05);
-  border-color: rgba(16, 185, 129, 0.3);
-}
-
-.glow-amber {
-  box-shadow: 0 0 24px rgba(245, 158, 11, 0.15), inset 0 0 12px rgba(245, 158, 11, 0.05);
-  border-color: rgba(245, 158, 11, 0.3);
-}
-
-/* Pulse Animations */
-@keyframes pulse-danger {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes pulse-dot {
-  0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-.animate-pulse-danger {
-  animation: pulse-danger 2s ease-in-out infinite;
-}
-
-.animate-pulse-dot {
-  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-/* Status Badge */
+/* ============================================================
+   BADGES (iOS style)
+   ============================================================ */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.625rem;
-  border-radius: 9999px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  backdrop-filter: blur(8px);
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
 }
-
 .badge-safe {
-  background: rgba(16, 185, 129, 0.1);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(52, 199, 89, 0.12);
+  color: #248A3D;
 }
-
 .badge-warning {
-  background: rgba(245, 158, 11, 0.1);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(255, 149, 0, 0.12);
+  color: #C93400;
 }
-
 .badge-danger {
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(255, 59, 48, 0.12);
+  color: #D70015;
 }
-
 .badge-info {
-  background: rgba(59, 130, 246, 0.1);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(0, 122, 255, 0.1);
+  color: #0040DD;
+}
+.badge-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--tint-red);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Button Styles */
+/* ============================================================
+   BUTTONS (Apple HIG)
+   ============================================================ */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+  gap: 6px;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
   font-weight: 600;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  border: 1px solid transparent;
+  border: none;
+  min-height: 44px;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active {
+  opacity: 0.7;
+  transform: scale(0.98);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: var(--tint-blue);
   color: white;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.5);
 }
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-  filter: brightness(1.1);
-}
-.btn-primary:active {
-  transform: translateY(0);
-}
-
 .btn-success {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border-color: rgba(16, 185, 129, 0.3);
+  background: var(--tint-green);
+  color: white;
 }
-.btn-success:hover {
-  background: rgba(16, 185, 129, 0.25);
-  border-color: rgba(16, 185, 129, 0.5);
-}
-
 .btn-warning {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-  border-color: rgba(245, 158, 11, 0.3);
+  background: var(--tint-orange);
+  color: white;
 }
-.btn-warning:hover {
-  background: rgba(245, 158, 11, 0.25);
-  border-color: rgba(245, 158, 11, 0.5);
-}
-
 .btn-danger {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border-color: rgba(239, 68, 68, 0.3);
+  background: var(--tint-red);
+  color: white;
 }
-.btn-danger:hover {
-  background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.5);
-}
-
 .btn-ghost {
-  background: transparent;
-  color: var(--text-muted);
-  border-color: transparent;
-}
-.btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--fill-tertiary);
   color: var(--text-primary);
 }
+.btn-tinted {
+  background: rgba(0, 122, 255, 0.12);
+  color: var(--tint-blue);
+}
 
-/* Custom Scrollbar for a premium native feel */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Small button variant */
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 15px;
+  min-height: 36px;
+  border-radius: var(--radius-sm);
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+
+/* ============================================================
+   SEGMENT CONTROL (iOS style tabs)
+   ============================================================ */
+.ios-segment {
+  display: flex;
+  background: var(--fill-tertiary);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 0;
 }
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  border: 2px solid var(--bg-primary); /* creates padding effect */
+.ios-segment-item {
+  flex: 1;
+  padding: 8px 16px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+.ios-segment-item.active {
+  background: var(--bg-secondary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+}
+
+/* ============================================================
+   KPI CARDS
+   ============================================================ */
+.kpi-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-card);
+  min-width: 0;
+}
+.kpi-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+.kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+/* ============================================================
+   FORM INPUTS (iOS style)
+   ============================================================ */
+.ios-input {
+  width: 100%;
+  padding: 12px var(--space-md);
+  background: var(--bg-secondary);
+  border: 0.5px solid var(--separator);
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  color: var(--text-primary);
+  outline: none;
+  min-height: 44px;
+  transition: border-color 0.2s ease;
+}
+.ios-input:focus {
+  border-color: var(--tint-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+}
+.ios-input::placeholder {
+  color: var(--text-quaternary);
+}
+
+.ios-select {
+  width: 100%;
+  padding: 12px var(--space-md);
+  background: var(--bg-secondary);
+  border: 0.5px solid var(--separator);
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  color: var(--text-primary);
+  outline: none;
+  min-height: 44px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238E8E93' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.762L10.825 4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes pulse-danger {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+@keyframes pulse-dot {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+.animate-pulse-danger {
+  animation: pulse-danger 2s ease-in-out infinite;
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Temperature Gauge SVG */
 .gauge-circle {
   transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;
+}
+
+/* ============================================================
+   SCROLLBAR (thin, Apple-like)
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* ============================================================
+   RESPONSIVE — Mobile bottom padding for tab bar
+   ============================================================ */
+.has-tabbar {
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 8px) + 16px);
+}
+
+/* Desktop: hide mobile-only elements */
+@media (min-width: 768px) {
+  .mobile-only { display: none !important; }
+}
+/* Mobile: hide desktop-only elements */
+@media (max-width: 767px) {
+  .desktop-only { display: none !important; }
 }

@@ -35,26 +35,26 @@ export default function BidCard({ bid, onAccept, onReject, onCounter, onViewMap,
 
   return (
     <div
-      className={`glass-card p-4 transition-all duration-500 ${
+      className={`ios-card p-4 transition-all duration-500 border ${
         isAccepted
-          ? "border-emerald-500/40 glow-green"
+          ? "border-[#34C759]/40"
           : isRejected
-          ? "opacity-50 border-red-500/20"
+          ? "opacity-50 border-[#FF3B30]/20"
           : isExpired
-          ? "opacity-40"
-          : "glass-card-hover"
+          ? "opacity-40 border-[#E5E5EA]"
+          : "border-[#E5E5EA] hover:shadow-md"
       }`}
     >
       {/* Header row */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
           {/* Avatar */}
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-sm font-semibold text-blue-300">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#007AFF]/15 to-[#AF52DE]/15 border border-[#E5E5EA] flex items-center justify-center text-sm font-semibold text-[#007AFF]">
             {bid.wholesalerName.charAt(0)}
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#e2e2eb]">{bid.wholesalerName}</p>
-            <p className="text-[11px] text-[#8c909f]">
+            <p className="text-sm font-semibold text-[#000000]">{bid.wholesalerName}</p>
+            <p className="text-[11px] text-[#8E8E93]">
               {bid.distanceKm} km · {bid.etaMinutes} min away
             </p>
           </div>
@@ -67,7 +67,7 @@ export default function BidCard({ bid, onAccept, onReject, onCounter, onViewMap,
         {isAccepted && (
           <div className="text-right flex flex-col items-end">
             <span className="badge badge-safe mb-1">✓ En Route</span>
-            <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-amber-400 animate-pulse">
+            <span className="font-[family-name:var(--font-mono)] text-xs font-bold text-[#FF9500] animate-pulse">
               ETA: {Math.floor(fastSeconds / 60)}m {fastSeconds % 60}s
             </span>
           </div>
@@ -85,21 +85,21 @@ export default function BidCard({ bid, onAccept, onReject, onCounter, onViewMap,
 
       {/* Price & Quantity */}
       <div className="grid grid-cols-3 gap-2 mb-3">
-        <div className="text-center p-2 rounded-md bg-black/20">
-          <p className="text-[10px] text-[#8c909f] uppercase tracking-widest">Price/kg</p>
-          <p className="font-[family-name:var(--font-mono)] text-lg font-bold text-emerald-400 mt-0.5">
+        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
+          <p className="text-[10px] text-[#8E8E93] uppercase tracking-widest">Price/kg</p>
+          <p className="font-[family-name:var(--font-mono)] text-lg font-bold text-[#34C759] mt-0.5">
             ₹{bid.offeredPricePerKg}
           </p>
         </div>
-        <div className="text-center p-2 rounded-md bg-black/20">
-          <p className="text-[10px] text-[#8c909f] uppercase tracking-widest">Quantity</p>
-          <p className="font-[family-name:var(--font-mono)] text-lg font-bold text-[#e2e2eb] mt-0.5">
+        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
+          <p className="text-[10px] text-[#8E8E93] uppercase tracking-widest">Quantity</p>
+          <p className="font-[family-name:var(--font-mono)] text-lg font-bold text-[#000000] mt-0.5">
             {(bid.requestedQuantityKg / 1000).toFixed(0)}T
           </p>
         </div>
-        <div className="text-center p-2 rounded-md bg-black/20">
-          <p className="text-[10px] text-[#8c909f] uppercase tracking-widest">Total</p>
-          <p className="font-[family-name:var(--font-mono)] text-lg font-bold text-blue-400 mt-0.5">
+        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
+          <p className="text-[10px] text-[#8E8E93] uppercase tracking-widest">Total</p>
+          <p className="font-[family-name:var(--font-mono)] text-lg font-bold text-[#007AFF] mt-0.5">
             ₹{(bid.totalValue / 1000).toFixed(0)}K
           </p>
         </div>
@@ -107,8 +107,8 @@ export default function BidCard({ bid, onAccept, onReject, onCounter, onViewMap,
 
       {/* Counter offer input */}
       {showCounter && !isDisabled && (
-        <div className="mb-3 p-3 rounded-lg bg-amber-500/5 border border-amber-500/20 animate-in">
-          <label className="text-[10px] text-amber-400 uppercase tracking-widest block mb-2">
+        <div className="mb-3 p-3 rounded-lg bg-[#FF9500]/5 border border-[#FF9500]/20">
+          <label className="text-[10px] text-[#FF9500] uppercase tracking-widest block mb-2">
             Your counter price (₹/kg)
           </label>
           <div className="flex gap-2">
@@ -116,7 +116,7 @@ export default function BidCard({ bid, onAccept, onReject, onCounter, onViewMap,
               type="number"
               value={counterPrice}
               onChange={(e) => setCounterPrice(Number(e.target.value))}
-              className="flex-1 bg-black/30 border border-white/10 rounded-md px-3 py-2 font-[family-name:var(--font-mono)] text-sm text-[#e2e2eb] focus:outline-none focus:border-amber-500/50 transition-colors"
+              className="ios-input flex-1 font-[family-name:var(--font-mono)] text-sm"
               min={1}
               step={0.5}
             />
@@ -175,7 +175,7 @@ export default function BidCard({ bid, onAccept, onReject, onCounter, onViewMap,
       {isAccepted && onViewMap && (
         <button
           onClick={() => onViewMap(bid.id)}
-          className="w-full mt-2 btn border-emerald-500/30 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 text-xs py-2"
+          className="w-full mt-2 btn btn-tinted text-xs py-2"
         >
           View Route Map
         </button>
