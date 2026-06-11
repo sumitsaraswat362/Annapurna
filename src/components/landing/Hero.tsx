@@ -44,26 +44,26 @@ export function Hero() {
         >
           {/* MacBook Mockup */}
           <motion.div 
-            className="absolute left-0 md:left-[5%] top-0 md:top-[10%] w-[90%] md:w-[65%] aspect-[16/9] rounded-[1rem] md:rounded-[1.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.6)] overflow-hidden border border-white/10 bg-[#1A1A1A]"
-            style={{ x: macX, rotateX: 5, rotateY: 10, rotateZ: -2 }}
+            className="absolute left-0 md:left-[5%] top-0 md:top-[10%] w-[90%] md:w-[65%] aspect-[16/9] drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]"
+            style={{ x: macX }}
           >
-            <img src="/images/macbook_ui.png" alt="MacBook Fleet Dashboard UI" className="w-full h-full object-cover" />
+            <img src="/images/macbook_hardware.png" alt="MacBook Fleet Dashboard" className="w-full h-full object-contain" />
           </motion.div>
 
           {/* iPad Mockup */}
           <motion.div 
-            className="absolute right-[10%] md:right-[20%] bottom-[-5%] md:bottom-[0%] w-[50%] md:w-[40%] aspect-[4/3] rounded-[1.5rem] md:rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.8)] overflow-hidden border border-white/15 bg-[#1A1A1A]"
-            style={{ x: ipadX, rotateX: 8, rotateY: 0, rotateZ: 2 }}
+            className="absolute right-[10%] md:right-[15%] bottom-[-5%] md:bottom-[0%] w-[50%] md:w-[45%] aspect-[4/3] drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
+            style={{ x: ipadX }}
           >
-            <img src="/images/ipad_ui.png" alt="iPad Fleet Dashboard UI" className="w-full h-full object-cover" />
+            <img src="/images/ipad_hardware.png" alt="iPad Fleet Dashboard" className="w-full h-full object-contain" />
           </motion.div>
 
           {/* iPhone Mockup */}
           <motion.div 
-            className="absolute right-[0%] md:right-[5%] bottom-[-15%] md:bottom-[-10%] w-[25%] md:w-[15%] aspect-[9/16] rounded-[2rem] md:rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.9)] overflow-hidden border border-white/20 bg-[#1A1A1A]"
-            style={{ x: iphoneX, y: iphoneY, rotateX: 10, rotateY: -10, rotateZ: -4 }}
+            className="absolute right-[0%] md:right-[5%] bottom-[-15%] md:bottom-[-10%] w-[25%] md:w-[15%] aspect-[9/16] drop-shadow-[0_30px_60px_rgba(0,0,0,0.9)]"
+            style={{ x: iphoneX, y: iphoneY }}
           >
-            <img src="/images/iphone_ui.png" alt="iPhone Fleet App UI" className="w-full h-full object-cover" />
+            <img src="/images/iphone_hardware.png" alt="iPhone Fleet App" className="w-full h-full object-contain" />
           </motion.div>
         </motion.div>
       </div>
