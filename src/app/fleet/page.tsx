@@ -67,23 +67,18 @@ export default function FleetApp() {
   return (
     <div className="flex h-screen overflow-hidden bg-[#F2F2F7]">
 
-      {/* ===== MOBILE: Top Navbar (hamburger only, no title) ===== */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 ios-navbar">
+      {/* ===== MOBILE: Top Navbar (hamburger only) ===== */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-[var(--bg-primary)]/85 backdrop-blur-md border-b border-[var(--separator-opaque)] px-4 h-[44px] flex items-center">
         {/* Hamburger */}
         <button
           onClick={() => setDrawerOpen(true)}
-          className="w-11 h-11 flex items-center justify-center rounded-lg active:bg-[#E5E5EA] transition-colors"
+          className="w-10 h-10 flex items-center justify-start rounded-lg active:opacity-50 transition-opacity"
           aria-label="Open menu"
         >
-          <svg className="w-6 h-6 text-[#000000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-6 h-6 text-[var(--text-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </button>
-        <div className="flex-1" />
-        {/* User Avatar */}
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#007AFF]/30 to-[#34C759]/30 border border-[#C6C6C8]/30 flex items-center justify-center text-sm font-bold text-[#007AFF]">
-          {user?.name?.charAt(0).toUpperCase() || "D"}
-        </div>
       </div>
 
       {/* ===== MOBILE: Drawer Overlay ===== */}
