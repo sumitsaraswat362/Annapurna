@@ -9,22 +9,23 @@ export function Hero() {
     offset: ["start start", "end start"]
   });
 
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const textY = useTransform(scrollYProgress, [0, 0.4], ["0%", "50%"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
   // Devices animation
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 1.2]);
-  const macX = useTransform(scrollYProgress, [0, 0.5], ["0%", "-15%"]);
-  const ipadX = useTransform(scrollYProgress, [0, 0.5], ["0%", "5%"]);
-  const iphoneX = useTransform(scrollYProgress, [0, 0.5], ["0%", "20%"]);
-  const iphoneY = useTransform(scrollYProgress, [0, 0.5], ["0%", "10%"]);
+  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 1.4]);
+  const macX = useTransform(scrollYProgress, [0, 0.6], ["0%", "-15%"]);
+  const ipadX = useTransform(scrollYProgress, [0, 0.6], ["0%", "10%"]);
+  const iphoneX = useTransform(scrollYProgress, [0, 0.6], ["0%", "20%"]);
+  const iphoneY = useTransform(scrollYProgress, [0, 0.6], ["0%", "10%"]);
+  const mockupOpacity = useTransform(scrollYProgress, [0.45, 0.65], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[200vh] w-full">
+    <section ref={containerRef} className="relative h-[300vh] w-full">
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center pt-32 px-6">
         <motion.div 
           className="max-w-4xl mx-auto text-center z-10 mt-32 md:mt-40"
-          style={{ y: textY, opacity }}
+          style={{ y: textY, opacity: textOpacity }}
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
@@ -40,7 +41,7 @@ export function Hero() {
         {/* Mockup Container */}
         <motion.div 
           className="mt-12 md:mt-16 w-full max-w-6xl max-md:h-[320px] md:aspect-[21/9] mx-auto z-20 flex justify-center relative"
-          style={{ scale, perspective: "2000px" }}
+          style={{ scale, perspective: "2000px", opacity: mockupOpacity }}
         >
           {/* MacBook Mockup */}
           <motion.div 
