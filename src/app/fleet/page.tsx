@@ -247,7 +247,7 @@ export default function FleetApp() {
       </aside>
 
       {/* ===== MAIN CONTENT WRAPPER ===== */}
-      <main className="flex-1 h-full overflow-y-auto relative z-10 mt-[44px] md:mt-0 has-tabbar md:pb-0" style={{ paddingBottom: undefined }}>
+      <main className="flex-1 h-full overflow-y-auto relative z-10 mt-[44px] md:mt-0 has-tabbar pb-[100px] md:pb-0">
         <div className="p-4 md:p-8 min-h-full">
           {/* View Router */}
           <div className="view-transition-enter-active">

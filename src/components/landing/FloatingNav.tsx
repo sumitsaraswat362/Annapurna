@@ -14,28 +14,23 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
   ] as const;
 
   return (
+    <>
     <div className="fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-[95%] md:max-w-fit">
       <div className="flex items-center justify-between p-1 rounded-full bg-black/40 backdrop-blur-[40px] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] relative">
         
-        {/* Logo Section */}
-        <div className="flex items-center gap-2 pl-2 md:pl-4 pr-1 md:pr-4">
-          <div className="w-6 h-6 md:w-8 md:h-8 shrink-0 rounded-full bg-gradient-to-tr from-[#007AFF] to-[#34C759] flex items-center justify-center text-[10px] md:text-xs font-bold text-black">A</div>
-          <span className="hidden sm:block text-sm md:text-base font-semibold tracking-tight text-white/90">Annapurna</span>
-        </div>
-
         {/* Navigation Links */}
-        <div className="flex items-center flex-1 justify-center max-md:gap-0">
+        <div className="flex items-center flex-1 justify-center max-md:gap-0 pl-1 md:pl-2">
           <Link
             href="/"
-            className={`relative flex items-center justify-center px-2 py-2 md:px-4 md:py-2.5 text-sm font-medium transition-colors duration-300 z-10 ${
+            className={`relative flex items-center justify-center px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm font-medium transition-colors duration-300 z-10 ${
               activeTab === "home" ? "text-white" : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
           {activeTab === "home" && (
             <motion.div
               layoutId="active-pill"
-              className="absolute inset-0 bg-[#007AFF] rounded-full"
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              className="absolute inset-0 bg-white/10 rounded-full"
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
           )}
           <span className="relative z-10"><Home className="w-4 h-4" /></span>
@@ -46,19 +41,18 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
             <Link
               href={tab.href}
               key={tab.id}
-              className={`relative flex items-center justify-center text-center px-2 py-2 md:px-4 md:py-2.5 text-sm font-medium transition-colors duration-300 z-10 ${
+              className={`relative flex items-center justify-center text-center px-3 py-2 md:px-4 md:py-2.5 text-xs md:text-sm font-medium transition-colors duration-300 z-10 ${
                 isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"
               }`}
             >
               {isActive && (
                 <motion.div
                   layoutId="active-pill"
-                  className="absolute inset-0 bg-[#007AFF] rounded-full"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  className="absolute inset-0 bg-white/10 rounded-full"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
-              <span className="relative z-10 hidden md:block">{tab.label}</span>
-              <tab.icon className="relative z-10 w-4 h-4 md:hidden shrink-0" />
+              <span className="relative z-10">{tab.label}</span>
             </Link>
           );
         })}
@@ -66,12 +60,19 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
 
         {/* Login Button */}
         <div className="pr-1">
-          <Link href="/login" className="flex items-center whitespace-nowrap px-3 py-1.5 md:px-5 md:py-2.5 rounded-full bg-gradient-to-b from-[#0A84FF] to-[#005DEB] shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity text-white text-[10px] md:text-sm font-medium">
-            Login / Use App
+          <Link href="/login" className="flex items-center whitespace-nowrap px-4 py-2 md:px-5 md:py-2.5 rounded-full bg-gradient-to-b from-[#0A84FF] to-[#005DEB] shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity text-white text-xs md:text-sm font-medium">
+            Use App
           </Link>
         </div>
 
       </div>
     </div>
+    
+    {/* Page Logo Fixed Top Left */}
+    <div className="fixed top-6 left-6 md:top-8 md:left-8 z-40 hidden sm:flex items-center gap-2">
+      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#007AFF] to-[#34C759] flex items-center justify-center text-xs font-bold text-black">A</div>
+      <span className="text-base font-semibold tracking-tight text-white">Annapurna Logistics</span>
+    </div>
+    </>
   );
 }

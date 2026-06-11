@@ -28,7 +28,7 @@ export function FeaturesPage() {
       </div>
 
       {/* Bento Box Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 auto-rows-[300px] md:auto-rows-[340px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 auto-rows-auto md:auto-rows-[340px]">
         {/* Box 1: Large Square */}
         <motion.div 
           style={{ y: y1 }}
