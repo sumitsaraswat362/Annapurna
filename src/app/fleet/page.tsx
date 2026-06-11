@@ -719,9 +719,9 @@ function FleetTrackingView() {
                 {selectedCargo.status === "rerouting" && selectedCargo.selectedMarket ? (
                   <span className="flex items-center gap-2 text-[#34C759] font-bold"><span className="w-2 h-2 rounded-full bg-[#34C759] animate-pulse-dot" /> {selectedCargo.selectedMarket.name} (Rerouted)</span>
                 ) : selectedCargo.status === "emergency" ? (
-                  <span className="flex items-center gap-2 text-[#FF3B30] font-bold"><span className="w-2 h-2 rounded-full bg-[#FF3B30] animate-pulse-dot" /> {selectedCargo.originalDestination.name} (At Risk)</span>
+                  <span className="flex items-center gap-2 text-[#FF3B30] font-bold"><span className="w-2 h-2 rounded-full bg-[#FF3B30] animate-pulse-dot" /> {selectedCargo.originalDestination?.name || "Pending Buyer"} (At Risk)</span>
                 ) : (
-                  <span className="flex items-center gap-2 text-[var(--text-primary)]"><span className="w-2 h-2 rounded-full bg-[#007AFF]" /> {selectedCargo.originalDestination.name}</span>
+                  <span className="flex items-center gap-2 text-[var(--text-primary)]"><span className="w-2 h-2 rounded-full bg-[#007AFF]" /> {selectedCargo.originalDestination?.name || "Pending Assignment"}</span>
                 )}
               </div>
             )}
@@ -767,7 +767,7 @@ function FleetTrackingView() {
                         </span>
                         <span className="text-xs text-[var(--text-tertiary)] font-medium flex items-center gap-1.5">
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-                          {cargo.origin.name.split(" ")[0]} → {cargo.originalDestination.name.split(" ")[0]}
+                          {cargo.origin.name.split(" ")[0]} → {cargo.originalDestination?.name.split(" ")[0] || "Pending"}
                         </span>
                       </div>
                     </button>
@@ -871,7 +871,7 @@ function FleetTrackingView() {
                       safeTemperatureMax: 10,
                       spoilageTimeMinutes: 1440,
                       status: "in_transit",
-                      origin: { name: newOrigin || user?.city || "Nashik", location: user?.coords || { lat: 19.99, lng: 73.78 } },
+                      origin: { name: newOrigin || user?.city || (user?.coords ? "GPS Location" : "Nashik"), location: user?.coords || { lat: 19.99, lng: 73.78 } },
                       originalDestination: null,
                       telemetry: { temperature: 4.2, humidity: 85, ethyleneLevel: "low", timestamp: Date.now() }
                     } as any
