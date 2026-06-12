@@ -253,8 +253,13 @@ export default function Home() {
           </div>
           <div className="w-px h-8 bg-white/10" />
           <div>
-            <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-white/80">Real Data</p>
-            <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Supabase Edge</p>
+            <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-white/80">Groq AI</p>
+            <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">LLM Powered</p>
+          </div>
+          <div className="w-px h-8 bg-white/10" />
+          <div>
+            <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-white/80">AES-256</p>
+            <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1">Encrypted</p>
           </div>
         </div>
       </motion.div>

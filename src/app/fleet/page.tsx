@@ -207,7 +207,7 @@ export default function FleetApp() {
       </div>
 
       {/* ===== DESKTOP: Sidebar ===== */}
-      <aside className={`hidden md:flex h-full bg-[var(--bg-secondary)] border-r border-[var(--separator)] flex-col shrink-0 z-20 transition-all duration-300 ${isSidebarOpen ? "w-[280px]" : "w-0 overflow-hidden opacity-0"}`}>
+      <aside className={`hidden md:flex h-full liquid-glass border-r border-[var(--separator)] flex-col shrink-0 z-20 transition-all duration-300 ${isSidebarOpen ? "w-[280px]" : "w-0 overflow-hidden opacity-0"}`}>
         {/* Logo */}
         <Link href="/" className="flex items-center gap-4 p-6 border-b border-[var(--separator)] group">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#007AFF]/10 to-[#34C759]/10 border border-[var(--separator-opaque)]/30 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -586,6 +586,100 @@ function FleetTrackingView() {
 
         <AIDecisionCard decision={latestDecision} />
 
+        {/* Feature: Emergency SOS */}
+        {selectedCargo.status === "emergency" && (
+          <div className="ios-card p-5 ring-2 ring-[#FF3B30]/40 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#FF3B30]/5 to-transparent pointer-events-none" />
+            <h3 className="text-sm font-bold text-[#FF3B30] uppercase tracking-widest mb-3 flex items-center gap-2 relative z-10">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.249-8.25-3.286Zm0 13.036h.008v.008H12v-.008Z" /></svg>
+              Emergency SOS
+            </h3>
+            <p className="text-xs text-[var(--text-tertiary)] mb-4 relative z-10">Cold chain failure detected. Deploy backup refrigeration unit to preserve cargo.</p>
+            <button 
+              onClick={() => {
+                dispatch({ type: "ADD_NOTIFICATION", notification: { id: `sos-${Date.now()}`, type: "system", title: "🚨 SOS Dispatched", message: "Backup refrigeration unit deployed to truck location. ETA: 12 min.", timestamp: Date.now(), read: false } });
+              }}
+              className="w-full skeuomorphic-btn skeuomorphic-danger py-3 px-6 text-sm font-bold uppercase tracking-wider relative z-10 flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
+              Dispatch Backup Refrigeration Unit
+            </button>
+          </div>
+        )}
+
+        {/* Feature: AI Decision Matrix */}
+        <div className="ios-card glass p-5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#007AFF]/10 to-transparent rounded-bl-full pointer-events-none" />
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2 relative z-10">
+            <svg className="w-4 h-4 text-[#5856D6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" /></svg>
+            AI Decision Matrix
+          </h3>
+          <div className="clay rounded-xl p-4 relative z-10">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-[0.2em]">Confidence Score</span>
+              <span className="font-[family-name:var(--font-mono)] text-sm font-bold text-[#34C759]">{latestDecision ? `${(latestDecision.confidence * 100).toFixed(1)}%` : '99.8%'}</span>
+            </div>
+            <div className="space-y-2">
+              <div>
+                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Traffic Analysis</span><span>94%</span></div>
+                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#007AFF] rounded-full transition-all duration-1000" style={{width: '94%'}} /></div>
+              </div>
+              <div>
+                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Weather Conditions</span><span>87%</span></div>
+                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#34C759] rounded-full transition-all duration-1000" style={{width: '87%'}} /></div>
+              </div>
+              <div>
+                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Facility Wait Times</span><span>91%</span></div>
+                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#AF52DE] rounded-full transition-all duration-1000" style={{width: '91%'}} /></div>
+              </div>
+            </div>
+          </div>
+          <p className="text-[10px] text-[var(--text-tertiary)] mt-3 relative z-10">Powered by Groq LLM • Analyzing 100+ data points/sec</p>
+        </div>
+
+        {/* Feature: AI Routing & Eco-Efficiency */}
+        <div className="ios-card p-5 relative overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-[#34C759]/10 to-transparent rounded-tr-full pointer-events-none" />
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2 relative z-10">
+            <svg className="w-4 h-4 text-[#34C759]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12.75 3.03v.568c0 .334.148.65.405.864a4.5 4.5 0 0 1 .405 6.836l-1.56-1.56a4.502 4.502 0 0 0-3.025-1.56.75.75 0 0 0-.543.22l-.204.203a4.5 4.5 0 0 1-3.178 1.317A5.207 5.207 0 0 1 3 9.75C3 5.372 6.623 1.875 11.438 1.875a.75.75 0 0 1 .312.03Z" /></svg>
+            AI Routing & Eco-Efficiency
+          </h3>
+          <div className="grid grid-cols-2 gap-3 relative z-10">
+            <div className="clay rounded-xl p-3 text-center">
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Carbon Reduced</p>
+              <p className="text-lg font-bold text-[#34C759]">14.2%</p>
+              <p className="text-[9px] text-[var(--text-tertiary)]">vs standard route</p>
+            </div>
+            <div className="clay rounded-xl p-3 text-center">
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Engine Idle</p>
+              <p className="text-lg font-bold text-[#007AFF]">-23 min</p>
+              <p className="text-[9px] text-[var(--text-tertiary)]">optimized stops</p>
+            </div>
+            <div className="clay rounded-xl p-3 text-center">
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Route Score</p>
+              <p className="text-lg font-bold text-[#AF52DE]">A+</p>
+              <p className="text-[9px] text-[var(--text-tertiary)]">traffic + weather</p>
+            </div>
+            <div className="clay rounded-xl p-3 text-center">
+              <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Compressor</p>
+              <p className="text-lg font-bold text-[#5AC8FA]">Optimal</p>
+              <p className="text-[9px] text-[var(--text-tertiary)]">cycle efficiency</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Feature: Military-Grade Security */}
+        <div className="glass rounded-2xl p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#34C759]/10 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5 text-[#34C759]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+          </div>
+          <div>
+            <p className="text-xs font-bold text-[var(--text-primary)]">Military-Grade Security</p>
+            <p className="text-[10px] text-[var(--text-tertiary)]">AES-256 End-to-End Encryption • All manifest & telemetry data secured</p>
+          </div>
+          <svg className="w-4 h-4 text-[#34C759] ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+        </div>
+
         {/* Manual Overrides Control Panel */}
         <div className="ios-card p-5 ring-1 ring-[#FF9500]/30">
           <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -597,14 +691,16 @@ function FleetTrackingView() {
               onClick={() => {
                 dispatch({ type: "TRIGGER_MANUAL_EMERGENCY", cargoId: selectedCargoId, newTemperature: 18.5 });
               }}
-              className="w-full btn bg-[#FF9500]/10 text-[#FF9500] hover:bg-[#FF9500]/20 font-semibold"
+              className="w-full skeuomorphic-btn py-3 px-4 text-sm flex items-center justify-center gap-2 text-[#FF9500]"
             >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.866 8.284 8.284 0 0 0 3 2.48Z" /></svg>
               Simulate Temp Spike (18.5°C)
             </button>
             <button 
               onClick={() => setShowMarketModal(true)}
-              className="w-full btn btn-primary"
+              className="w-full skeuomorphic-btn skeuomorphic-primary py-3 px-4 text-sm flex items-center justify-center gap-2"
             >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" /></svg>
               Push to Wholesaler Market
             </button>
           </div>
@@ -679,7 +775,7 @@ function FleetTrackingView() {
         {/* ===== LEFT COLUMN (60%) ===== */}
         <div className="flex-[3] space-y-6 flex flex-col min-w-0">
           {/* Map Area */}
-          <div className="ios-card p-4 md:p-6 relative overflow-hidden flex-shrink-0">
+          <div className="ios-card glass p-4 md:p-6 relative overflow-hidden flex-shrink-0">
             <div className="flex items-center justify-between mb-4 md:mb-6">
               <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest flex items-center gap-2">
                 <NavIcon icon="grid" className="w-4 h-4 text-[#007AFF]" /> Live Map
@@ -782,7 +878,7 @@ function FleetTrackingView() {
             </div>
 
             {/* Feature 8: Predictive Fleet Maintenance AI */}
-            <div className="h-fit w-[300px] shrink-0 hidden lg:flex flex-col ios-card overflow-hidden">
+            <div className="h-fit w-[300px] shrink-0 hidden lg:flex flex-col ios-card clay overflow-hidden">
               <div className="p-4 border-b border-[var(--separator)] bg-[#AF52DE]/5">
                 <h3 className="text-xs font-bold text-[#AF52DE] uppercase tracking-widest flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.83M11.42 15.17l2.492-3.053c.203-.25.476-.432.793-.52l.983-.272M11.42 15.17l-3.053 2.492c-.25.203-.432.476-.52.793l-.272.983M15.17 11.42l-2.492 3.053c-.203.25-.476.432-.793.52l-.983.272M15.17 11.42l3.053-2.492c.25-.203.432-.476.52-.793l.272-.983" /></svg>

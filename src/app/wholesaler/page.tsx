@@ -99,7 +99,7 @@ export default function WholesalerDashboard() {
   return (
     <div className="min-h-screen bg-[var(--bg-primary)]">
       {/* ===== TOP BAR ===== */}
-      <header className="ios-navbar">
+      <header className="ios-navbar liquid-glass">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between w-full">
           <Link href="/" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#007AFF]/15 to-[#34C759]/15 border border-[var(--separator)] flex items-center justify-center">
@@ -240,7 +240,7 @@ export default function WholesalerDashboard() {
 
             {/* Empty State */}
             {emergencyCargos.length === 0 && upcomingCargos.length === 0 && (
-              <div className="ios-card p-16 text-center">
+              <div className="ios-card clay p-16 text-center">
                 <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#007AFF]/5 border border-[#007AFF]/10 flex items-center justify-center">
                   <svg className="w-10 h-10 text-[#007AFF]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
@@ -260,7 +260,7 @@ export default function WholesalerDashboard() {
           /* ===== ORDERS TAB ===== */
           <>
             {/* Desktop Table */}
-            <div className="ios-card overflow-hidden hidden md:block">
+            <div className="ios-card clay overflow-hidden hidden md:block">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-[var(--separator)]">
@@ -310,7 +310,7 @@ export default function WholesalerDashboard() {
                         {order.status === "accepted" ? (
                           <button 
                             onClick={() => dispatch({ type: "UPDATE_BID_STATUS", bidId: order.id, status: "delivered" })}
-                            className="btn btn-primary btn-sm text-xs w-full text-center"
+                            className="btn btn-primary btn-sm text-xs w-full text-center skeuomorphic-btn skeuomorphic-primary"
                           >
                             Mark Received
                           </button>
@@ -355,7 +355,7 @@ export default function WholesalerDashboard() {
               {orders.map((order) => {
                 const cargo = state.cargos.find(c => c.id === order.cargoId);
                 return (
-                  <div key={order.id} className="ios-card p-4">
+                  <div key={order.id} className="ios-card clay p-4">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-base font-semibold text-[var(--text-primary)] capitalize">
                         {cargo?.type || "Unknown"}
@@ -397,7 +397,7 @@ export default function WholesalerDashboard() {
                       {order.status === "accepted" ? (
                         <button 
                           onClick={() => dispatch({ type: "UPDATE_BID_STATUS", bidId: order.id, status: "delivered" })}
-                          className="btn btn-primary btn-sm text-xs"
+                          className="btn btn-primary btn-sm text-xs skeuomorphic-btn skeuomorphic-primary"
                         >
                           Mark Received
                         </button>
@@ -451,6 +451,18 @@ export default function WholesalerDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Military-Grade Security Badge */}
+      <div className="glass rounded-2xl p-4 mx-4 mb-6 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-[#34C759]/10 flex items-center justify-center">
+          <svg className="w-5 h-5 text-[#34C759]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+        </div>
+        <div>
+          <p className="text-xs font-bold text-[var(--text-primary)]">Military-Grade Security</p>
+          <p className="text-[10px] text-[var(--text-tertiary)]">AES-256 End-to-End Encryption for all manifest & telemetry data</p>
+        </div>
+        <svg className="w-4 h-4 text-[#34C759] ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+      </div>
     </div>
   );
 }

@@ -1,18 +1,15 @@
 // ============================================================
-// ANNAPURNA — Agentic AI Decision Engine
+// ANNAPURNA — Agentic AI Decision Engine (Groq LLM Powered)
 // ============================================================
 //
-// In production, this would call Google Gemini API for natural
-// language reasoning. For the demo/hackathon, we use deterministic
-// logic that produces the same high-quality output without
-// API latency or rate limits.
+// This module integrates with the Groq API (Llama3-8b-8192) via
+// /api/ai-agent to perform autonomous real-time reasoning on
+// live truck telemetry (temperature, humidity, ethylene).
 //
-// TODO (Production): Replace deterministic logic with:
-//   const response = await ai.generateContent({
-//     model: "gemini-2.0-flash",
-//     systemInstruction: AGENT_SYSTEM_PROMPT,
-//     contents: [{ role: "user", parts: [{ text: JSON.stringify(cargo) }] }],
-//   });
+// Architecture: The Groq LLM generates the reasoning text and
+// confidence score. If the API is unavailable or times out
+// (>5s), the engine gracefully falls back to a high-performance
+// deterministic rules engine for zero-downtime reliability.
 // ============================================================
 
 import { Cargo, AIDecision, Market } from "./types";
@@ -30,6 +27,21 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
     telemetry.ethyleneLevel
   );
 
+  let groqDecision: any = null;
+  try {
+    const res = await fetch('/api/ai-agent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cargo, spoilageMinutes }),
+      signal: AbortSignal.timeout(5000) // 5s timeout to not block UI
+    });
+    if (res.ok) {
+      groqDecision = await res.json();
+    }
+  } catch (e) {
+    console.warn("Groq API fallback triggered:", e);
+  }
+
   // --- Decision Logic ---
 
   // Case 1: Temperature is safe
@@ -37,12 +49,12 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
     return {
       cargoId: cargo.id,
       timestamp: Date.now(),
-      reasoning: `All systems nominal. Temperature ${telemetry.temperature}°C is within safe range (≤${safeTemperatureMax}°C). Humidity at ${telemetry.humidity}%. Ethylene levels: ${telemetry.ethyleneLevel}. Continuing delivery to ${cargo.originalDestination?.name || "its destination"}.`,
+      reasoning: groqDecision?.reasoning || `All systems nominal. Temperature ${telemetry.temperature}°C is within safe range (≤${safeTemperatureMax}°C). Humidity at ${telemetry.humidity}%. Ethylene levels: ${telemetry.ethyleneLevel}. Continuing delivery to ${cargo.originalDestination?.name || "its destination"}.`,
       recommendation: "continue",
       suggestedMarket: null,
       estimatedRecoveryPercent: 100,
       estimatedRecoveryValue: cargo.estimatedCargoValue,
-      confidence: 0.95,
+      confidence: groqDecision?.confidence || 0.95,
     };
   }
 
@@ -51,12 +63,12 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
     return {
       cargoId: cargo.id,
       timestamp: Date.now(),
-      reasoning: `⚠️ WARNING: Temperature ${telemetry.temperature}°C exceeds safe limit of ${safeTemperatureMax}°C. However, estimated spoilage in ${spoilageMinutes} minutes. ETA to ${cargo.originalDestination?.name || "its destination"}: ${etaMinutes} minutes. Cargo will survive transit. Continuing delivery with elevated monitoring.`,
+      reasoning: groqDecision?.reasoning || `⚠️ WARNING: Temperature ${telemetry.temperature}°C exceeds safe limit of ${safeTemperatureMax}°C. However, estimated spoilage in ${spoilageMinutes} minutes. ETA to ${cargo.originalDestination?.name || "its destination"}: ${etaMinutes} minutes. Cargo will survive transit. Continuing delivery with elevated monitoring.`,
       recommendation: "continue",
       suggestedMarket: null,
       estimatedRecoveryPercent: 90,
       estimatedRecoveryValue: Math.round(cargo.estimatedCargoValue * 0.9),
-      confidence: 0.75,
+      confidence: groqDecision?.confidence || 0.75,
     };
   }
 
@@ -67,12 +79,12 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
     return {
       cargoId: cargo.id,
       timestamp: Date.now(),
-      reasoning: `🚨 CRITICAL: Cold chain failure detected. Temperature ${telemetry.temperature}°C far exceeds safe limit of ${safeTemperatureMax}°C. Ethylene levels: ${telemetry.ethyleneLevel.toUpperCase()}. Estimated spoilage in ${spoilageMinutes} minutes. ETA to ${cargo.originalDestination?.name || "its destination"}: ${etaMinutes} minutes. NO viable markets found within spoilage window. Cargo at severe risk.`,
+      reasoning: groqDecision?.reasoning || `🚨 CRITICAL: Cold chain failure detected. Temperature ${telemetry.temperature}°C far exceeds safe limit of ${safeTemperatureMax}°C. Ethylene levels: ${telemetry.ethyleneLevel.toUpperCase()}. Estimated spoilage in ${spoilageMinutes} minutes. ETA to ${cargo.originalDestination?.name || "its destination"}: ${etaMinutes} minutes. NO viable markets found within spoilage window. Cargo at severe risk.`,
       recommendation: "emergency_sell",
       suggestedMarket: null,
       estimatedRecoveryPercent: 20,
       estimatedRecoveryValue: Math.round(cargo.estimatedCargoValue * 0.2),
-      confidence: 0.6,
+      confidence: groqDecision?.confidence || 0.6,
     };
   }
 
@@ -82,7 +94,7 @@ export async function makeDecision(cargo: Cargo): Promise<AIDecision> {
   return {
     cargoId: cargo.id,
     timestamp: Date.now(),
-    reasoning: `🚨 COLD CHAIN FAILURE DETECTED
+    reasoning: groqDecision?.reasoning || `🚨 COLD CHAIN FAILURE DETECTED
 
 Current temperature: ${telemetry.temperature}°C — exceeds safe limit of ${safeTemperatureMax}°C
 Humidity: ${telemetry.humidity}% | Ethylene: ${telemetry.ethyleneLevel.toUpperCase()}
@@ -100,7 +112,7 @@ Broadcasting to nearby wholesalers for immediate purchase.`,
     suggestedMarket: nearestMarket,
     estimatedRecoveryPercent: recoveryPercent,
     estimatedRecoveryValue: recoveryValue,
-    confidence: 0.92,
+    confidence: groqDecision?.confidence || 0.88,
   };
 }
 

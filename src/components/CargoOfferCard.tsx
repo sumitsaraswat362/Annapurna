@@ -62,7 +62,7 @@ export default function CargoOfferCard({
 
   if (accepted) {
     return (
-      <div className="ios-card p-5 border border-[#34C759]/40">
+      <div className="ios-card clay p-5 border border-[#34C759]/40">
         <div className="text-center py-6">
           <div className="w-16 h-16 rounded-full bg-[#34C759]/10 border border-[#34C759]/30 flex items-center justify-center mx-auto mb-3">
             <svg className="w-8 h-8 text-[#34C759]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -79,7 +79,7 @@ export default function CargoOfferCard({
   }
 
   return (
-    <div className={`ios-card p-5 transition-all duration-300 border ${borderColor}`}>
+    <div className={`ios-card clay p-5 transition-all duration-300 border ${borderColor}`}>
       {/* Urgency Strip */}
       {urgency === "critical" && (
         <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-[#FF3B30] animate-pulse-danger">
@@ -180,7 +180,7 @@ export default function CargoOfferCard({
                 onAcceptFull(cargo.id); // This will re-send bid at counter price, handling logic is on page
                 setAccepted(true);
               }}
-              className="btn btn-primary flex-1 text-xs"
+              className="btn btn-primary flex-1 text-xs skeuomorphic-btn skeuomorphic-primary"
             >
               Accept at ₹{existingBid.counterPricePerKg}/kg
             </button>
@@ -224,11 +224,11 @@ export default function CargoOfferCard({
                 onAcceptPartial(cargo.id, partialQty);
                 setAccepted(true);
               }}
-              className="btn btn-primary flex-1 text-xs"
+              className="btn btn-primary flex-1 text-xs skeuomorphic-btn skeuomorphic-primary"
             >
               Confirm {(partialQty / 1000).toFixed(1)}T Order
             </button>
-            <button onClick={() => setMode("idle")} className="btn btn-ghost text-xs">
+            <button onClick={() => setMode("idle")} className="btn btn-ghost text-xs skeuomorphic-btn skeuomorphic-danger">
               Cancel
             </button>
           </div>
@@ -275,11 +275,11 @@ export default function CargoOfferCard({
                 onCounterOffer(cargo.id, counterPrice, counterQty);
                 setAccepted(true);
               }}
-              className="btn btn-warning flex-1 text-xs"
+              className="btn btn-warning flex-1 text-xs skeuomorphic-btn skeuomorphic-primary"
             >
               Send Counter Offer
             </button>
-            <button onClick={() => setMode("idle")} className="btn btn-ghost text-xs">
+            <button onClick={() => setMode("idle")} className="btn btn-ghost text-xs skeuomorphic-btn skeuomorphic-danger">
               Cancel
             </button>
           </div>
@@ -294,7 +294,7 @@ export default function CargoOfferCard({
               onAcceptFull(cargo.id);
               setAccepted(true);
             }}
-            className="btn btn-success text-xs"
+            className="btn btn-success text-xs skeuomorphic-btn skeuomorphic-primary"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
