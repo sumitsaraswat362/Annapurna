@@ -53,7 +53,8 @@ type Action =
   | { type: "ADD_CARGO"; cargo: Cargo }
   | { type: "TRIGGER_MANUAL_EMERGENCY"; cargoId: string; newTemperature: number }
   | { type: "SET_CARGOS"; cargos: Cargo[] }
-  | { type: "SET_BIDS"; bids: Bid[] };
+  | { type: "SET_BIDS"; bids: Bid[] }
+  | { type: "MARK_DELIVERED"; cargoId: string };
 
 // --- Reducer ---
 function appReducer(state: AppState, action: Action): AppState {
@@ -247,6 +248,16 @@ function appReducer(state: AppState, action: Action): AppState {
     case "SET_BIDS":
       return { ...state, bids: action.bids };
 
+    case "MARK_DELIVERED":
+      return {
+        ...state,
+        cargos: state.cargos.map((c) =>
+          c.id === action.cargoId
+            ? { ...c, status: "delivered" as CargoStatus }
+            : c
+        ),
+      };
+
     default:
       return state;
   }
@@ -392,6 +403,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             selected_market: cargo.selectedMarket
           }).eq('id', action.cargoId);
         }
+      } else if (action.type === 'MARK_DELIVERED') {
+        await supabase.from('cargos').update({ status: 'delivered' }).eq('id', action.cargoId);
       }
     } catch (err) {
       console.error("Supabase Sync Error:", err);

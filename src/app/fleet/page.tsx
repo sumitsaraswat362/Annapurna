@@ -390,7 +390,8 @@ function FleetTrackingView() {
   const { user } = useAuth();
   
   // Only show cargos owned by this user
-  const myCargos = state.cargos.filter(c => !c.ownerId || c.ownerId === user?.name);
+  // Exclude delivered cargos from active fleet view
+  const myCargos = state.cargos.filter(c => (!c.ownerId || c.ownerId === user?.name) && c.status !== "delivered");
 
   const [selectedCargoId, setSelectedCargoId] = useState<string>("cargo-001");
   const selectedCargo = myCargos.find((c) => c.id === selectedCargoId);
@@ -726,7 +727,13 @@ function FleetTrackingView() {
                     const b = state.bids.find(x => x.id === bidId); 
                     if (b) setActiveMapBid(b); 
                   }}
-                  onPaymentReceived={(bidId) => dispatch({ type: "UPDATE_BID_STATUS", bidId, status: "payment_cleared" })}
+                  onPaymentReceived={(bidId) => {
+                    dispatch({ type: "UPDATE_BID_STATUS", bidId, status: "payment_cleared" });
+                    // Mark the cargo as delivered so it disappears from Active Consignments
+                    if (selectedCargo) {
+                      dispatch({ type: "MARK_DELIVERED", cargoId: selectedCargo.id });
+                    }
+                  }}
                 />
               ))}
             </div>
@@ -815,9 +822,11 @@ function FleetTrackingView() {
                 {selectedCargo.status === "rerouting" && selectedCargo.selectedMarket ? (
                   <span className="flex items-center gap-2 text-[#34C759] font-bold"><span className="w-2 h-2 rounded-full bg-[#34C759] animate-pulse-dot" /> {selectedCargo.selectedMarket.name} (Rerouted)</span>
                 ) : selectedCargo.status === "emergency" ? (
-                  <span className="flex items-center gap-2 text-[#FF3B30] font-bold"><span className="w-2 h-2 rounded-full bg-[#FF3B30] animate-pulse-dot" /> {selectedCargo.originalDestination?.name || "Pending Buyer"} (At Risk)</span>
+                  <span className="flex items-center gap-2 text-[#FF3B30] font-bold"><span className="w-2 h-2 rounded-full bg-[#FF3B30] animate-pulse-dot" /> {selectedCargo.originalDestination?.name || "Pending Buyer"} (Emergency)</span>
+                ) : selectedCargo.originalDestination?.name ? (
+                  <span className="flex items-center gap-2 text-[#007AFF] font-bold"><span className="w-2 h-2 rounded-full bg-[#007AFF] animate-pulse-dot" /> {selectedCargo.originalDestination.name} (Destination Set)</span>
                 ) : (
-                  <span className="flex items-center gap-2 text-[var(--text-primary)]"><span className="w-2 h-2 rounded-full bg-[#007AFF]" /> {selectedCargo.originalDestination?.name || "Pending Assignment"}</span>
+                  <span className="flex items-center gap-2 text-[var(--text-tertiary)] italic"><span className="w-2 h-2 rounded-full bg-[var(--separator)]" /> Awaiting Wholesaler Bid</span>
                 )}
               </div>
             )}
@@ -1154,10 +1163,10 @@ function MarketplaceView() {
             const isExpanded = expandedBidId === bid.id;
             return (
               <div key={bid.id} className="relative rounded-2xl overflow-hidden mb-3 bg-[var(--fill-secondary)] shadow-inner">
-                {/* Background Swipe Actions */}
-                <div className="absolute inset-0 flex items-center justify-between px-6">
-                  <span className="text-[#34C759] font-bold tracking-widest text-xs uppercase">Accept</span>
-                  <span className="text-[#FF3B30] font-bold tracking-widest text-xs uppercase">Reject</span>
+                {/* Background Swipe Actions - only visible while dragging */}
+                <div className="absolute inset-0 flex items-center justify-between px-6 pointer-events-none">
+                  <span className="text-[#34C759] font-bold tracking-widest text-xs uppercase opacity-40">← Accept</span>
+                  <span className="text-[#FF3B30] font-bold tracking-widest text-xs uppercase opacity-40">Reject →</span>
                 </div>
 
                 <motion.div 
