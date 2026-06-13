@@ -58,7 +58,6 @@ export default function FleetApp() {
   const [activeNav, setActiveNav] = useState("fleet"); // Default to fleet for hackathon
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -392,6 +391,7 @@ function FleetTrackingView() {
   // Only show cargos owned by this user
   // Exclude delivered cargos from active fleet view
   const myCargos = state.cargos.filter(c => (!c.ownerId || c.ownerId === user?.name) && c.status !== "delivered");
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const [selectedCargoId, setSelectedCargoId] = useState<string>("cargo-001");
   const selectedCargo = myCargos.find((c) => c.id === selectedCargoId);
@@ -742,11 +742,6 @@ function FleetTrackingView() {
       </div>
     );
   };
-
-  const DashboardView = () => {
-    // Only show the 5 most recent active cargos
-    const myCargos = state.cargos.filter(c => c.status !== "delivered").slice(0, 5);
-    const cargoBids = state.bids.filter(b => b.cargoId === selectedCargoId);
 
     return (
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 md:h-[100dvh] flex flex-col relative">
@@ -1527,4 +1522,3 @@ function SettingsView() {
     </div>
   );
 }
-
