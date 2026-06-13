@@ -79,84 +79,90 @@ export default function CargoOfferCard({
   }
 
   return (
-    <div className={`ios-card clay p-5 transition-all duration-300 border ${borderColor}`}>
-      {/* Urgency Strip */}
-      {urgency === "critical" && (
-        <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-[#FF3B30] animate-pulse-danger">
-          <span className="w-2 h-2 rounded-full bg-white" />
-          <span className="text-[11px] font-semibold text-white uppercase tracking-wider">
-            Urgent — Respond Immediately
-          </span>
-        </div>
-      )}
-
-      {urgency === "warning" && (
-        <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-[#FF9500]">
-          <span className="w-2 h-2 rounded-full bg-white" />
-          <span className="text-[11px] font-semibold text-white uppercase tracking-wider">
-            Warning — Cold Chain at Risk
-          </span>
-        </div>
-      )}
-
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <h3 className="text-lg font-semibold text-[#000000]">
-            {cargo.type.charAt(0).toUpperCase() + cargo.type.slice(1)}
-            <span className="font-[family-name:var(--font-mono)] text-[#8E8E93] text-sm ml-2">
-              {(cargo.quantityKg / 1000).toFixed(0)} Tonnes
+    <div className="aura-container relative group">
+      {urgency === "critical" && <div className="aura-orb aura-red w-[150%] h-[150%] top-[-25%] left-[-25%]" />}
+      {urgency === "warning" && <div className="aura-orb aura-blue w-[150%] h-[150%] top-[-25%] left-[-25%]" />}
+      
+      <div className={`ios-card glass p-5 transition-all duration-300 border ${borderColor} group-hover:scale-[1.02] group-hover:shadow-2xl`}>
+        {/* Urgency Strip */}
+        {urgency === "critical" && (
+          <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-xl bg-[#FF3B30] animate-pulse-danger shadow-[0_0_15px_rgba(255,59,48,0.5)]">
+            <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_5px_white]" />
+            <span className="text-[11px] font-bold text-white uppercase tracking-wider">
+              Urgent — Respond Immediately
             </span>
-          </h3>
-          <p className="text-xs text-[#8E8E93] mt-0.5">
-            Truck: {cargo.truckPlate} · From {cargo.origin.name}
-          </p>
-        </div>
-        <CountdownTimer expiresAt={expiresAt} size="sm" />
-      </div>
+          </div>
+        )}
 
-      {/* Stats Grid — 2 cols on mobile, 4 on desktop */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
-          <p className="text-[9px] text-[#8E8E93] uppercase tracking-widest">Temp</p>
-          <p className={`font-[family-name:var(--font-mono)] text-sm font-bold mt-0.5 ${
-            urgency === "critical" ? "text-[#FF3B30]" : urgency === "warning" ? "text-[#FF9500]" : "text-[#34C759]"
-          }`}>
-            {cargo.telemetry.temperature.toFixed(1)}°C
-          </p>
+        {urgency === "warning" && (
+          <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-xl bg-[#FF9500] shadow-[0_0_15px_rgba(255,149,0,0.3)]">
+            <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_5px_white]" />
+            <span className="text-[11px] font-bold text-white uppercase tracking-wider">
+              Warning — Cold Chain at Risk
+            </span>
+          </div>
+        )}
+
+        {/* Header */}
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <h3 className="text-xl font-bold text-[var(--text-primary)]">
+              {cargo.type.charAt(0).toUpperCase() + cargo.type.slice(1)}
+              <span className="font-[family-name:var(--font-mono)] text-[var(--text-tertiary)] text-sm ml-2 font-semibold bg-[var(--fill-secondary)] px-2 py-1 rounded-md">
+                {(cargo.quantityKg / 1000).toFixed(0)} Tonnes
+              </span>
+            </h3>
+            <p className="text-xs text-[var(--text-secondary)] mt-1.5 font-medium">
+              <span className="inline-block w-2 h-2 rounded-full bg-[#34C759] mr-1"></span> Truck: {cargo.truckPlate} · From {cargo.origin.name}
+            </p>
+          </div>
+          <div className="bg-[var(--fill-secondary)] px-3 py-1.5 rounded-xl clay">
+            <CountdownTimer expiresAt={expiresAt} size="sm" />
+          </div>
         </div>
-        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
-          <p className="text-[9px] text-[#8E8E93] uppercase tracking-widest">Quality</p>
-          <p className={`font-[family-name:var(--font-mono)] text-sm font-bold mt-0.5 ${
-            qualityPercent > 85 ? "text-[#34C759]" : qualityPercent > 70 ? "text-[#FF9500]" : "text-[#FF3B30]"
-          }`}>
-            {qualityPercent}%
-          </p>
+
+        {/* Stats Grid — 2 cols on mobile, 4 on desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+          <div className="clay text-center p-3">
+            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-widest font-bold">Temp</p>
+            <p className={`font-[family-name:var(--font-mono)] text-base font-bold mt-1 ${
+              urgency === "critical" ? "text-[#FF3B30] animate-pulse" : urgency === "warning" ? "text-[#FF9500]" : "text-[#34C759]"
+            }`}>
+              {cargo.telemetry.temperature.toFixed(1)}°C
+            </p>
+          </div>
+          <div className="clay text-center p-3">
+            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-widest font-bold">Quality</p>
+            <p className={`font-[family-name:var(--font-mono)] text-base font-bold mt-1 ${
+              qualityPercent > 85 ? "text-[#34C759]" : qualityPercent > 70 ? "text-[#FF9500]" : "text-[#FF3B30]"
+            }`}>
+              {qualityPercent}%
+            </p>
+          </div>
+          <div className="clay text-center p-3">
+            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-widest font-bold">Distance</p>
+            <p className="font-[family-name:var(--font-mono)] text-base font-bold text-[var(--text-primary)] mt-1">
+              {distance} km
+            </p>
+          </div>
+          <div className="clay text-center p-3">
+            <p className="text-[9px] text-[var(--text-tertiary)] uppercase tracking-widest font-bold">ETA</p>
+            <p className="font-[family-name:var(--font-mono)] text-base font-bold text-[var(--text-primary)] mt-1">
+              {etaMinutes}m
+            </p>
+          </div>
         </div>
-        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
-          <p className="text-[9px] text-[#8E8E93] uppercase tracking-widest">Distance</p>
-          <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-[#000000] mt-0.5">
-            {distance} km
-          </p>
-        </div>
-        <div className="text-center p-2 rounded-lg bg-[#F2F2F7]">
-          <p className="text-[9px] text-[#8E8E93] uppercase tracking-widest">ETA</p>
-          <p className="font-[family-name:var(--font-mono)] text-sm font-bold text-[#000000] mt-0.5">
-            {etaMinutes}m
-          </p>
-        </div>
-      </div>
 
       {/* Quality Note */}
-      <p className="text-xs text-[#8E8E93] mb-3 italic">
-        Quality estimate: {qualityLabel}
+      <p className="text-xs text-[var(--text-tertiary)] mb-4 italic font-medium">
+        Quality estimate: <span className={qualityPercent > 85 ? "text-[#34C759]" : "text-[#FF9500]"}>{qualityLabel}</span>
       </p>
 
       {/* Asking Price */}
-      <div className="flex items-center justify-between mt-2 mb-4 bg-[#F2F2F7] p-3 rounded-lg border border-[#E5E5EA]">
-        <span className="text-sm text-[#3C3C43]">Asking Price</span>
+      <div className="flex items-center justify-between mb-5 clay p-4 rounded-xl border border-[var(--separator)]">
+        <span className="text-sm font-semibold text-[var(--text-secondary)]">Asking Price</span>
         <div className="flex flex-col items-end">
-          <span className="font-[family-name:var(--font-mono)] text-xl font-bold text-[#34C759]">
+          <span className="font-[family-name:var(--font-mono)] text-2xl font-bold text-[#34C759] drop-shadow-sm">
             ₹{cargo.askingPricePerKg ?? 0}/kg
           </span>
         </div>
@@ -164,23 +170,23 @@ export default function CargoOfferCard({
 
       {/* Counter Offer Status */}
       {existingBid && existingBid.status === "counter_offered" && existingBid.counterPricePerKg && mode === "idle" && (
-        <div className="mb-4 p-3 rounded-lg bg-[#AF52DE]/10 border border-[#AF52DE]/30">
+        <div className="mb-5 p-4 rounded-xl glass bg-[#AF52DE]/10 border border-[#AF52DE]/30 shadow-[0_4px_15px_rgba(175,82,222,0.15)]">
           <p className="text-[10px] text-[#AF52DE] uppercase tracking-widest block mb-2 font-bold">
             Logistics Countered Your Bid
           </p>
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-sm text-[#000000]">They want:</span>
-            <span className="font-[family-name:var(--font-mono)] text-lg font-bold text-[#AF52DE]">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-sm font-medium text-[var(--text-primary)]">They want:</span>
+            <span className="font-[family-name:var(--font-mono)] text-xl font-bold text-[#AF52DE] drop-shadow-sm">
               ₹{existingBid.counterPricePerKg}/kg
             </span>
           </div>
-          <div className="flex gap-2 mt-3">
+          <div className="flex gap-3 mt-4">
             <button
               onClick={() => {
                 onAcceptFull(cargo.id);
                 setAccepted(true);
               }}
-              className="skeuomorphic-btn skeuomorphic-primary flex-1 text-xs py-2.5 px-3"
+              className="skeuomorphic-btn skeuomorphic-primary flex-1 text-sm py-3 font-bold"
             >
               Accept at ₹{existingBid.counterPricePerKg}/kg
             </button>
@@ -190,18 +196,18 @@ export default function CargoOfferCard({
       
       {/* Pending Status */}
       {existingBid && existingBid.status === "pending" && mode === "idle" && (
-        <div className="mb-4 p-3 rounded-lg bg-[#007AFF]/10 border border-[#007AFF]/30 text-center">
-           <span className="text-sm font-semibold text-[#007AFF]">Your Bid is Pending Review...</span>
+        <div className="mb-5 p-4 rounded-xl glass bg-[#007AFF]/10 border border-[#007AFF]/30 text-center shadow-[0_4px_15px_rgba(0,122,255,0.15)]">
+           <span className="text-sm font-bold text-[#007AFF]">Your Bid is Pending Review...</span>
         </div>
       )}
 
       {/* Partial Order Form */}
       {mode === "partial" && (
-        <div className="mb-4 p-3 rounded-lg bg-[#007AFF]/5 border border-[#007AFF]/20">
-          <label className="text-[10px] text-[#007AFF] uppercase tracking-widest block mb-2">
+        <div className="mb-5 p-4 rounded-xl glass bg-[#007AFF]/5 border border-[#007AFF]/20 shadow-[0_4px_15px_rgba(0,122,255,0.1)]">
+          <label className="text-[10px] text-[#007AFF] uppercase tracking-widest block mb-3 font-bold">
             How much do you want? (kg)
           </label>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-3 items-center">
             <input
               type="range"
               min={500}
@@ -209,26 +215,26 @@ export default function CargoOfferCard({
               step={500}
               value={partialQty}
               onChange={(e) => setPartialQty(Number(e.target.value))}
-              className="flex-1 accent-[#007AFF]"
+              className="flex-1 accent-[#007AFF] h-2 bg-[var(--fill-secondary)] rounded-lg appearance-none cursor-pointer"
             />
-            <span className="font-[family-name:var(--font-mono)] text-sm text-[#007AFF] w-20 text-right">
+            <span className="font-[family-name:var(--font-mono)] text-base font-bold text-[#007AFF] w-20 text-right bg-white/50 dark:bg-black/50 px-2 py-1 rounded-md">
               {(partialQty / 1000).toFixed(1)}T
             </span>
           </div>
-          <div className="flex justify-between mt-2 text-xs text-[#8E8E93]">
+          <div className="flex justify-between mt-3 text-sm font-medium text-[var(--text-secondary)]">
             <span>Total: ₹{((cargo.askingPricePerKg ?? 0) * partialQty).toLocaleString("en-IN")}</span>
           </div>
-          <div className="flex gap-2 mt-3">
+          <div className="flex gap-3 mt-4">
             <button
               onClick={() => {
                 onAcceptPartial(cargo.id, partialQty);
                 setAccepted(true);
               }}
-              className="skeuomorphic-btn skeuomorphic-primary flex-1 text-xs py-2.5"
+              className="skeuomorphic-btn skeuomorphic-primary flex-1 text-sm py-3 font-bold"
             >
               Confirm {(partialQty / 1000).toFixed(1)}T Order
             </button>
-            <button onClick={() => setMode("idle")} className="skeuomorphic-btn skeuomorphic-danger text-xs py-2.5 px-4">
+            <button onClick={() => setMode("idle")} className="skeuomorphic-btn text-sm py-3 px-5 font-bold text-[var(--text-primary)]">
               Cancel
             </button>
           </div>
@@ -237,49 +243,49 @@ export default function CargoOfferCard({
 
       {/* Counter Offer Form */}
       {mode === "counter" && (
-        <div className="mb-4 p-3 rounded-lg bg-[#FF9500]/5 border border-[#FF9500]/20">
-          <label className="text-[10px] text-[#FF9500] uppercase tracking-widest block mb-2">
+        <div className="mb-5 p-4 rounded-xl glass bg-[#FF9500]/5 border border-[#FF9500]/20 shadow-[0_4px_15px_rgba(255,149,0,0.1)]">
+          <label className="text-[10px] text-[#FF9500] uppercase tracking-widest block mb-3 font-bold">
             Your offer
           </label>
-          <div className="grid grid-cols-2 gap-3 mb-3">
+          <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
-              <span className="text-[10px] text-[#8E8E93] block mb-1">Price (₹/kg)</span>
+              <span className="text-[10px] text-[var(--text-tertiary)] block mb-1.5 font-bold">Price (₹/kg)</span>
               <input
                 type="number"
                 value={counterPrice}
                 onChange={(e) => setCounterPrice(Number(e.target.value))}
-                className="ios-input font-[family-name:var(--font-mono)] text-sm"
+                className="ios-input font-[family-name:var(--font-mono)] text-base font-bold"
                 min={1}
                 step={0.5}
               />
             </div>
             <div>
-              <span className="text-[10px] text-[#8E8E93] block mb-1">Quantity (kg)</span>
+              <span className="text-[10px] text-[var(--text-tertiary)] block mb-1.5 font-bold">Quantity (kg)</span>
               <input
                 type="number"
                 value={counterQty}
                 onChange={(e) => setCounterQty(Number(e.target.value))}
-                className="ios-input font-[family-name:var(--font-mono)] text-sm"
+                className="ios-input font-[family-name:var(--font-mono)] text-base font-bold"
                 min={500}
                 max={cargo.quantityKg}
                 step={500}
               />
             </div>
           </div>
-          <p className="text-xs text-[#8E8E93] mb-3">
-            Total offer: <span className="font-[family-name:var(--font-mono)] text-[#FF9500]">₹{(counterPrice * counterQty).toLocaleString("en-IN")}</span>
+          <p className="text-sm font-medium text-[var(--text-secondary)] mb-4">
+            Total offer: <span className="font-[family-name:var(--font-mono)] text-lg font-bold text-[#FF9500]">₹{(counterPrice * counterQty).toLocaleString("en-IN")}</span>
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button
               onClick={() => {
                 onCounterOffer(cargo.id, counterPrice, counterQty);
                 setAccepted(true);
               }}
-              className="skeuomorphic-btn skeuomorphic-primary flex-1 text-xs py-2.5"
+              className="skeuomorphic-btn skeuomorphic-primary flex-1 text-sm py-3 font-bold"
             >
               Send Counter Offer
             </button>
-            <button onClick={() => setMode("idle")} className="skeuomorphic-btn skeuomorphic-danger text-xs py-2.5 px-4">
+            <button onClick={() => setMode("idle")} className="skeuomorphic-btn text-sm py-3 px-5 font-bold text-[var(--text-primary)]">
               Cancel
             </button>
           </div>
@@ -288,33 +294,33 @@ export default function CargoOfferCard({
 
       {/* Action Buttons */}
       {mode === "idle" && (!existingBid || existingBid.status === "counter_offered") && (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-3">
           <button
             onClick={() => {
               onAcceptFull(cargo.id);
               setAccepted(true);
             }}
-            className="skeuomorphic-btn skeuomorphic-primary text-xs py-3 flex flex-col items-center gap-1"
+            className="skeuomorphic-btn skeuomorphic-primary text-sm py-3.5 flex flex-col items-center gap-1.5 font-bold hover:scale-[1.02]"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
             </svg>
             Accept Full
           </button>
           <button
             onClick={() => setMode("partial")}
-            className="skeuomorphic-btn text-xs py-3 flex flex-col items-center gap-1 text-[#007AFF]"
+            className="skeuomorphic-btn text-sm py-3.5 flex flex-col items-center gap-1.5 font-bold text-[#007AFF] hover:scale-[1.02]"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6Z" />
             </svg>
             Partial
           </button>
           <button
             onClick={() => setMode("counter")}
-            className="skeuomorphic-btn text-xs py-3 flex flex-col items-center gap-1 text-[#FF9500]"
+            className="skeuomorphic-btn text-sm py-3.5 flex flex-col items-center gap-1.5 font-bold text-[#FF9500] hover:scale-[1.02]"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
             </svg>
             Counter

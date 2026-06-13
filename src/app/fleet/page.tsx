@@ -84,7 +84,10 @@ export default function FleetApp() {
   };
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden bg-[var(--bg-primary)]">
+    <div className="flex h-[100dvh] overflow-hidden bg-[var(--bg-primary)] aura-container relative">
+      {/* Background Aura */}
+      <div className="aura-orb aura-blue w-[70vw] h-[70vh] top-[-10%] left-[-10%]" />
+      <div className="aura-orb aura-green w-[50vw] h-[50vh] bottom-[-10%] right-[-10%]" style={{ animationDelay: '-5s' }} />
 
       {/* ===== MOBILE: Top Navbar (hamburger only) ===== */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-[var(--bg-primary)]/85 backdrop-blur-md border-b border-[var(--separator-opaque)] px-4 h-[44px] flex items-center">
@@ -109,7 +112,7 @@ export default function FleetApp() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden drawer-overlay open"
+              className="md:hidden drawer-overlay open z-50"
               onClick={() => setDrawerOpen(false)}
             />
             <motion.div
@@ -123,29 +126,29 @@ export default function FleetApp() {
               onDragEnd={(e, info) => {
                 if (info.offset.y > 100) setDrawerOpen(false);
               }}
-              className="md:hidden fixed bottom-0 left-0 right-0 z-[101] bg-[var(--bg-primary)] rounded-t-3xl overflow-hidden flex flex-col max-h-[85vh] shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+              className="md:hidden fixed bottom-0 left-0 right-0 z-[101] glass rounded-t-[2.5rem] overflow-hidden flex flex-col max-h-[85vh] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] border-t border-[var(--separator)]"
             >
               {/* Drag Handle */}
-              <div className="w-full flex justify-center py-3 bg-[var(--bg-primary)] z-10 touch-none">
+              <div className="w-full flex justify-center py-4 bg-transparent z-10 touch-none">
                 <div className="w-12 h-1.5 rounded-full bg-[var(--separator-opaque)]" />
               </div>
 
               <div className="flex-1 overflow-y-auto pb-[80px]">
                 {/* Drawer Header: User Profile */}
-                <div className="p-5 pb-4 border-b border-[var(--separator-opaque)]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center text-lg font-bold">
+                <div className="p-6 pb-5 border-b border-[var(--separator)]">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#007AFF]/20 to-[#AF52DE]/20 border border-[var(--separator)] text-[#007AFF] flex items-center justify-center text-xl font-extrabold shadow-sm">
                       {user?.name?.charAt(0).toUpperCase() || "D"}
                     </div>
                     <div>
-                      <p className="text-base font-semibold text-[var(--text-primary)]">{user?.name || "Director"}</p>
-                      <p className="text-sm text-[var(--text-secondary)]">Logistics Director</p>
+                      <p className="text-xl font-bold text-[var(--text-primary)]">{user?.name || "Director"}</p>
+                      <p className="text-sm font-medium text-[var(--text-secondary)]">Logistics Director</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Drawer Nav Items */}
-                <nav className="py-2">
+                <nav className="p-4 space-y-1">
                   {NAV_ITEMS.map((item) => (
                     <button
                       key={item.id}
@@ -153,15 +156,19 @@ export default function FleetApp() {
                         handleNavClick(item.id);
                         setDrawerOpen(false);
                       }}
-                      className={`drawer-nav-item w-full ${activeNav === item.id ? "active" : ""}`}
+                      className={`drawer-nav-item w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-base font-medium transition-all ${
+                        activeNav === item.id 
+                          ? "bg-[var(--fill-secondary)] text-[#007AFF] font-bold" 
+                          : "text-[var(--text-primary)] hover:bg-[var(--fill-tertiary)]"
+                      }`}
                     >
-                      <NavIcon icon={item.icon} className={activeNav === item.id ? "text-[var(--tint-blue)]" : "text-[var(--text-tertiary)]"} />
+                      <NavIcon icon={item.icon} className={activeNav === item.id ? "text-[#007AFF]" : "text-[var(--text-tertiary)]"} />
                       <span className="flex-1 text-left">{item.label}</span>
                       {item.id === "alerts" && unreadAlerts > 0 && (
-                        <span className="badge-count">{unreadAlerts}</span>
+                        <span className="badge-count shadow-sm">{unreadAlerts}</span>
                       )}
                       {item.id === "marketplace" && newBidsCount > 0 && (
-                        <span className="min-w-[20px] h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold px-1.5">
+                        <span className="min-w-[20px] h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold px-1.5 shadow-sm">
                           {newBidsCount}
                         </span>
                       )}
@@ -171,12 +178,12 @@ export default function FleetApp() {
               </div>
 
               {/* Drawer Footer: Sign Out */}
-              <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-[var(--separator-opaque)] bg-[var(--bg-primary)] pb-safe">
+              <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-[var(--separator)] bg-[var(--bg-primary)]/80 backdrop-blur-md pb-safe">
                 <button
                   onClick={logout}
-                  className="drawer-nav-item w-full text-[#FF3B30] font-medium"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#FF3B30]/10 text-[#FF3B30] font-bold active:scale-[0.98] transition-transform"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
                   </svg>
                   <span>Sign Out</span>
@@ -188,7 +195,7 @@ export default function FleetApp() {
       </AnimatePresence>
 
       {/* ===== MOBILE: Bottom Tab Bar ===== */}
-      <div className="md:hidden ios-tabbar">
+      <div className="md:hidden ios-tabbar glass z-40">
         {TAB_ITEMS.map((item) => (
           <button
             key={item.id}
@@ -198,26 +205,26 @@ export default function FleetApp() {
             <div className="relative">
               <NavIcon icon={item.icon} className="w-6 h-6" />
               {item.id === "alerts" && unreadAlerts > 0 && (
-                <span className="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#FF3B30] border-2 border-white" />
+                <span className="absolute -top-1 -right-1.5 w-2.5 h-2.5 rounded-full bg-[#FF3B30] border-2 border-[var(--bg-primary)]" />
               )}
             </div>
-            <span>{item.label}</span>
+            <span className="mt-1">{item.label}</span>
           </button>
         ))}
       </div>
 
       {/* ===== DESKTOP: Sidebar ===== */}
-      <aside className={`hidden md:flex h-full liquid-glass border-r border-[var(--separator)] flex-col shrink-0 z-20 transition-all duration-300 ${isSidebarOpen ? "w-[280px]" : "w-0 overflow-hidden opacity-0"}`}>
+      <aside className={`hidden md:flex h-full glass liquid-glass border-r border-[var(--separator)] flex-col shrink-0 z-20 transition-all duration-300 ${isSidebarOpen ? "w-[280px]" : "w-0 overflow-hidden opacity-0"}`}>
         {/* Logo */}
         <Link href="/" className="flex items-center gap-4 p-6 border-b border-[var(--separator)] group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#007AFF]/10 to-[#34C759]/10 border border-[var(--separator-opaque)]/30 flex items-center justify-center group-hover:scale-105 transition-transform">
-            <svg className="w-5 h-5 text-[#007AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#007AFF]/20 to-[#34C759]/20 border border-[var(--separator)] flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
+            <svg className="w-5 h-5 text-[#007AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
             </svg>
           </div>
           <div>
-            <p className="text-base font-bold bg-gradient-to-r from-[#007AFF] to-[#34C759] bg-clip-text text-transparent">Annapurna</p>
-            <p className="text-[11px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider mt-0.5">Fleet Command</p>
+            <p className="text-base font-bold bg-gradient-to-r from-[#007AFF] to-[#34C759] bg-clip-text text-transparent drop-shadow-sm">Annapurna</p>
+            <p className="text-[11px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider mt-0.5">Fleet Command</p>
           </div>
         </Link>
 
@@ -227,19 +234,19 @@ export default function FleetApp() {
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 ${
                 activeNav === item.id
-                  ? "bg-[#007AFF]/10 text-[#007AFF] border border-[#007AFF]/20"
-                  : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-primary)] border border-transparent"
+                  ? "bg-[#007AFF]/10 text-[#007AFF] border border-[#007AFF]/20 shadow-[0_2px_10px_rgba(0,122,255,0.1)]"
+                  : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--fill-secondary)] border border-transparent"
               }`}
             >
               <NavIcon icon={item.icon} className={activeNav === item.id ? "text-[#007AFF]" : "text-[var(--text-tertiary)]"} />
               <span>{item.label}</span>
               {item.id === "alerts" && unreadAlerts > 0 && (
-                <span className="ml-auto badge-count">{unreadAlerts}</span>
+                <span className="ml-auto badge-count shadow-sm">{unreadAlerts}</span>
               )}
               {item.id === "marketplace" && newBidsCount > 0 && (
-                <span className="ml-auto w-5 h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold">
+                <span className="ml-auto w-5 h-5 rounded-full bg-[#007AFF] text-white text-[10px] flex items-center justify-center font-bold shadow-sm">
                   {newBidsCount}
                 </span>
               )}
@@ -249,15 +256,15 @@ export default function FleetApp() {
 
         {/* User Profile Footer */}
         <div className="p-4 border-t border-[var(--separator)]">
-          <div onClick={logout} className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer border border-transparent hover:border-[#FF3B30]/30 hover:bg-[#FF3B30]/5 group transition-all">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#007AFF]/20 to-[#34C759]/20 border border-[var(--separator-opaque)]/30 flex items-center justify-center text-sm font-bold text-[#007AFF] group-hover:border-[#FF3B30]/50">
+          <div onClick={logout} className="flex items-center gap-3 px-4 py-3.5 rounded-xl cursor-pointer bg-[var(--fill-secondary)] hover:bg-[#FF3B30]/10 border border-transparent hover:border-[#FF3B30]/30 group transition-all">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#007AFF]/20 to-[#34C759]/20 border border-[var(--separator)] flex items-center justify-center text-sm font-bold text-[#007AFF] group-hover:border-[#FF3B30]/50 group-hover:text-[#FF3B30] shadow-sm">
               {user?.name?.charAt(0).toUpperCase() || "D"}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-[var(--text-primary)] truncate group-hover:text-[#FF3B30]">{user?.name || "Director"}</p>
-              <p className="text-xs text-[var(--text-tertiary)] truncate">Logistics Director</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] truncate">Logistics</p>
             </div>
-            <svg className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#FF3B30]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[#FF3B30]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
             </svg>
           </div>
@@ -267,13 +274,13 @@ export default function FleetApp() {
       <main className="flex-1 h-full overflow-y-auto relative z-10 mt-[44px] md:mt-0 has-tabbar flex flex-col">
         {/* Desktop Hamburger Toggle */}
         <div className="hidden md:flex items-center px-8 pt-6 pb-2">
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 -ml-2 rounded-lg hover:bg-[var(--fill-secondary)] text-[var(--text-secondary)] transition-colors" aria-label="Toggle Sidebar">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 -ml-2 rounded-xl bg-[var(--fill-secondary)] hover:bg-[var(--fill-tertiary)] text-[var(--text-primary)] transition-colors border border-[var(--separator)] shadow-sm" aria-label="Toggle Sidebar">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
           </button>
         </div>
-        <div className="p-4 md:px-8 md:pt-2 min-h-full pb-[160px]">
+        <div className="p-4 md:px-8 md:pt-4 min-h-full pb-[160px] relative z-10">
           {/* View Router */}
-          <div className="view-transition-enter-active">
+          <div className="view-transition-enter-active relative z-10">
             {activeNav === "dashboard" && <DashboardView />}
             {activeNav === "fleet" && <FleetTrackingView />}
             {activeNav === "alerts" && <AlertsView />}

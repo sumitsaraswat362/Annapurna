@@ -4,15 +4,15 @@ import Link from "next/link";
 
 export function FooterCTA() {
   return (
-    <footer className="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-black border-t border-white/5">
+    <footer className="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[var(--bg-primary)] border-t border-[var(--separator)]">
       {/* Cinematic Blue Mesh Gradient Background */}
       <div className="absolute inset-0 z-0 flex items-center justify-center">
         <motion.div 
-          className="absolute w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] bg-[#007AFF] rounded-full mix-blend-screen filter blur-[100px] opacity-30"
+          className="absolute w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] bg-[#007AFF] rounded-full mix-blend-screen filter blur-[100px] opacity-[0.15] dark:opacity-30"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 90, 0],
-            opacity: [0.2, 0.4, 0.2]
+            opacity: [0.15, 0.25, 0.15]
           }}
           transition={{
             duration: 15,
@@ -21,11 +21,11 @@ export function FooterCTA() {
           }}
         />
         <motion.div 
-          className="absolute w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] bg-[#0A84FF] rounded-full mix-blend-screen filter blur-[120px] opacity-20"
+          className="absolute w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] bg-[#0A84FF] rounded-full mix-blend-screen filter blur-[120px] opacity-[0.1] dark:opacity-20"
           animate={{
             scale: [1.2, 1, 1.2],
             rotate: [90, 0, 90],
-            opacity: [0.1, 0.3, 0.1]
+            opacity: [0.05, 0.15, 0.05]
           }}
           transition={{
             duration: 20,
@@ -37,7 +37,7 @@ export function FooterCTA() {
 
       <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl">
         <motion.h2 
-          className="text-5xl md:text-7xl font-semibold tracking-tighter text-white mb-8 leading-tight"
+          className="text-5xl md:text-7xl font-semibold tracking-tighter text-[var(--text-primary)] mb-8 leading-tight drop-shadow-sm"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -47,7 +47,7 @@ export function FooterCTA() {
         </motion.h2>
 
         <motion.p 
-          className="text-xl text-white/50 mb-12 max-w-xl"
+          className="text-xl text-[var(--text-secondary)] font-medium mb-12 max-w-xl"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -66,7 +66,7 @@ export function FooterCTA() {
         >
           <Link 
             href="/login"
-            className="group relative flex items-center gap-3 px-8 py-4 bg-gradient-to-b from-[#0A84FF] to-[#005DEB] rounded-full text-white text-lg font-medium shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4),0_0_40px_rgba(0,122,255,0.4)] overflow-hidden"
+            className="group relative flex items-center gap-3 px-8 py-4 bg-gradient-to-b from-[#0A84FF] to-[#005DEB] rounded-full text-white text-lg font-bold shadow-[inset_0px_1px_1px_rgba(255,255,255,0.4),0_10px_40px_rgba(0,122,255,0.3)] overflow-hidden"
           >
             <span className="relative z-10">Launch Dashboard</span>
             <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
@@ -78,12 +78,12 @@ export function FooterCTA() {
       </div>
       
       {/* Footer Links */}
-      <div className="absolute bottom-8 w-full px-12 flex justify-between items-center text-xs font-medium text-white/30 z-10">
+      <div className="absolute bottom-8 w-full px-12 flex justify-between items-center text-xs font-bold text-[var(--text-tertiary)] z-10">
         <div>© 2026 Annapurna. All rights reserved.</div>
         <div className="flex gap-6">
-          <a href="#" className="hover:text-white transition-colors">Privacy</a>
-          <a href="#" className="hover:text-white transition-colors">Terms</a>
-          <a href="#" className="hover:text-white transition-colors">System Status</a>
+          <a href="#" className="hover:text-[var(--text-primary)] transition-colors">Privacy</a>
+          <a href="#" className="hover:text-[var(--text-primary)] transition-colors">Terms</a>
+          <a href="#" className="hover:text-[var(--text-primary)] transition-colors">System Status</a>
         </div>
       </div>
     </footer>

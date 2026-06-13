@@ -6,16 +6,16 @@ import { FooterCTA } from "./FooterCTA";
 
 export function LandingPage() {
   return (
-    <div className="bg-black min-h-screen text-white font-sans font-['Inter']">
+    <div className="bg-[var(--bg-primary)] min-h-screen text-[var(--text-primary)] font-sans font-['Inter'] aura-container relative overflow-x-hidden">
       {/* Background Mesh Gradients */}
-      <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#007AFF] opacity-20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#0A84FF] opacity-10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="aura-orb aura-blue w-[50%] h-[50%] top-[-20%] left-[-10%] opacity-40 blur-[120px]" />
+      <div className="aura-orb aura-green w-[40%] h-[40%] bottom-[-10%] right-[-10%] opacity-30 blur-[100px]" />
       
       <FloatingNav activeTab="home" />
-      <main>
+      <main className="relative z-10">
         <Hero />
         {/* Buffer space so devices in Hero never get cut by next section */}
-        <div className="h-[30vh] w-full" />
+        <div className="h-[10vh] w-full" />
         <FeatureShowcase />
         <BentoGrid />
       </main>

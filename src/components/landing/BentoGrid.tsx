@@ -31,8 +31,8 @@ export function BentoGrid() {
   return (
     <section className="py-32 px-6 max-w-7xl mx-auto" id="features">
       <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-white mb-4">
-          Everything you need. <br/> <span className="text-white/40">Nothing you don't.</span>
+        <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">
+          Everything you need. <br/> <span className="text-[var(--text-tertiary)]">Nothing you don't.</span>
         </h2>
       </div>
 
@@ -55,30 +55,30 @@ export function BentoGrid() {
         {/* Box 1: Wholesaler Bidding */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-1 md:col-span-2 row-span-2 bg-[#141414] rounded-[2rem] p-8 border border-white/5 relative overflow-hidden group min-h-[400px]"
+          className="col-span-1 md:col-span-2 row-span-2 glass rounded-[2rem] p-8 relative overflow-hidden group min-h-[400px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         >
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                style={{
-                 background: "radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%)"
+                 background: "radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(100,100,100,0.1), transparent 40%)"
                }} 
           />
           <div className="relative z-10 flex flex-col h-full justify-between">
             <div className="max-w-sm">
-              <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mb-6 border border-white/10">
-                <Globe className="text-white w-6 h-6" />
+              <div className="w-12 h-12 bg-[var(--fill-secondary)] rounded-xl flex items-center justify-center mb-6 border border-[var(--separator)] shadow-sm">
+                <Globe className="text-[var(--text-primary)] w-6 h-6" />
               </div>
-              <h3 className="text-2xl font-semibold text-white mb-2">Wholesaler Bidding</h3>
-              <p className="text-white/50">Connect with local wholesalers. Automated bidding ensures you get the best price for your excess inventory before it spoils.</p>
+              <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Wholesaler Bidding</h3>
+              <p className="text-[var(--text-secondary)] font-medium">Connect with local wholesalers. Automated bidding ensures you get the best price for your excess inventory before it spoils.</p>
             </div>
             
             <div className="mt-8 flex gap-4">
-              <div className="bg-white/5 p-4 rounded-2xl border border-white/10 backdrop-blur-sm flex-1">
-                <div className="text-xs text-white/40 mb-1">Current Bid</div>
-                <div className="text-xl font-medium text-[#34C759]">$4,250.00</div>
+              <div className="bg-[var(--fill-secondary)] p-4 rounded-2xl border border-[var(--separator)] backdrop-blur-sm flex-1 shadow-sm">
+                <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)] mb-1">Current Bid</div>
+                <div className="text-xl font-bold text-[#34C759]">$4,250.00</div>
               </div>
-              <div className="bg-white/5 p-4 rounded-2xl border border-white/10 backdrop-blur-sm flex-1">
-                <div className="text-xs text-white/40 mb-1">Time Left</div>
-                <div className="text-xl font-medium text-white">04:12:00</div>
+              <div className="bg-[var(--fill-secondary)] p-4 rounded-2xl border border-[var(--separator)] backdrop-blur-sm flex-1 shadow-sm">
+                <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)] mb-1">Time Left</div>
+                <div className="text-xl font-bold text-[var(--text-primary)]">04:12:00</div>
               </div>
             </div>
           </div>
@@ -87,7 +87,7 @@ export function BentoGrid() {
         {/* Box 2: Emergency SOS */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-1 bg-[#141414] rounded-[2rem] p-8 border border-white/5 relative overflow-hidden group min-h-[300px]"
+          className="col-span-1 glass rounded-[2rem] p-8 relative overflow-hidden group min-h-[300px] shadow-[0_20px_50px_rgba(255,59,48,0.05)] dark:shadow-[0_20px_50px_rgba(255,59,48,0.1)]"
         >
            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                style={{
@@ -95,18 +95,18 @@ export function BentoGrid() {
                }} 
           />
           <div className="relative z-10">
-            <div className="w-12 h-12 bg-[#FF3B30]/10 rounded-xl flex items-center justify-center mb-6 border border-[#FF3B30]/20">
+            <div className="w-12 h-12 bg-[#FF3B30]/10 rounded-xl flex items-center justify-center mb-6 border border-[#FF3B30]/20 shadow-sm">
               <ShieldAlert className="text-[#FF3B30] w-6 h-6" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Emergency SOS</h3>
-            <p className="text-white/50 text-sm">Instant dispatch of backup refrigeration units if your primary system fails mid-transit.</p>
+            <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">Emergency SOS</h3>
+            <p className="text-[var(--text-secondary)] font-medium text-sm">Instant dispatch of backup refrigeration units if your primary system fails mid-transit.</p>
           </div>
         </motion.div>
 
         {/* Box 3: AI Optimization */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-1 bg-[#141414] rounded-[2rem] p-8 border border-white/5 relative overflow-hidden group min-h-[300px]"
+          className="col-span-1 glass rounded-[2rem] p-8 relative overflow-hidden group min-h-[300px] shadow-[0_20px_50px_rgba(0,122,255,0.05)] dark:shadow-[0_20px_50px_rgba(0,122,255,0.1)]"
         >
            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                style={{
@@ -114,18 +114,18 @@ export function BentoGrid() {
                }} 
           />
           <div className="relative z-10">
-            <div className="w-12 h-12 bg-[#007AFF]/10 rounded-xl flex items-center justify-center mb-6 border border-[#007AFF]/20">
+            <div className="w-12 h-12 bg-[#007AFF]/10 rounded-xl flex items-center justify-center mb-6 border border-[#007AFF]/20 shadow-sm">
               <Cpu className="text-[#007AFF] w-6 h-6" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">AI Routing</h3>
-            <p className="text-white/50 text-sm">Dynamic rerouting based on traffic, weather, and facility wait times.</p>
+            <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">AI Routing</h3>
+            <p className="text-[var(--text-secondary)] font-medium text-sm">Dynamic rerouting based on traffic, weather, and facility wait times.</p>
           </div>
         </motion.div>
 
         {/* Box 4: Eco Mode */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-1 md:col-span-3 bg-[#141414] rounded-[2rem] border border-white/5 relative overflow-hidden group flex flex-col md:flex-row items-center"
+          className="col-span-1 md:col-span-3 glass rounded-[2rem] relative overflow-hidden group flex flex-col md:flex-row items-center shadow-[0_20px_50px_rgba(52,199,89,0.05)] dark:shadow-[0_20px_50px_rgba(52,199,89,0.1)]"
         >
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                style={{
@@ -133,19 +133,19 @@ export function BentoGrid() {
                }} 
           />
           <div className="p-8 md:w-1/2 relative z-10">
-            <div className="w-12 h-12 bg-[#34C759]/10 rounded-xl flex items-center justify-center mb-6 border border-[#34C759]/20">
+            <div className="w-12 h-12 bg-[#34C759]/10 rounded-xl flex items-center justify-center mb-6 border border-[#34C759]/20 shadow-sm">
               <Leaf className="text-[#34C759] w-6 h-6" />
             </div>
-            <h3 className="text-2xl font-semibold text-white mb-2">Eco-Efficiency</h3>
-            <p className="text-white/50">Reduce carbon footprint by optimizing engine idling and temperature compressor cycles automatically.</p>
+            <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Eco-Efficiency</h3>
+            <p className="text-[var(--text-secondary)] font-medium">Reduce carbon footprint by optimizing engine idling and temperature compressor cycles automatically.</p>
           </div>
           <div className="md:w-1/2 h-full w-full min-h-[300px] relative">
              <ImageWithFallback 
                 src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?q=80&w=800" 
                 alt="Fresh Produce" 
-                className="w-full h-full object-cover opacity-50 absolute inset-0 mix-blend-overlay"
+                className="w-full h-full object-cover opacity-[0.15] dark:opacity-50 absolute inset-0 mix-blend-overlay"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#141414] to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)] to-transparent" />
           </div>
         </motion.div>
 
