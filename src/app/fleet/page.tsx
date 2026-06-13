@@ -58,6 +58,7 @@ export default function FleetApp() {
   const [activeNav, setActiveNav] = useState("fleet"); // Default to fleet for hackathon
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -742,8 +743,67 @@ function FleetTrackingView() {
     );
   };
 
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 md:h-[100dvh] flex flex-col">
+  const DashboardView = () => {
+    // Only show the 5 most recent active cargos
+    const myCargos = state.cargos.filter(c => c.status !== "delivered").slice(0, 5);
+    const cargoBids = state.bids.filter(b => b.cargoId === selectedCargoId);
+
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 md:h-[100dvh] flex flex-col relative">
+        {/* DELETE CONFIRMATION MODAL (Glassmorphism) */}
+        <AnimatePresence>
+          {deleteConfirmId && (
+            <motion.div 
+              initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+              animate={{ opacity: 1, backdropFilter: "blur(24px)" }}
+              exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+              className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-black/20"
+            >
+              <motion.div 
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="w-full max-w-sm rounded-[32px] p-8 shadow-2xl relative overflow-hidden"
+                style={{
+                  background: "linear-gradient(145deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.2) 100%)",
+                  border: "1px solid rgba(255,255,255,0.4)",
+                  boxShadow: "0 30px 60px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.5)"
+                }}
+              >
+                {/* Liquid Blobs */}
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#FF3B30] rounded-full mix-blend-multiply filter blur-[32px] opacity-40 animate-pulse" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#FF9500] rounded-full mix-blend-multiply filter blur-[32px] opacity-40 animate-pulse" />
+                
+                <div className="relative z-10 flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-full bg-[#FF3B30]/10 flex items-center justify-center mb-4 border border-[#FF3B30]/20">
+                    <svg className="w-8 h-8 text-[#FF3B30]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-[#1D1D1F] dark:text-white mb-2 tracking-tight">Delete Consignment?</h3>
+                  <p className="text-[#4B4B52] dark:text-[var(--text-tertiary)] text-sm mb-8 leading-relaxed font-medium">This action cannot be undone. All active tracking and bids will be permanently cancelled.</p>
+                  
+                  <div className="flex w-full gap-3">
+                    <button 
+                      onClick={() => setDeleteConfirmId(null)}
+                      className="flex-1 py-3.5 rounded-2xl font-bold text-[#4B4B52] dark:text-white bg-white/40 dark:bg-black/20 hover:bg-white/60 dark:hover:bg-black/40 transition-all border border-white/30 backdrop-blur-md"
+                    >
+                      Keep It
+                    </button>
+                    <button 
+                      onClick={() => {
+                        dispatch({ type: "DELETE_CARGO", cargoId: deleteConfirmId });
+                        setDeleteConfirmId(null);
+                      }}
+                      className="flex-1 py-3.5 rounded-2xl font-bold text-white bg-gradient-to-br from-[#FF3B30] to-[#FF2D55] hover:opacity-90 transition-all shadow-[0_8px_16px_rgba(255,59,48,0.25)]"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       <header className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Active Operations</h1>
@@ -842,7 +902,7 @@ function FleetTrackingView() {
                 {myCargos.map((cargo) => (
                   <div key={cargo.id} className="flex flex-col relative group">
                     <button
-                      onClick={(e) => { e.stopPropagation(); dispatch({ type: "DELETE_CARGO", cargoId: cargo.id }); }}
+                      onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(cargo.id); }}
                       className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-[var(--bg-primary)] border border-[var(--separator)] text-[#FF3B30] flex items-center justify-center opacity-70 hover:opacity-100 hover:bg-[#FF3B30] hover:text-white transition-all shadow-sm"
                       title="Delete Consignment"
                     >
