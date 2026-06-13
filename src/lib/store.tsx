@@ -395,21 +395,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }).eq('id', action.bidId);
       } else if (action.type === 'ACCEPT_BID') {
         const bid = state.bids.find(b => b.id === action.bidId);
-        const cargo = state.cargos.find(c => c.id === action.cargoId); // This is the OPTIMISTIC cargo (already has new quantity and status)
-        if (bid && cargo) {
+        const oldCargo = state.cargos.find(c => c.id === action.cargoId);
+        if (bid && oldCargo) {
+          const isPartial = bid.requestedQuantityKg < oldCargo.quantityKg;
+          const newStatus = isPartial ? oldCargo.status : "rerouting";
+          const newQuantity = Math.max(0, oldCargo.quantityKg - bid.requestedQuantityKg);
+          
+          const newOriginalDestination = {
+            name: bid.wholesalerLocation,
+            location: bid.wholesalerCoords || {
+              lat: oldCargo.origin.location.lat - 0.5,
+              lng: oldCargo.origin.location.lng - 0.5
+            }
+          };
+
+          const newSelectedMarket = isPartial ? oldCargo.selectedMarket : {
+            id: bid.wholesalerId,
+            name: bid.wholesalerLocation,
+            location: bid.wholesalerCoords || {
+              lat: oldCargo.origin.location.lat - 0.5,
+              lng: oldCargo.origin.location.lng - 0.5
+            },
+            distanceKm: bid.distanceKm,
+            etaMinutes: bid.etaMinutes,
+            type: "wholesale_market" as const,
+          };
+
           // Accept the current bid
           await supabase.from('bids').update({ status: 'accepted' }).eq('id', action.bidId);
           
           // If the cargo was fully bought out, reject other bids
-          if (cargo.quantityKg <= 0) {
+          if (newQuantity <= 0) {
             await supabase.from('bids').update({ status: 'rejected' }).eq('cargo_id', action.cargoId).neq('id', action.bidId);
           }
           
           await supabase.from('cargos').update({
-            status: cargo.status,
-            quantity_kg: cargo.quantityKg,
-            selected_market: cargo.selectedMarket,
-            original_destination: cargo.originalDestination
+            status: newStatus,
+            quantity_kg: newQuantity,
+            selected_market: newSelectedMarket,
+            original_destination: newOriginalDestination
           }).eq('id', action.cargoId);
         }
       } else if (action.type === 'MARK_DELIVERED') {
