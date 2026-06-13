@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function FooterCTA() {
   return (
-    <footer className="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[var(--bg-primary)] border-t border-[var(--separator)]">
+    <footer className="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[var(--bg-primary)]">
       {/* Cinematic Blue Mesh Gradient Background */}
       <div className="absolute inset-0 z-0 flex items-center justify-center">
         <motion.div 

@@ -35,9 +35,9 @@ export function TrackingPage() {
         <img 
           src="https://images.unsplash.com/photo-1544411047-c491e34a24e0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXJrJTIwbWFwJTIwbmlnaHQlMjB2aWV3fGVufDF8fHx8MTc4MTE1NjM2M3ww&ixlib=rb-4.1.0&q=80&w=1080"
           alt="Dark Map"
-          className="w-full h-full object-cover opacity-10 dark:opacity-40 mix-blend-screen scale-110"
+          className="w-full h-full object-cover opacity-10 dark:opacity-40 mix-blend-screen scale-110 [mask-image:linear-gradient(to_bottom,transparent_0%,black_20%,black_80%,transparent_100%)]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-primary)] via-transparent to-[var(--bg-primary)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-primary)] via-transparent to-[var(--bg-primary)] pointer-events-none" />
         
         {/* Glowing Route Line (SVG) */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">

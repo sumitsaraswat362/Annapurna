@@ -11,14 +11,14 @@ export function FeatureShowcase() {
   });
 
   // Slide up for the cards
-  const card1Y = useTransform(scrollYProgress, [0, 0.4], ["250%", "-50%"]);
-  const card2Y = useTransform(scrollYProgress, [0.3, 0.7], ["250%", "-50%"]);
+  const card1Y = useTransform(scrollYProgress, [0, 0.5], ["150%", "-50%"]);
+  const card2Y = useTransform(scrollYProgress, [0.2, 0.7], ["150%", "-50%"]);
   
-  const card1Opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const card2Opacity = useTransform(scrollYProgress, [0.3, 0.5, 0.8, 1], [0, 1, 1, 0]);
+  const card1Opacity = useTransform(scrollYProgress, [0, 0.3, 0.8, 1], [0, 1, 1, 0]);
+  const card2Opacity = useTransform(scrollYProgress, [0.2, 0.5, 0.8, 1], [0, 1, 1, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[300vh] w-full" style={{ zIndex: 20 }}>
+    <section ref={containerRef} className="relative h-[200vh] w-full" style={{ zIndex: 20 }}>
       <div className="sticky top-0 h-screen w-full flex flex-col md:flex-row items-center justify-center px-6 md:px-12 max-w-7xl mx-auto">
         
         {/* Pinned Text */}

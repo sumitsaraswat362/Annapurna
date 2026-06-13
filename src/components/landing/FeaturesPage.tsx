@@ -32,7 +32,7 @@ export function FeaturesPage() {
         {/* Box 1: Large Square */}
         <motion.div 
           style={{ y: y1 }}
-          className="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-[40px] glass p-8 md:p-12 flex flex-col justify-end min-h-[400px] md:min-h-0 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+          className="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-[40px] glass bg-black/[0.03] dark:bg-black/0 p-8 md:p-12 flex flex-col justify-end min-h-[400px] md:min-h-0 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         >
           <div className="absolute inset-0 z-0">
             <img 
@@ -57,7 +57,7 @@ export function FeaturesPage() {
         {/* Box 2: Tall Rectangle */}
         <motion.div 
           style={{ y: y2 }}
-          className="md:col-span-1 md:row-span-2 relative group overflow-hidden rounded-[40px] glass p-8 flex flex-col justify-between min-h-[400px] md:min-h-0 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+          className="md:col-span-1 md:row-span-2 relative group overflow-hidden rounded-[40px] glass bg-black/[0.03] dark:bg-black/0 p-8 flex flex-col justify-between min-h-[400px] md:min-h-0 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         >
           <div className="absolute inset-0 z-0">
             <img 
@@ -82,7 +82,7 @@ export function FeaturesPage() {
 
         {/* Box 3: Wide Rectangle */}
         <motion.div 
-          className="md:col-span-2 md:row-span-1 relative overflow-hidden rounded-[40px] glass p-8 flex flex-col md:flex-row items-center gap-8 min-h-[300px] md:min-h-0 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+          className="md:col-span-2 md:row-span-1 relative overflow-hidden rounded-[40px] glass bg-black/[0.03] dark:bg-black/0 p-8 flex flex-col md:flex-row items-center gap-8 min-h-[300px] md:min-h-0 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         >
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img 
@@ -124,7 +124,7 @@ export function FeaturesPage() {
 
         {/* Box 4: Small */}
         <motion.div 
-          className="md:col-span-1 md:row-span-1 relative overflow-hidden rounded-[40px] glass p-8 flex flex-col justify-between min-h-[300px] md:min-h-0 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+          className="md:col-span-1 md:row-span-1 relative overflow-hidden rounded-[40px] glass bg-black/[0.03] dark:bg-black/0 p-8 flex flex-col justify-between min-h-[300px] md:min-h-0 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         >
           <div className="bg-[var(--fill-secondary)] w-12 h-12 rounded-full flex items-center justify-center mb-4 border border-[var(--separator)] shadow-sm">
             <ShieldCheck className="w-6 h-6 text-[var(--text-primary)]" />
@@ -139,7 +139,7 @@ export function FeaturesPage() {
 
         {/* Box 5: Full Width */}
         <motion.div 
-          className="md:col-span-3 md:row-span-1 relative overflow-hidden rounded-[40px] glass p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 min-h-[200px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+          className="md:col-span-3 md:row-span-1 relative overflow-hidden rounded-[40px] glass bg-black/[0.03] dark:bg-black/0 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 min-h-[200px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         >
           <div className="flex-1">
             <h2 className="text-2xl md:text-3xl font-bold mb-2 text-[var(--text-primary)]">Automated Compliance</h2>

@@ -29,7 +29,7 @@ export function BiddingPage() {
       <div className="flex flex-col md:flex-row gap-12 md:gap-20 items-start">
         
         {/* Left Pinned Column */}
-        <div className="w-full md:w-1/3 sticky top-28 md:top-40 z-20 glass md:bg-transparent md:backdrop-blur-none py-4 md:py-0 border-b border-[var(--separator)] md:border-none shadow-sm md:shadow-none">
+        <div className="w-full md:w-1/3 sticky top-28 md:top-40 z-20 py-4 md:py-0">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -50,7 +50,7 @@ export function BiddingPage() {
         {/* Right Scrollable Column - Bids Stack */}
         <div className="w-full md:w-2/3 flex flex-col gap-6">
           {bids.map((bid, index) => (
-            <div key={bid.id} className="relative w-full rounded-[32px] overflow-hidden bg-[#FF3B30] border border-[var(--separator)] shadow-sm">
+            <div key={bid.id} className="relative w-full rounded-[32px] bg-[#FF3B30]">
               
               {/* Background Layer (Reject Button) */}
               <div className="absolute inset-0 flex items-center justify-end px-8 z-0">

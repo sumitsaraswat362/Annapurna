@@ -29,7 +29,7 @@ export function BentoGrid() {
   };
 
   return (
-    <section className="py-32 px-6 max-w-7xl mx-auto" id="features">
+    <section className="relative py-24 md:py-32 px-6 w-full max-w-7xl mx-auto z-20" id="features">
       <div className="text-center mb-16">
         <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[var(--text-primary)] mb-4">
           Everything you need. <br/> <span className="text-[var(--text-tertiary)]">Nothing you don't.</span>
@@ -55,7 +55,7 @@ export function BentoGrid() {
         {/* Box 1: Wholesaler Bidding */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-1 md:col-span-2 row-span-2 glass rounded-[2rem] p-8 relative overflow-hidden group min-h-[400px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+          className="col-span-1 md:col-span-2 row-span-2 glass bg-black/[0.03] dark:bg-black/0 rounded-[2rem] p-8 relative overflow-hidden group min-h-[400px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         >
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                style={{
@@ -87,7 +87,7 @@ export function BentoGrid() {
         {/* Box 2: Emergency SOS */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-1 glass rounded-[2rem] p-8 relative overflow-hidden group min-h-[300px] shadow-[0_20px_50px_rgba(255,59,48,0.05)] dark:shadow-[0_20px_50px_rgba(255,59,48,0.1)]"
+          className="col-span-1 glass bg-black/[0.03] dark:bg-black/0 rounded-[2rem] p-8 relative overflow-hidden group min-h-[300px] shadow-[0_20px_50px_rgba(255,59,48,0.05)] dark:shadow-[0_20px_50px_rgba(255,59,48,0.1)]"
         >
            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                style={{
@@ -106,7 +106,7 @@ export function BentoGrid() {
         {/* Box 3: AI Optimization */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-1 glass rounded-[2rem] p-8 relative overflow-hidden group min-h-[300px] shadow-[0_20px_50px_rgba(0,122,255,0.05)] dark:shadow-[0_20px_50px_rgba(0,122,255,0.1)]"
+          className="col-span-1 glass bg-black/[0.03] dark:bg-black/0 rounded-[2rem] p-8 relative overflow-hidden group min-h-[300px] shadow-[0_20px_50px_rgba(0,122,255,0.05)] dark:shadow-[0_20px_50px_rgba(0,122,255,0.1)]"
         >
            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                style={{
@@ -125,7 +125,7 @@ export function BentoGrid() {
         {/* Box 4: Eco Mode */}
         <motion.div 
           variants={itemVariants}
-          className="col-span-1 md:col-span-3 glass rounded-[2rem] relative overflow-hidden group flex flex-col md:flex-row items-center shadow-[0_20px_50px_rgba(52,199,89,0.05)] dark:shadow-[0_20px_50px_rgba(52,199,89,0.1)]"
+          className="col-span-1 md:col-span-3 glass bg-black/[0.03] dark:bg-black/0 rounded-[2rem] relative overflow-hidden group flex flex-col md:flex-row items-center shadow-[0_20px_50px_rgba(52,199,89,0.05)] dark:shadow-[0_20px_50px_rgba(52,199,89,0.1)]"
         >
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                style={{

@@ -23,13 +23,13 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
           <Link
             href="/"
             className={`relative flex items-center justify-center px-2 py-1.5 md:px-4 md:py-2.5 text-[11px] md:text-sm font-medium transition-colors duration-300 z-10 ${
-              activeTab === "home" ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              activeTab === "home" ? "text-[#000000] dark:text-[#FFFFFF]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
           {activeTab === "home" && (
             <motion.div
               layoutId="active-pill"
-              className="absolute inset-0 bg-[var(--fill-tertiary)] rounded-full"
+              className="absolute inset-0 bg-[#FFFFFF] dark:bg-[#3A3A3C] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#E5E5EA] dark:border-[#4A4A4C]"
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
           )}
@@ -42,13 +42,13 @@ export function FloatingNav({ activeTab }: FloatingNavProps) {
               href={tab.href}
               key={tab.id}
               className={`relative flex items-center justify-center text-center px-2 py-1.5 md:px-4 md:py-2.5 text-[11px] md:text-sm font-bold transition-colors duration-300 z-10 ${
-                isActive ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                isActive ? "text-[#000000] dark:text-[#FFFFFF]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >
               {isActive && (
                 <motion.div
                   layoutId="active-pill"
-                  className="absolute inset-0 bg-[var(--fill-tertiary)] rounded-full"
+                  className="absolute inset-0 bg-[#FFFFFF] dark:bg-[#3A3A3C] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.12)] border border-[#E5E5EA] dark:border-[#4A4A4C]"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}

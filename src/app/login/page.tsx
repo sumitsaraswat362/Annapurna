@@ -110,11 +110,11 @@ export default function Home() {
             }}
           >
             <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-[#007AFF] to-[#34C759] opacity-10 group-hover:opacity-30 transition-opacity duration-500 blur-xl" />
-            <svg className="w-14 h-14 text-[#007AFF] dark:text-white drop-shadow-[0_0_10px_rgba(0,122,255,0.4)] relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <svg className="w-14 h-14 text-black dark:text-white drop-shadow-[0_0_10px_rgba(0,0,0,0.2)] dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.4)] relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
             </svg>
           </motion.div>
-          <h1 className="text-5xl font-extrabold tracking-tight mb-2 text-transparent bg-clip-text bg-gradient-to-b from-[#1c1c1e] to-[#8E8E93] dark:from-white dark:via-[#EBEBF5] dark:to-[#8E8E93] drop-shadow-sm">
+          <h1 className="text-5xl font-extrabold tracking-tight mb-2 text-[#000000] dark:text-white drop-shadow-md">
             Annapurna
           </h1>
           <p className="text-[var(--text-secondary)] text-lg max-w-sm mx-auto font-bold tracking-wide">Next-Gen Logistics</p>
