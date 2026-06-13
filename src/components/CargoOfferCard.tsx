@@ -327,6 +327,7 @@ export default function CargoOfferCard({
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 }

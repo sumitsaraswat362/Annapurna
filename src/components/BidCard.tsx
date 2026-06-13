@@ -34,7 +34,6 @@ export default function BidCard({ bid, onAccept, onReject, onCounter, onViewMap,
   }, [isAccepted, fastSeconds]);
 
   return (
-  return (
     <div
       className={`ios-card p-5 transition-all duration-500 border ${
         isAccepted
