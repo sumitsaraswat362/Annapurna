@@ -417,9 +417,45 @@ function FleetTrackingView() {
   // Market Listing States
   const [askingPrice, setAskingPrice] = useState(25);
 
+  const [liveAiMetrics, setLiveAiMetrics] = useState<{
+    trafficScore?: number;
+    weatherScore?: number;
+    waitTimesScore?: number;
+    carbonReduced?: string;
+    engineIdle?: string;
+    routeScore?: string;
+    compressorStatus?: string;
+  } | null>(null);
 
   const latestDecision = state.aiDecisions.filter((d) => d.cargoId === selectedCargoId).at(-1) ?? null;
   const cargoBids = state.bids.filter((b) => b.cargoId === selectedCargoId);
+
+  // Poll dynamic AI metrics from Groq
+  useEffect(() => {
+    if (!selectedCargo) return;
+    const fetchMetrics = async () => {
+      try {
+        const res = await fetch('/api/ai-metrics', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cargo: selectedCargo })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setLiveAiMetrics(data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch live AI metrics:", e);
+      }
+    };
+    
+    // Fetch immediately
+    fetchMetrics();
+    
+    // Poll every 8 seconds
+    const intervalId = setInterval(fetchMetrics, 8000);
+    return () => clearInterval(intervalId);
+  }, [selectedCargo?.id, selectedCargo?.telemetry?.temperature, selectedCargo?.status]);
 
   const startSimulation = useCallback(() => {
     if (intervalRef.current) return;
@@ -613,7 +649,7 @@ function FleetTrackingView() {
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#007AFF]/10 to-transparent rounded-bl-full pointer-events-none" />
           <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2 relative z-10">
             <svg className="w-4 h-4 text-[#5856D6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" /></svg>
-            AI Decision Matrix
+            AI Decision Matrix <span className="animate-pulse ml-2 w-2 h-2 rounded-full bg-green-500 inline-block shadow-[0_0_8px_#34C759]"></span>
           </h3>
           <div className="clay rounded-xl p-4 relative z-10">
             <div className="flex justify-between items-center mb-3">
@@ -622,20 +658,20 @@ function FleetTrackingView() {
             </div>
             <div className="space-y-2">
               <div>
-                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Traffic Analysis</span><span>94%</span></div>
-                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#007AFF] rounded-full transition-all duration-1000" style={{width: '94%'}} /></div>
+                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Traffic Analysis</span><span>{liveAiMetrics?.trafficScore || 94}%</span></div>
+                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#007AFF] rounded-full transition-all duration-1000" style={{width: `${liveAiMetrics?.trafficScore || 94}%`}} /></div>
               </div>
               <div>
-                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Weather Conditions</span><span>87%</span></div>
-                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#34C759] rounded-full transition-all duration-1000" style={{width: '87%'}} /></div>
+                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Weather Conditions</span><span>{liveAiMetrics?.weatherScore || 87}%</span></div>
+                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#34C759] rounded-full transition-all duration-1000" style={{width: `${liveAiMetrics?.weatherScore || 87}%`}} /></div>
               </div>
               <div>
-                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Facility Wait Times</span><span>91%</span></div>
-                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#AF52DE] rounded-full transition-all duration-1000" style={{width: '91%'}} /></div>
+                <div className="flex justify-between text-[9px] text-[var(--text-tertiary)] mb-1"><span>Facility Wait Times</span><span>{liveAiMetrics?.waitTimesScore || 91}%</span></div>
+                <div className="h-2 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden"><div className="h-full bg-[#AF52DE] rounded-full transition-all duration-1000" style={{width: `${liveAiMetrics?.waitTimesScore || 91}%`}} /></div>
               </div>
             </div>
           </div>
-          <p className="text-[10px] text-[var(--text-tertiary)] mt-3 relative z-10">Powered by Groq LLM • Analyzing 100+ data points/sec</p>
+          <p className="text-[10px] text-[var(--text-tertiary)] mt-3 relative z-10 flex items-center gap-1">Powered by Groq LLM <span className="animate-spin text-xs">⟳</span> Live</p>
         </div>
 
         {/* Feature: AI Routing & Eco-Efficiency */}
@@ -646,24 +682,24 @@ function FleetTrackingView() {
             AI Routing & Eco-Efficiency
           </h3>
           <div className="grid grid-cols-2 gap-3 relative z-10">
-            <div className="clay rounded-xl p-3 text-center">
+            <div className="clay rounded-xl p-3 text-center transition-all duration-500">
               <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Carbon Reduced</p>
-              <p className="text-lg font-bold text-[#34C759]">14.2%</p>
+              <p className="text-lg font-bold text-[#34C759]">{liveAiMetrics?.carbonReduced || "14.2%"}</p>
               <p className="text-[9px] text-[var(--text-tertiary)]">vs standard route</p>
             </div>
-            <div className="clay rounded-xl p-3 text-center">
+            <div className="clay rounded-xl p-3 text-center transition-all duration-500">
               <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Engine Idle</p>
-              <p className="text-lg font-bold text-[#007AFF]">-23 min</p>
+              <p className="text-lg font-bold text-[#007AFF]">{liveAiMetrics?.engineIdle || "-23 min"}</p>
               <p className="text-[9px] text-[var(--text-tertiary)]">optimized stops</p>
             </div>
-            <div className="clay rounded-xl p-3 text-center">
+            <div className="clay rounded-xl p-3 text-center transition-all duration-500">
               <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Route Score</p>
-              <p className="text-lg font-bold text-[#AF52DE]">A+</p>
+              <p className="text-lg font-bold text-[#AF52DE]">{liveAiMetrics?.routeScore || "A+"}</p>
               <p className="text-[9px] text-[var(--text-tertiary)]">traffic + weather</p>
             </div>
-            <div className="clay rounded-xl p-3 text-center">
+            <div className="clay rounded-xl p-3 text-center transition-all duration-500">
               <p className="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Compressor</p>
-              <p className="text-lg font-bold text-[#5AC8FA]">Optimal</p>
+              <p className={`text-lg font-bold ${liveAiMetrics?.compressorStatus === "Optimal" ? "text-[#5AC8FA]" : "text-[#FF9500]"}`}>{liveAiMetrics?.compressorStatus || "Optimal"}</p>
               <p className="text-[9px] text-[var(--text-tertiary)]">cycle efficiency</p>
             </div>
           </div>
