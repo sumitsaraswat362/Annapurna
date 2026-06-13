@@ -57,6 +57,9 @@ export interface Cargo {
   // Reroute
   reroutableMarkets: Market[];          // Nearby markets the AI found
   selectedMarket: Market | null;        // The market accepted by the driver
+  
+  // Timestamps
+  createdAt?: string | number;          // From Supabase or local
 }
 
 // --- Markets ---
@@ -97,7 +100,7 @@ export interface Bid {
   totalValue: number;            // offeredPrice * requestedQuantity
 
   // Timing
-  createdAt: number;             // Unix ms
+  createdAt?: string | number;   // Unix ms or ISO string
   expiresAt: number;             // Unix ms — bid expires after this
   status: BidStatus;
 

@@ -30,14 +30,20 @@ export default function WholesalerDashboard() {
   };
 
   const getAvailableQuantity = (cargoId: string, totalQty: number) => {
-    const bidsForCargo = state.bids.filter(b => b.cargoId === cargoId && (b.status === "pending" || b.status === "accepted"));
+    const bidsForCargo = state.bids.filter(b => 
+      b.cargoId === cargoId && 
+      (b.status === "pending" || b.status === "accepted" || b.status === "delivered" || b.status === "payment_cleared")
+    );
     const orderedQty = bidsForCargo.reduce((sum, bid) => sum + bid.requestedQuantityKg, 0);
     return Math.max(0, totalQty - orderedQty);
   };
 
   // Get cargos that are in emergency mode (available for purchase)
   const emergencyCargosRaw = state.cargos.filter(
-    (c) => c.status === "emergency" || (c.askingPricePerKg !== undefined && c.askingPricePerKg !== null && c.status !== "rerouting")
+    (c) => (c.status === "emergency" || (c.askingPricePerKg !== undefined && c.askingPricePerKg !== null)) && 
+           c.status !== "rerouting" && 
+           c.status !== "delivered" && 
+           c.status !== "spoiled"
   );
 
   const emergencyCargos = emergencyCargosRaw

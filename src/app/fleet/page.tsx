@@ -264,15 +264,14 @@ export default function FleetApp() {
         </div>
       </aside>
 
-      {/* ===== MAIN CONTENT WRAPPER ===== */}
-      <main className="flex-1 h-full overflow-y-auto relative z-10 mt-[44px] md:mt-0 has-tabbar pb-[100px] md:pb-0 flex flex-col">
+      <main className="flex-1 h-full overflow-y-auto relative z-10 mt-[44px] md:mt-0 has-tabbar flex flex-col">
         {/* Desktop Hamburger Toggle */}
         <div className="hidden md:flex items-center px-8 pt-6 pb-2">
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 -ml-2 rounded-lg hover:bg-[var(--fill-secondary)] text-[var(--text-secondary)] transition-colors" aria-label="Toggle Sidebar">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
           </button>
         </div>
-        <div className="p-4 md:px-8 md:pt-2 md:pb-8 min-h-full">
+        <div className="p-4 md:px-8 md:pt-2 min-h-full pb-[160px]">
           {/* View Router */}
           <div className="view-transition-enter-active">
             {activeNav === "dashboard" && <DashboardView />}
@@ -835,13 +834,20 @@ function FleetTrackingView() {
           {/* Active Fleet List & Predictive Maintenance */}
           <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
             {/* Active Consignments List */}
-            <div className="flex-1 overflow-y-auto pr-2 pb-[120px] md:pb-4">
+            <div className="flex-1 overflow-y-auto pr-2 pb-[160px] md:pb-4">
               <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2">
                 <NavIcon icon="truck" className="w-4 h-4 text-[var(--text-tertiary)]" /> Active Consignments
               </h3>
               <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
                 {myCargos.map((cargo) => (
-                  <div key={cargo.id} className="flex flex-col">
+                  <div key={cargo.id} className="flex flex-col relative group">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); dispatch({ type: "DELETE_CARGO", cargoId: cargo.id }); }}
+                      className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-[var(--bg-primary)] border border-[var(--separator)] text-[#FF3B30] flex items-center justify-center opacity-70 hover:opacity-100 hover:bg-[#FF3B30] hover:text-white transition-all shadow-sm"
+                      title="Delete Consignment"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                    </button>
                     <button
                       onClick={() => setSelectedCargoId(cargo.id)}
                       className={`ios-card p-5 text-left transition-all duration-300 ${
@@ -874,6 +880,15 @@ function FleetTrackingView() {
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
                           {cargo.origin.name.split(" ")[0]} → {cargo.originalDestination?.name.split(" ")[0] || "Pending"}
                         </span>
+                      </div>
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--separator)] text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">
+                        <span>Created: {cargo.createdAt ? new Date(cargo.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}</span>
+                        {(() => {
+                          const acceptedBid = state.bids.find(b => b.cargoId === cargo.id && b.status === "accepted");
+                          return acceptedBid ? (
+                            <span className="text-[#34C759]">Accepted: {acceptedBid.createdAt ? new Date(acceptedBid.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}</span>
+                          ) : null;
+                        })()}
                       </div>
                     </button>
                     {selectedCargoId === cargo.id && (
@@ -1174,7 +1189,7 @@ function MarketplaceView() {
                   dragConstraints={{ left: 0, right: 0 }}
                   dragElastic={0.2}
                   whileTap={{ scale: 0.98 }}
-                  className="ios-card p-4 relative z-10 w-full bg-[var(--bg-primary)]"
+                  className="ios-card p-4 relative z-10 w-full bg-white dark:bg-[#1C1C1E]"
                 >
                   {/* Header (Always visible) */}
                   <div 

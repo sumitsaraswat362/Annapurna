@@ -54,7 +54,8 @@ type Action =
   | { type: "TRIGGER_MANUAL_EMERGENCY"; cargoId: string; newTemperature: number }
   | { type: "SET_CARGOS"; cargos: Cargo[] }
   | { type: "SET_BIDS"; bids: Bid[] }
-  | { type: "MARK_DELIVERED"; cargoId: string };
+  | { type: "MARK_DELIVERED"; cargoId: string }
+  | { type: "DELETE_CARGO"; cargoId: string };
 
 // --- Reducer ---
 function appReducer(state: AppState, action: Action): AppState {
@@ -214,7 +215,7 @@ function appReducer(state: AppState, action: Action): AppState {
     case "ADD_CARGO":
       return {
         ...state,
-        cargos: [...state.cargos, action.cargo],
+        cargos: [action.cargo, ...state.cargos],
         notifications: [
           {
             id: `notif-add-${Date.now()}`,
@@ -258,6 +259,12 @@ function appReducer(state: AppState, action: Action): AppState {
         ),
       };
 
+    case "DELETE_CARGO":
+      return {
+        ...state,
+        cargos: state.cargos.filter((c) => c.id !== action.cargoId),
+      };
+
     default:
       return state;
   }
@@ -275,8 +282,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   React.useEffect(() => {
     // 1. Initial Fetch
     const fetchInitialData = async () => {
-      const { data: cargos } = await supabase.from('cargos').select('*');
-      const { data: bids } = await supabase.from('bids').select('*');
+      const { data: cargos } = await supabase.from('cargos').select('*').order('created_at', { ascending: false });
+      const { data: bids } = await supabase.from('bids').select('*').order('created_at', { ascending: false });
       
       if (cargos) {
         // Map db columns to camelCase
@@ -290,7 +297,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
           spoilageTimeMinutes: c.spoilage_time_minutes,
           originalDestination: c.original_destination,
           askingPricePerKg: c.asking_price_per_kg,
-          selectedMarket: c.selected_market
+          selectedMarket: c.selected_market,
+          createdAt: c.created_at
         }));
         dispatch({ type: 'SET_CARGOS', cargos: mappedCargos });
       }
@@ -400,11 +408,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
           await supabase.from('cargos').update({
             status: cargo.status,
             quantity_kg: cargo.quantityKg,
-            selected_market: cargo.selectedMarket
+            selected_market: cargo.selectedMarket,
+            original_destination: cargo.originalDestination
           }).eq('id', action.cargoId);
         }
       } else if (action.type === 'MARK_DELIVERED') {
         await supabase.from('cargos').update({ status: 'delivered' }).eq('id', action.cargoId);
+      } else if (action.type === 'DELETE_CARGO') {
+        await supabase.from('cargos').delete().eq('id', action.cargoId);
+        // Optionally delete bids associated with the cargo
+        await supabase.from('bids').delete().eq('cargo_id', action.cargoId);
       }
     } catch (err) {
       console.error("Supabase Sync Error:", err);

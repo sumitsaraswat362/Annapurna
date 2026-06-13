@@ -49,7 +49,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (existingUser.password !== password) {
         return "Incorrect password for this user.";
       }
+      // Update location info on every login if provided
+      if (location) existingUser.location = location;
+      if (city) existingUser.city = city;
+      if (address) existingUser.address = address;
+      if (coords) existingUser.coords = coords;
+      
       finalUser = existingUser;
+      // Save the updated profiles to localStorage
+      localStorage.setItem("annapurna_profiles", JSON.stringify(profiles));
     } else {
       // Register new user
       finalUser = { name, role, password, location, city, address, coords };
