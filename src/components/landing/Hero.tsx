@@ -40,7 +40,7 @@ export function Hero() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="text-5xl md:text-8xl font-semibold tracking-tighter mb-4 md:mb-6 bg-gradient-to-br from-[#1c1c1e] via-[#3a3a3c] to-[#8E8E93] dark:from-white dark:via-white/90 dark:to-white/40 bg-clip-text text-transparent pb-2 leading-tight">
+          <h1 className="text-5xl md:text-8xl font-semibold tracking-tighter mb-4 md:mb-6 text-[var(--text-primary)] drop-shadow-sm pb-2 leading-tight">
             Logistics <br /> Perfected by AI.
           </h1>
           <p className="text-xl text-[var(--text-secondary)] font-medium max-w-2xl mx-auto">

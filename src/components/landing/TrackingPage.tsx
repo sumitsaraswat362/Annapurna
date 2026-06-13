@@ -15,7 +15,7 @@ export function TrackingPage() {
 
   return (
     <div 
-      className="relative w-full h-[150vh] bg-[var(--bg-primary)] overflow-hidden"
+      className="relative w-full h-[150vh] overflow-hidden"
       ref={containerRef}
     >
       {/* Hero Text */}
