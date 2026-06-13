@@ -430,30 +430,48 @@ function FleetTrackingView() {
   const latestDecision = state.aiDecisions.filter((d) => d.cargoId === selectedCargoId).at(-1) ?? null;
   const cargoBids = state.bids.filter((b) => b.cargoId === selectedCargoId);
 
-  // Poll dynamic AI metrics from Groq
+  // Generate dynamic AI metrics locally to avoid rate-limits and ensure realtime UI
   useEffect(() => {
     if (!selectedCargo) return;
-    const fetchMetrics = async () => {
-      try {
-        const res = await fetch('/api/ai-metrics', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cargo: selectedCargo })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setLiveAiMetrics(data);
-        }
-      } catch (e) {
-        console.error("Failed to fetch live AI metrics:", e);
+    
+    const generateMetrics = () => {
+      const temp = selectedCargo.telemetry.temperature;
+      const maxSafe = selectedCargo.safeTemperatureMax;
+      const riskRatio = Math.max(0, temp / maxSafe);
+      
+      // Add slight random jitter (-2 to +2) to make it feel live
+      const jitter = () => Math.floor(Math.random() * 5) - 2;
+      
+      let routeScore = "A+";
+      let compressorStatus = "Optimal";
+      let trafficScore = Math.min(100, Math.max(10, 94 - Math.floor(riskRatio * 20) + jitter()));
+      let waitTimesScore = Math.min(100, Math.max(10, 91 - Math.floor(riskRatio * 10) + jitter()));
+      
+      if (temp >= maxSafe) {
+        routeScore = "C-";
+        compressorStatus = "Overdrive";
+        trafficScore -= 30; // drastic drop if spoiling
+      } else if (temp > maxSafe - 2) {
+        routeScore = "B";
+        compressorStatus = "Strained";
       }
+
+      setLiveAiMetrics({
+        trafficScore,
+        weatherScore: Math.min(100, Math.max(10, 87 + jitter())),
+        waitTimesScore,
+        carbonReduced: (14.2 - (riskRatio * 5) + (jitter() / 10)).toFixed(1) + "%",
+        engineIdle: `${-23 + Math.floor(riskRatio * 10) + jitter()} min`,
+        routeScore,
+        compressorStatus
+      });
     };
     
-    // Fetch immediately
-    fetchMetrics();
+    // Generate immediately
+    generateMetrics();
     
-    // Poll every 8 seconds
-    const intervalId = setInterval(fetchMetrics, 8000);
+    // Fluctuate every 3 seconds for a highly dynamic, living UI
+    const intervalId = setInterval(generateMetrics, 3000);
     return () => clearInterval(intervalId);
   }, [selectedCargo?.id, selectedCargo?.telemetry?.temperature, selectedCargo?.status]);
 
