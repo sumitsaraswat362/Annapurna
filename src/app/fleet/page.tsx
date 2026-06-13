@@ -800,11 +800,11 @@ function FleetTrackingView() {
               {selectedCargo && selectedCargo.origin?.location ? (
                 <LiveMap
                   origin={selectedCargo.origin}
-                  destination={selectedCargo.originalDestination}
+                  destination={selectedCargo.status === "rerouting" ? null : selectedCargo.originalDestination}
                   currentLocation={selectedCargo.currentLocation || null}
                   routePoints={selectedCargo.routePolyline || []}
                   status={selectedCargo.status}
-                  reroute={selectedCargo.selectedMarket ? { name: selectedCargo.selectedMarket.name, location: selectedCargo.selectedMarket.location } : null}
+                  reroute={selectedCargo.selectedMarket && selectedCargo.status === "rerouting" ? { name: selectedCargo.selectedMarket.name, location: selectedCargo.selectedMarket.location } : null}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)] text-xs bg-[var(--bg-primary)]">
@@ -878,7 +878,7 @@ function FleetTrackingView() {
                         </span>
                         <span className="text-xs text-[var(--text-tertiary)] font-medium flex items-center gap-1.5">
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
-                          {cargo.origin.name.split(" ")[0]} → {cargo.originalDestination?.name.split(" ")[0] || "Pending"}
+                          {cargo.origin.name.split(",")[0]} → {cargo.status === "rerouting" && cargo.selectedMarket ? cargo.selectedMarket.name.split(",")[0] : (cargo.originalDestination?.name?.split(",")[0] || "Pending")}
                         </span>
                       </div>
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--separator)] text-[10px] font-medium text-[var(--text-tertiary)] uppercase tracking-wider">
