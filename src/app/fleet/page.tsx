@@ -84,7 +84,7 @@ export default function FleetApp() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--bg-primary)]">
+    <div className="flex h-[100dvh] overflow-hidden bg-[var(--bg-primary)]">
 
       {/* ===== MOBILE: Top Navbar (hamburger only) ===== */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-[var(--bg-primary)]/85 backdrop-blur-md border-b border-[var(--separator-opaque)] px-4 h-[44px] flex items-center">
@@ -743,7 +743,7 @@ function FleetTrackingView() {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-full flex flex-col">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 md:h-[100dvh] flex flex-col">
       <header className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Active Operations</h1>
@@ -777,9 +777,9 @@ function FleetTrackingView() {
         </div>
       </header>
 
-      <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-6 md:flex-1 md:min-h-0">
         {/* ===== LEFT COLUMN (60%) ===== */}
-        <div className="flex-[3] space-y-6 flex flex-col min-w-0">
+        <div className="flex-[3] space-y-6 flex flex-col md:min-w-0">
           {/* Map Area */}
           <div className="ios-card glass p-4 md:p-6 relative overflow-hidden flex-shrink-0">
             <div className="flex items-center justify-between mb-4 md:mb-6">
@@ -832,9 +832,9 @@ function FleetTrackingView() {
           </div>
 
           {/* Active Fleet List & Predictive Maintenance */}
-          <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+          <div className="md:flex-1 flex gap-6 md:min-h-0 md:overflow-hidden">
             {/* Active Consignments List */}
-            <div className="flex-1 overflow-y-auto pr-2 pb-[160px] md:pb-4">
+            <div className="flex-1 md:overflow-y-auto pr-2 pb-[160px] md:pb-4">
               <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 flex items-center gap-2">
                 <NavIcon icon="truck" className="w-4 h-4 text-[var(--text-tertiary)]" /> Active Consignments
               </h3>
@@ -1177,7 +1177,7 @@ function MarketplaceView() {
           state.bids.map((bid) => {
             const isExpanded = expandedBidId === bid.id;
             return (
-              <div key={bid.id} className="relative rounded-2xl overflow-hidden mb-3 bg-[var(--fill-secondary)] shadow-inner">
+              <div key={bid.id} className="relative rounded-2xl overflow-hidden mb-3 bg-[#FFFFFF] dark:bg-[#1C1C1E] shadow-sm border border-[var(--separator-opaque)]">
                 {/* Background Swipe Actions - only visible while dragging */}
                 <div className="absolute inset-0 flex items-center justify-between px-6 pointer-events-none">
                   <span className="text-[#34C759] font-bold tracking-widest text-xs uppercase opacity-40">← Accept</span>
@@ -1189,7 +1189,7 @@ function MarketplaceView() {
                   dragConstraints={{ left: 0, right: 0 }}
                   dragElastic={0.2}
                   whileTap={{ scale: 0.98 }}
-                  className="ios-card p-4 relative z-10 w-full bg-white dark:bg-[#1C1C1E]"
+                  className="p-4 relative z-10 w-full"
                 >
                   {/* Header (Always visible) */}
                   <div 
@@ -1214,7 +1214,7 @@ function MarketplaceView() {
                       bid.status === 'counter_offered' ? 'badge-warning' :
                       'badge-info'
                     }`}>
-                      {bid.status === 'counter_offered' ? 'Counter' : bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
+                      {bid.status === 'counter_offered' ? 'Counter Offer' : bid.status === 'payment_cleared' ? 'Payment Cleared' : bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
                     </span>
                     <svg className={`w-5 h-5 text-[var(--text-tertiary)] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
@@ -1290,7 +1290,7 @@ function MarketplaceView() {
                       bid.status === 'counter_offered' ? 'badge-warning' :
                       'badge-info'
                     }`}>
-                      {bid.status === 'counter_offered' ? 'Counter Offered' : bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
+                      {bid.status === 'counter_offered' ? 'Counter Offer' : bid.status === 'payment_cleared' ? 'Payment Cleared' : bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
                     </span>
                   </td>
                 </tr>
