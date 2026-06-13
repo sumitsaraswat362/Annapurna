@@ -13,17 +13,19 @@ export default function CountdownTimer({
   onExpire,
   size = "sm",
 }: CountdownTimerProps) {
-  const [remaining, setRemaining] = useState(() => Math.max(0, expiresAt - Date.now()));
+  const expireTime = typeof expiresAt === "string" ? new Date(expiresAt).getTime() : Number(expiresAt);
+  const [remaining, setRemaining] = useState(() => Math.max(0, expireTime - Date.now()));
   const [expired, setExpired] = useState(false);
 
   const tick = useCallback(() => {
-    const diff = Math.max(0, expiresAt - Date.now());
+    const validExpireTime = isNaN(expireTime) ? Date.now() + 5 * 60000 : expireTime;
+    const diff = Math.max(0, validExpireTime - Date.now());
     setRemaining(diff);
     if (diff <= 0 && !expired) {
       setExpired(true);
       onExpire?.();
     }
-  }, [expiresAt, expired, onExpire]);
+  }, [expireTime, expired, onExpire]);
 
   useEffect(() => {
     const id = setInterval(tick, 100);

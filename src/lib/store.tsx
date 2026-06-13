@@ -314,7 +314,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
           totalValue: b.total_value,
           distanceKm: b.distance_km,
           etaMinutes: b.eta_minutes,
-          counterPricePerKg: b.counter_price_per_kg
+          counterPricePerKg: b.counter_price_per_kg,
+          expiresAt: b.expires_at ? new Date(b.expires_at).getTime() : Date.now() + 15 * 60000,
+          createdAt: b.created_at
         }));
         dispatch({ type: 'SET_BIDS', bids: mappedBids });
       }

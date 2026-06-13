@@ -989,45 +989,56 @@ function FleetTrackingView() {
                     )}
                   </div>
                 ))}
-              </div>
-            </div>
-
-            {/* Feature 8: Predictive Fleet Maintenance AI */}
+                         {/* Feature 8: Predictive Fleet Maintenance AI */}
             <div className="h-fit w-[300px] shrink-0 hidden lg:flex flex-col ios-card clay overflow-hidden">
               <div className="p-4 border-b border-[var(--separator)] bg-[#AF52DE]/5">
                 <h3 className="text-xs font-bold text-[#AF52DE] uppercase tracking-widest flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.83M11.42 15.17l2.492-3.053c.203-.25.476-.432.793-.52l.983-.272M11.42 15.17l-3.053 2.492c-.25.203-.432.476-.52.793l-.272.983M15.17 11.42l-2.492 3.053c-.203.25-.476.432-.793.52l-.983.272M15.17 11.42l3.053-2.492c.25-.203.432-.476.52-.793l.272-.983" /></svg>
-                  Fleet Health AI
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.83M11.42 15.17l2.492-3.053c.203-.25.476-.432.793-.52l.983-.272M11.42 15.17l-3.053 2.492c-.25.203-.432.476-.52-.793l-.272.983M15.17 11.42l-2.492 3.053c-.203.25-.476.432-.793.52l-.983.272M15.17 11.42l3.053-2.492c.25-.203.432-.476.52-.793l.272-.983" /></svg>
+                  Fleet Health AI <span className="animate-pulse ml-1 w-1.5 h-1.5 rounded-full bg-[#AF52DE] inline-block"></span>
                 </h3>
               </div>
-              <div className="p-4 space-y-4 overflow-y-auto">
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-[var(--text-secondary)] font-bold">Tata Signa 4825.TK</span>
-                    <span className="text-[#FF3B30] font-bold">85% Risk</span>
-                  </div>
-                  <p className="text-[9px] text-[var(--text-tertiary)]">Cooling failure predicted on Rajasthan route due to ambient heat threshold.</p>
-                  <div className="h-1 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden mt-1"><div className="h-full bg-[#FF3B30] w-[85%]"></div></div>
-                </div>
-                
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-[var(--text-secondary)] font-bold">Ashok Leyland 2820</span>
-                    <span className="text-[#FF9500] font-bold">42% Risk</span>
-                  </div>
-                  <p className="text-[9px] text-[var(--text-tertiary)]">Compressor vibration anomaly detected over last 3 trips.</p>
-                  <div className="h-1 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden mt-1"><div className="h-full bg-[#FF9500] w-[42%]"></div></div>
-                </div>
+              <div className="p-4 space-y-4 overflow-y-auto max-h-[350px]">
+                {myCargos.length === 0 ? (
+                  <p className="text-xs text-[var(--text-tertiary)] italic">No active fleets to monitor.</p>
+                ) : (
+                  myCargos.map((cargo, idx) => {
+                    // Calculate dynamic risk based on temperature and status
+                    let risk = 10;
+                    if (cargo.telemetry.temperature > cargo.safeTemperatureMax) {
+                      risk = Math.min(95, 50 + (cargo.telemetry.temperature - cargo.safeTemperatureMax) * 10);
+                    } else {
+                      risk = Math.max(5, (cargo.telemetry.temperature / cargo.safeTemperatureMax) * 40);
+                    }
+                    if (cargo.status === "emergency") risk = Math.max(90, risk);
 
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-[var(--text-secondary)] font-bold">Eicher Pro 3015</span>
-                    <span className="text-[#34C759] font-bold">12% Risk</span>
-                  </div>
-                  <p className="text-[9px] text-[var(--text-tertiary)]">All systems nominal. Ideal for high-value cargo assignment.</p>
-                  <div className="h-1 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden mt-1"><div className="h-full bg-[#34C759] w-[12%]"></div></div>
-                </div>
+                    let riskColor = "#34C759";
+                    let statusText = "All systems nominal. Optimal conditions.";
+                    if (risk > 75) {
+                      riskColor = "#FF3B30";
+                      statusText = `Cooling anomaly predicted. Ambient heat threshold exceeded.`;
+                    } else if (risk > 40) {
+                      riskColor = "#FF9500";
+                      statusText = "Compressor load elevated. Monitoring closely.";
+                    }
+
+                    return (
+                      <div key={cargo.id} className="space-y-1 transition-all duration-500">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-[var(--text-secondary)] font-bold">{cargo.truckPlate}</span>
+                          <span className="font-bold transition-colors duration-500" style={{ color: riskColor }}>
+                            {risk.toFixed(1)}% Risk
+                          </span>
+                        </div>
+                        <p className="text-[9px] text-[var(--text-tertiary)]">{statusText}</p>
+                        <div className="h-1 w-full bg-[var(--fill-secondary)] rounded-full overflow-hidden mt-1">
+                          <div className="h-full transition-all duration-1000" style={{ backgroundColor: riskColor, width: `${risk}%` }}></div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
+            </div>   </div>
             </div>
           </div>
         </div>
