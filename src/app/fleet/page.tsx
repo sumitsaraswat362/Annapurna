@@ -126,7 +126,7 @@ export default function FleetApp() {
               onDragEnd={(e, info) => {
                 if (info.offset.y > 100) setDrawerOpen(false);
               }}
-              className="md:hidden fixed bottom-0 left-0 right-0 z-[101] glass rounded-t-[2.5rem] overflow-hidden flex flex-col max-h-[85vh] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] border-t border-[var(--separator)]"
+              className="md:hidden fixed bottom-0 left-0 right-0 z-[101] bg-[var(--bg-primary)] rounded-t-[2.5rem] overflow-hidden flex flex-col max-h-[85vh] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] border-t border-[var(--separator)]"
             >
               {/* Drag Handle */}
               <div className="w-full flex justify-center py-4 bg-transparent z-10 touch-none">

@@ -1,121 +1,102 @@
 <div align="center">
-  <img src="./public/images/readme/landing-hero-light.png" alt="Annapurna Hero" width="100%" />
-
-  <h1>🏔️ Annapurna</h1>
-  <h3>Logistics Perfected by AI. The ultimate Food Logistics & Fleet Tracking platform.</h3>
-
+  <img src="public/images/readme/landing-hero-light.png" alt="Annapurna Hero" width="800" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+  
+  <br/>
+  
+  <h1>Annapurna: Logistics Perfected by AI 🏔️</h1>
+  
   <p>
-    <strong>Annapurna</strong> revolutionizes supply chain management by minimizing waste, maximizing efficiency, and providing unparalleled visibility into your fleet and cargo. Built with state-of-the-art AI, premium Glassmorphism design, and real-time data synchronization.
+    <strong>Minimizing waste. Maximizing efficiency. Saving the harvest.</strong>
   </p>
-
+  
   <p>
-    <a href="#features">Features</a> •
-    <a href="#dashboards">Dashboards</a> •
-    <a href="#tech-stack">Tech Stack</a> •
-    <a href="#getting-started">Getting Started</a>
+    <a href="#the-problem">The Problem</a> •
+    <a href="#the-gap">The Gap</a> •
+    <a href="#our-solution">Our Solution</a> •
+    <a href="#key-features">Key Features</a> •
+    <a href="#gallery">Gallery</a>
   </p>
 </div>
 
 ---
 
-## ✨ Features that redefine Logistics
+## 💔 The Problem: A Crisis in the Cold Chain
 
-### 🏪 The Market, Evolved
-A dynamic marketplace connecting fleets with wholesalers. Instantly liquidate perishable goods in emergencies or auction excess cargo to the highest bidder with our seamless swipeable bid cards.
-<img src="./public/images/readme/landing-bidding-light.png" alt="Bidding Showcase" width="100%" />
+Every year, up to **40% of food produced in emerging markets is wasted** before it ever reaches a plate. This isn't just an economic loss in the billions; it's a profound human crisis. 
 
-### 🛰️ Unprecedented Visibility & Control
-Monitor your entire fleet with Live Route Optimization and Cold Chain Integrity checks.
-<img src="./public/images/readme/landing-tracking-dark.png" alt="Tracking Features" width="100%" />
+The primary culprit? **Broken, fragmented logistics and compromised cold chain integrity.**
 
-### 🧠 Advanced AI & Telemetry
-Leverage AI for Routing, Eco-Efficiency, and Fleet Health. Get predictive alerts for compressor anomalies, optimal routing based on traffic and weather, and detailed analytics on carbon footprint reduction.
-<img src="./public/images/readme/landing-features-dark.png" alt="AI Features" width="100%" />
+Traditional logistics fleets operate with blind spots. Drivers face unpredictable weather, severe traffic, and mechanical failures. By the time a refrigeration compressor fails on a transport truck, the damage is already done. The cargo spoils, the farmer loses their livelihood, and the wholesaler receives nothing.
 
----
+## 🕳️ The Gap: Reactive vs. Proactive
 
-## 🖥️ Dashboards & Interfaces
+Currently, the logistics market relies on **reactive systems**. Telematics tell a fleet manager that a truck's temperature *has already risen*, or that a truck *has already broken down*. 
 
-Annapurna provides dedicated, high-performance interfaces tailored for both Fleet Directors and Wholesalers, featuring "Apple HIG-based" next-level UI, Claymorphism, and seamless light/dark modes.
+There is a massive gap in the market for an integrated, proactive solution that bridges **predictive fleet maintenance** with **real-time economic recovery**. What happens when a breakdown is inevitable? The food is simply thrown away.
 
-### 🚛 Fleet Director Dashboard
-Command central for fleet managers. Monitor active consignments, live telemetry, AI decision matrices, and handle real-time rerouting.
+## 💡 Our Solution: Annapurna
 
-**Light Mode Overview**
-<br>
-<img src="./public/images/readme/fleet-dashboard-light.png" alt="Fleet Dashboard Light" width="100%" />
+**Annapurna** is a next-generation, AI-driven logistics platform designed specifically to eradicate food waste in transit. 
 
-**Dark Mode Overview**
-<br>
-<img src="./public/images/readme/fleet-dashboard-dark.png" alt="Fleet Dashboard Dark" width="100%" />
+We don't just track trucks; we protect perishables. By leveraging cutting-edge LLMs (powered by Groq) and real-time telemetry, Annapurna constantly monitors environmental conditions, vehicle health, and route efficiency to predict anomalies *before* they become disasters.
 
-**Active Rerouting & Navigation**
-<br>
-<img src="./public/images/readme/fleet-rerouting-light.png" alt="Fleet Rerouting" width="100%" />
+But we didn't stop there. 
+
+If a truck suffers a critical cold-chain failure that cannot be mitigated, Annapurna instantly spins up an **Emergency Wholesaler Marketplace**. The platform geo-locates nearby wholesalers and allows them to bid on the distressed cargo at a discount. Instead of rotting on the highway, the food is rescued, the fleet recovers costs, and local markets get fresh produce. 
 
 ---
 
-### 🏪 Wholesaler Marketplace
-A dedicated portal for wholesalers to browse incoming bids, respond to emergency cargo SOS, and manage negotiation history.
+## ✨ Key Features
 
-**Emergency Cargo Radar (Dark Mode)**
-<br>
-<img src="./public/images/readme/wholesaler-dashboard-dark.png" alt="Wholesaler Dashboard" width="100%" />
+### 1. AI Fleet Command Center
+Monitor your entire fleet with real-time telemetry, GPS sync, and ambient temperature tracking. Annapurna uses predictive AI to alert managers to cooling anomalies and provides intelligent rerouting to optimize fuel and protect cargo.
 
-**Marketplace Activity & Ledger**
-<br>
-<img src="./public/images/readme/marketplace-activity-light.png" alt="Marketplace Activity" width="100%" />
+### 2. The Emergency Wholesaler Marketplace
+When disaster strikes, the cargo doesn't have to die. Fleet managers can automatically simulate a dead zone or trigger an emergency SOS, instantly listing the cargo on a live, geo-fenced marketplace for nearby wholesalers.
 
-**Real-time Push to Marketplace**
-<br>
-<img src="./public/images/readme/marketplace-modal-light.png" alt="Marketplace Broadcast Modal" width="100%" />
+### 3. Beautiful, Accessible UI
+A premium, Apple HIG-inspired interface with seamless **Light and Dark Modes**. Whether you are a fleet manager working a night shift or a wholesaler in the bright sun, the UI adapts to your environment flawlessly.
 
 ---
 
-## 🛠️ Tech Stack
+## 📸 Gallery
 
-Annapurna is built with modern, production-grade tools:
-* **Framework:** Next.js 14+ (App Router), React 18
-* **Styling:** Tailwind CSS, Framer Motion (for fluid animations and micro-interactions)
-* **Map Engine:** Leaflet & React-Leaflet
-* **Backend & Real-time Database:** Supabase
-* **State Management:** React Context / Zustand
-* **Design Philosophy:** Apple Human Interface Guidelines (HIG), Glassmorphism, Claymorphism, and Mesh Gradients.
+We believe enterprise software should be as beautiful as it is functional. Here is a look at Annapurna in action.
 
----
+### 🌓 Adaptive Lighting (Light & Dark Mode)
+*Annapurna's stunning landing and login pages, built with glassmorphism and modern aesthetics.*
 
-## 🚀 Getting Started
+<div align="center">
+  <img src="public/images/readme/landing-login-dark.png" width="48%" style="border-radius: 8px;">
+  <img src="public/images/readme/landing-login-light.png" width="48%" style="border-radius: 8px;">
+</div>
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/annapurna.git
-   cd annapurna
-   ```
+### 🛰️ Fleet Operations Command
+*Real-time AI oversight. Track trucks, monitor compressor efficiency, and manage active consignments.*
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   # or yarn install / pnpm install
-   ```
+<div align="center">
+  <img src="public/images/readme/fleet-dashboard-dark.png" width="100%" style="border-radius: 8px;">
+</div>
 
-3. **Set up environment variables:**
-   Create a `.env.local` file and add your Supabase and other necessary API keys.
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
+<br/>
 
-4. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
+*Live map navigation and intelligent rerouting directly to the driver.*
 
-5. **Open your browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000) to see the application in action.
+<div align="center">
+  <img src="public/images/readme/fleet-rerouting-light.png" width="100%" style="border-radius: 8px;">
+</div>
+
+### 🤝 The Wholesaler Marketplace
+*A revolutionized B2B market. Wholesalers are notified of emergency cargo nearby and can bid to save the load.*
+
+<div align="center">
+  <img src="public/images/readme/wholesaler-dashboard-light.png" width="48%" style="border-radius: 8px;">
+  <img src="public/images/readme/marketplace-activity-light.png" width="48%" style="border-radius: 8px;">
+</div>
 
 ---
 
 <div align="center">
-  <p>Everything you need. Nothing you don't.</p>
-  <p><i>Made with ❤️ for the FarAway Hackathon.</i></p>
+  <h3>Ready to revolutionize your supply chain?</h3>
+  <p>Join industry leaders in minimizing waste and maximizing efficiency with Annapurna's AI logistics platform.</p>
 </div>
