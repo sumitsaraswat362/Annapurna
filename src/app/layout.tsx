@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/lib/auth";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function RootLayout({
   children,
@@ -47,7 +48,10 @@ export default function RootLayout({
         style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
       >
         <AuthProvider>
-          <AppProvider>{children}</AppProvider>
+          <AppProvider>
+            {children}
+            <ThemeToggle />
+          </AppProvider>
         </AuthProvider>
       </body>
     </html>
