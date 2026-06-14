@@ -46,15 +46,42 @@ If a truck suffers a critical cold-chain failure that cannot be mitigated, Annap
 
 ---
 
+## ⚙️ How it Works: The Annapurna Workflow
+
+```mermaid
+sequenceDiagram
+    participant AI as AI System
+    participant FD as Fleet Command
+    participant M as Marketplace
+    participant W as Wholesaler
+
+    AI->>FD: ⚠️ Detects Anomaly (e.g., Temp > 18.5°C)
+    FD->>AI: Trigger Emergency SOS
+    AI->>FD: Auto-Dispatch Backup Refrigeration Unit
+    FD->>M: Push Cargo to Market (Set Floor Price)
+    M->>W: 🚨 Alert: Emergency Cargo Nearby
+    W->>M: 🤝 Places Partial Order (2.0T) & Counter-Bid
+    M->>FD: Forwards Custom Bid
+    FD->>M: Accepts Bid (Auto-fractions remaining inventory)
+    M->>W: Bid Accepted -> Opens GPS Navigation
+    W->>M: Arrives & Taps "Receive Order"
+    FD->>M: Confirms "Payment Cleared"
+```
+
 ## ✨ Key Features
 
-### 1. AI Fleet Command Center
-Monitor your entire fleet with real-time telemetry, GPS sync, and ambient temperature tracking. Annapurna uses predictive AI to alert managers to cooling anomalies and provides intelligent rerouting to optimize fuel and protect cargo.
+### 1. AI Fleet Command Center & Emergency SOS
+Monitor your entire fleet with real-time telemetry, GPS sync, and ambient temperature tracking. If Annapurna's predictive AI detects a critical anomaly (like a temperature spike above 18.5°C), it triggers an **Emergency SOS** that can instantly dispatch backup refrigeration units.
 
 ### 2. The Emergency Wholesaler Marketplace
-When disaster strikes, the cargo doesn't have to die. Fleet managers can automatically simulate a dead zone or trigger an emergency SOS, instantly listing the cargo on a live, geo-fenced marketplace for nearby wholesalers.
+When disaster strikes, the cargo doesn't have to die. Fleet managers can push stranded cargo to a live, geo-fenced marketplace. Crucially, they can enable advanced negotiation tools:
+- **Partial Orders:** Wholesalers can buy a fraction of the truckload (e.g., 2 tons out of 5), and the system automatically keeps the remaining inventory live.
+- **Counter-Bidding:** Wholesalers can negotiate custom pricing in real-time, ensuring maximum liquidity for distressed assets.
 
-### 3. Beautiful, Accessible UI
+### 3. Real-Time Tracking & Navigation
+Once a bid is accepted, wholesalers are granted access to a live tracking map with a "Truck Navigation" integration. This provides precise, turn-by-turn GPS routing directly to the stranded truck's coordinates on the highway.
+
+### 4. Beautiful, Accessible UI
 A premium, Apple HIG-inspired interface with seamless **Light and Dark Modes**. Whether you are a fleet manager working a night shift or a wholesaler in the bright sun, the UI adapts to your environment flawlessly.
 
 ---
