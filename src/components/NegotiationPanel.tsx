@@ -190,12 +190,12 @@ export default function NegotiationPanel({ cargo, bid, onClose }: NegotiationPan
           {!isRequestingHuman ? (
             // AI Negotiation Timeline
             messages.map((msg, i) => (
-              <div key={i} className={\`flex \${msg.sender === "wholesaler" ? "justify-end" : "justify-start"}\`}>
-                <div className={\`max-w-[80%] rounded-2xl p-4 \${
+              <div key={i} className={`flex ${msg.sender === "wholesaler" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[80%] rounded-2xl p-4 ${
                   msg.sender === "wholesaler" 
                     ? "bg-[#007AFF] text-white rounded-br-sm" 
                     : "bg-[var(--fill-secondary)] text-[var(--text-primary)] border border-[var(--separator)] rounded-bl-sm"
-                }\`}>
+                }`}>
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold opacity-80 uppercase">
                       {msg.sender === "wholesaler" ? "You" : "Fleet AI"}
@@ -213,12 +213,12 @@ export default function NegotiationPanel({ cargo, bid, onClose }: NegotiationPan
           ) : (
             // Human Chat Timeline
             chatMessages.map((msg, i) => (
-              <div key={i} className={\`flex \${msg.sender === user?.name ? "justify-end" : "justify-start"}\`}>
-                <div className={\`max-w-[80%] rounded-2xl p-3 \${
+              <div key={i} className={`flex ${msg.sender === user?.name ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[80%] rounded-2xl p-3 ${
                   msg.sender === user?.name 
                     ? "bg-[#34C759] text-white rounded-br-sm" 
                     : "bg-[var(--fill-tertiary)] text-[var(--text-primary)] rounded-bl-sm"
-                }\`}>
+                }`}>
                   <p className="text-xs font-bold opacity-80 mb-1">{msg.sender}</p>
                   <p className="text-sm">{msg.message}</p>
                 </div>
