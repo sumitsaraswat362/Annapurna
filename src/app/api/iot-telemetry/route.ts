@@ -10,6 +10,11 @@ const bigquery = new BigQuery({ projectId: PROJECT_ID });
 
 export async function POST(req: Request) {
   try {
+    const authHeader = req.headers.get("x-device-key");
+    if (authHeader !== "ANNAPURNA_IOT_SECURE_KEY_2026") {
+      return NextResponse.json({ error: "Unauthorized device" }, { status: 401 });
+    }
+
     const body = await req.json();
     const { cargoId = "cargo-001", temperature, humidity, ethyleneLevel = "low", rawGasValue = 0 } = body;
 

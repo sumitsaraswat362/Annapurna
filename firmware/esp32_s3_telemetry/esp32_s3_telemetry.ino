@@ -17,6 +17,7 @@
  */
 
 #include <WiFi.h>
+#include <HTTPClient.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -26,6 +27,8 @@
 // ========== WiFi ==========
 const char* WIFI_SSID     = "OnePlus Nord 2T 5G";
 const char* WIFI_PASSWORD = "oneplus9319446777";
+const char* API_URL       = "https://annapurna-web-887568501843.us-central1.run.app/api/iot-telemetry";
+unsigned long lastPostTime = 0;
 
 // ========== OLED ==========
 #define OLED_SDA 10
@@ -294,7 +297,7 @@ void drawDashboard() {
   display.setCursor(76, 19);
   if (humidity > -900) {
     display.print(humidity, 0); display.print("%");
-  } else {
+  } else { 
     display.print("ERR");
   }
   
@@ -481,6 +484,41 @@ void bootAnimation() {
   }
   
   delay(500);
+}
+
+// ========== HTTP TELEMETRY ==========
+void sendTelemetry() {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    http.begin(API_URL);
+    http.addHeader("Content-Type", "application/json");
+    http.addHeader("x-device-key", "ANNAPURNA_IOT_SECURE_KEY_2026");
+
+    String statusStr = "In Transit";
+    if (alertActive) {
+      statusStr = alertMsg;
+    }
+
+    String json = "{";
+    json += "\"cargoId\":\"cargo-001\",";
+    json += "\"temperature\":" + String(temperature, 1) + ",";
+    json += "\"humidity\":" + String(humidity, 0) + ",";
+    json += "\"rawGasValue\":" + String(gasLevel) + ",";
+    json += "\"ethyleneLevel\":\"";
+    json += (alertActive ? "high" : "normal");
+    json += "\"";
+    json += "}";
+
+    int httpResponseCode = http.POST(json);
+    if (httpResponseCode > 0) {
+      Serial.print(" | ☁️ POST OK: ");
+      Serial.print(httpResponseCode);
+    } else {
+      Serial.print(" | ❌ POST ERR: ");
+      Serial.print(httpResponseCode);
+    }
+    http.end();
+  }
 }
 
 // ========== SETUP ==========
@@ -679,6 +717,12 @@ void loop() {
     Serial.print(" | WiFi:ON");
   } else {
     Serial.print(" | WiFi:OFF");
+  }
+  
+  // 7. Post Telemetry (Every 5 seconds)
+  if (millis() - lastPostTime > 5000) {
+    sendTelemetry();
+    lastPostTime = millis();
   }
   
   Serial.println();
