@@ -1,5 +1,15 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { Firestore, FieldValue } from '@google-cloud/firestore';
+const PROJECT_ID = 'project-a9c284f8-6bca-440a-a0c';
+const getFirestore = () => {
+  if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+    const credentials = JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON, 'base64').toString());
+    return new Firestore({ projectId: PROJECT_ID, credentials });
+  }
+  return new Firestore({ projectId: PROJECT_ID });
+};
+
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -38,6 +48,17 @@ export async function POST(req: Request) {
     };
 
     const info = await transporter.sendMail(mailOptions);
+    
+    const firestore = getFirestore();
+    await firestore.collection('notification_history').add({
+      type: 'email',
+      to: recipient,
+      subject: subject || '🚨 Annapurna Cold Chain Alert',
+      body: body || '',
+      timestamp: FieldValue.serverTimestamp(),
+      status: 'success'
+    });
+
     return NextResponse.json({ success: true, messageId: info.messageId });
   } catch (error: unknown) {
     console.error('Email send error:', error);

@@ -744,6 +744,33 @@ function FleetTrackingView() {
   const myCargos = [...baseCargos, ...iotCargos];
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
+  const [filterCargoType, setFilterCargoType] = useState<string>("all");
+  const [filterTempMin, setFilterTempMin] = useState<string>("");
+  const [filterTempMax, setFilterTempMax] = useState<string>("");
+  const [filterStatus, setFilterStatus] = useState<string[]>([]);
+  const [filterDriverName, setFilterDriverName] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("default");
+
+  const filteredCargos = myCargos
+    .filter(cargo => {
+      if (filterCargoType !== "all" && cargo.type !== filterCargoType) return false;
+      if (filterTempMin !== "" && cargo.telemetry.temperature < Number(filterTempMin)) return false;
+      if (filterTempMax !== "" && cargo.telemetry.temperature > Number(filterTempMax)) return false;
+      if (filterStatus.length > 0 && !filterStatus.includes(cargo.status)) return false;
+      if (filterDriverName !== "") {
+        const search = filterDriverName.toLowerCase();
+        if (!cargo.driverName?.toLowerCase().includes(search) && !cargo.truckPlate?.toLowerCase().includes(search)) return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'temperature') return b.telemetry.temperature - a.telemetry.temperature;
+      if (sortBy === 'spoilage') return (a.spoilageTimeMinutes ?? Infinity) - (b.spoilageTimeMinutes ?? Infinity);
+      if (sortBy === 'value') return b.estimatedCargoValue - a.estimatedCargoValue;
+      return 0;
+    });
+
+
   const [selectedCargoId, setSelectedCargoId] = useState<string>("cargo-001");
   const selectedCargo = myCargos.find((c) => c.id === selectedCargoId) || myCargos[0];
   const [emergencyTriggered, setEmergencyTriggered] = useState(false);
@@ -1386,6 +1413,58 @@ function FleetTrackingView() {
         </div>
       </header>
 
+      {/* Fleet Dashboard Filters */}
+      <div className="ios-card glass p-4 mb-6 relative z-10 flex flex-wrap gap-4 items-center">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase">Cargo Type</label>
+          <select value={filterCargoType} onChange={(e) => setFilterCargoType(e.target.value)} className="bg-white/5 border border-[var(--separator)] rounded-lg px-3 py-1.5 text-sm focus:outline-none">
+            <option value="all">All</option>
+            <option value="tomatoes">Tomatoes</option>
+            <option value="mangoes">Mangoes</option>
+            <option value="fish">Fish</option>
+            <option value="flowers">Flowers</option>
+            <option value="dairy">Dairy</option>
+          </select>
+        </div>
+        
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase">Temp Range (°C)</label>
+          <div className="flex gap-2">
+            <input type="number" placeholder="Min" value={filterTempMin} onChange={(e) => setFilterTempMin(e.target.value)} className="w-16 bg-white/5 border border-[var(--separator)] rounded-lg px-2 py-1.5 text-sm" />
+            <input type="number" placeholder="Max" value={filterTempMax} onChange={(e) => setFilterTempMax(e.target.value)} className="w-16 bg-white/5 border border-[var(--separator)] rounded-lg px-2 py-1.5 text-sm" />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase">Status</label>
+          <div className="flex gap-3">
+            {['in_transit', 'warning', 'emergency', 'rerouting'].map(s => (
+              <label key={s} className="flex items-center gap-1.5 text-sm cursor-pointer">
+                <input type="checkbox" checked={filterStatus.includes(s)} onChange={(e) => {
+                  if(e.target.checked) setFilterStatus([...filterStatus, s]);
+                  else setFilterStatus(filterStatus.filter(x => x !== s));
+                }} /> {s}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase">Driver / Truck</label>
+          <input type="text" placeholder="Search..." value={filterDriverName} onChange={(e) => setFilterDriverName(e.target.value)} className="bg-white/5 border border-[var(--separator)] rounded-lg px-3 py-1.5 text-sm" />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase">Sort By</label>
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="bg-white/5 border border-[var(--separator)] rounded-lg px-3 py-1.5 text-sm">
+            <option value="default">Default</option>
+            <option value="temperature">Temperature (High→Low)</option>
+            <option value="spoilage">Spoilage (Urgent First)</option>
+            <option value="value">Value (High→Low)</option>
+          </select>
+        </div>
+      </div>
+
       <div className="flex flex-col lg:flex-row gap-6 md:flex-1 md:min-h-0">
         {/* ===== LEFT COLUMN (60%) ===== */}
         <div className="flex-[3] space-y-6 flex flex-col md:min-w-0">
@@ -1449,7 +1528,7 @@ function FleetTrackingView() {
                 <NavIcon icon="truck" className="w-4 h-4 text-[var(--text-tertiary)]" /> Active Consignments
               </h3>
               <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
-                {myCargos.map((cargo) => (
+                {filteredCargos.map((cargo) => (
                   <div key={cargo.id} className="flex flex-col relative group">
                     <button
                       onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(cargo.id); }}
@@ -1524,10 +1603,10 @@ function FleetTrackingView() {
                 </h3>
               </div>
               <div className="p-4 space-y-4 overflow-y-auto max-h-[350px]">
-                {myCargos.length === 0 ? (
+                {filteredCargos.length === 0 ? (
                   <p className="text-xs text-[var(--text-tertiary)] italic">No active fleets to monitor.</p>
                 ) : (
-                  myCargos.map((cargo, idx) => {
+                  filteredCargos.map((cargo, idx) => {
                     // Calculate dynamic risk based on temperature and status
                     let risk = 10;
                     if (cargo.telemetry.temperature > cargo.safeTemperatureMax) {

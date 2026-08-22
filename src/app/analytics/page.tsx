@@ -38,6 +38,11 @@ export default function AnalyticsDashboard() {
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string, data?: any, sql?: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [filterStartDate, setFilterStartDate] = useState("");
+  const [filterEndDate, setFilterEndDate] = useState("");
+  const [filterCargoType, setFilterCargoType] = useState("all");
+
+
   // Legal State
   const [legalQuery, setLegalQuery] = useState("");
   const [legalReport, setLegalReport] = useState<{ query: string; report: string; context: string } | null>(null);
@@ -200,6 +205,30 @@ export default function AnalyticsDashboard() {
         
         {activeTab === 'analytics' && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+            
+            {/* Analytics Filters */}
+            <div className="ios-card glass p-4 relative z-10 flex flex-wrap gap-4 items-center bg-white/5 border border-[var(--separator)] rounded-xl">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase">Date Range</label>
+                <div className="flex gap-2 text-white">
+                  <input type="date" value={filterStartDate} onChange={(e) => setFilterStartDate(e.target.value)} className="bg-white/5 border border-[var(--separator)] rounded-lg px-2 py-1.5 text-sm focus:outline-none" style={{ colorScheme: 'dark' }} />
+                  <input type="date" value={filterEndDate} onChange={(e) => setFilterEndDate(e.target.value)} className="bg-white/5 border border-[var(--separator)] rounded-lg px-2 py-1.5 text-sm focus:outline-none" style={{ colorScheme: 'dark' }} />
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase">Cargo Type</label>
+                <select value={filterCargoType} onChange={(e) => setFilterCargoType(e.target.value)} className="bg-[var(--bg-primary)] border border-[var(--separator)] rounded-lg px-3 py-1.5 text-sm focus:outline-none">
+                  <option value="all">All Cargos</option>
+                  <option value="tomatoes">Tomatoes</option>
+                  <option value="mangoes">Mangoes</option>
+                  <option value="fish">Fish</option>
+                  <option value="flowers">Flowers</option>
+                  <option value="dairy">Dairy</option>
+                </select>
+              </div>
+            </div>
+
             {/* Sustainability Impact Dashboard */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {esgMetrics.map((metric, idx) => (

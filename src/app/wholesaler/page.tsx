@@ -588,13 +588,43 @@ export default function WholesalerDashboard() {
           <>
             {/* Filter Section */}
             <div className="glass liquid-glass p-5 rounded-2xl mb-8 border border-[var(--separator)] shadow-sm space-y-4">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                  Filters {(() => {
+                    let count = 0;
+                    if (filterType !== "all") count++;
+                    if (filterMinPrice !== "") count++;
+                    if (filterMaxPrice !== "") count++;
+                    if (filterMinQty !== "") count++;
+                    if (filterMaxSpoilage !== "") count++;
+                    if (filterTempMin !== "") count++;
+                    if (filterTempMax !== "") count++;
+                    if (filterHumMin !== "") count++;
+                    if (filterHumMax !== "") count++;
+                    if (filterEthylene !== "all") count++;
+                    if (filterMaxDistance !== "") count++;
+                    if (filterTemporal !== "all") count++;
+                    if (!filterStatus.emergency || !filterStatus.warning) count++;
+                    return count > 0 ? `(${count} active)` : "";
+                  })()}
+                </h2>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-semibold bg-[var(--fill-secondary)] px-3 py-1 rounded-full text-[var(--text-secondary)] border border-[var(--separator)] shadow-sm">
+                    Showing {emergencyCargos.length + upcomingCargos.length} of {emergencyCargosRaw.length + upcomingCargosRaw.length} cargos
+                  </span>
+                  <button onClick={clearAllFilters} className="px-4 py-1.5 bg-[#FF3B30]/10 text-[#FF3B30] text-sm font-bold rounded-lg hover:bg-[#FF3B30]/20 transition-colors">
+                    Reset All
+                  </button>
+                </div>
+              </div>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <input
                     type="text"
-                    placeholder="E.g., I need 500kg of seafood under 300 rupees"
+                    placeholder='e.g. "Show me cheap seafood within 30km arriving in 2 hours"'
                     value={aiFilterText}
                     onChange={(e) => setAiFilterText(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && aiFilterText) handleSmartFilter(); }}
                     className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-3 px-4 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 transition-all pr-32"
                   />
                   <button
@@ -602,12 +632,14 @@ export default function WholesalerDashboard() {
                     disabled={isFilteringAI || !aiFilterText}
                     className="absolute right-2 top-2 bottom-2 bg-[#007AFF] text-white px-4 rounded-lg text-xs font-bold flex items-center justify-center disabled:opacity-50 transition-opacity"
                   >
-                    {isFilteringAI ? "Thinking..." : "Smart Filter"}
+                    {isFilteringAI ? (
+                      <span className="flex items-center gap-2"><span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> Thinking...</span>
+                    ) : "🧠 AI Smart Filter"}
                   </button>
                 </div>
-                <div className="flex gap-2">
-                  <button onClick={exportCSV} className="bg-[var(--fill-secondary)] border border-[var(--separator)] px-4 py-2 rounded-xl text-xs font-bold hover:bg-[var(--fill-tertiary)] flex items-center justify-center">Export CSV</button>
-                  <div className="flex bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl overflow-hidden">
+                <div className="flex flex-wrap md:flex-nowrap gap-2">
+                  <button onClick={exportCSV} className="bg-[var(--fill-secondary)] border border-[var(--separator)] px-4 py-2 rounded-xl text-xs font-bold hover:bg-[var(--fill-tertiary)] flex items-center justify-center whitespace-nowrap">Export CSV</button>
+                  <div className="flex bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl overflow-hidden min-w-[200px]">
                     <input
                       type="text"
                       placeholder="Template Name"
@@ -637,40 +669,48 @@ export default function WholesalerDashboard() {
                 </summary>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
                   <div>
-                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Cargo Type</label>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider flex items-center gap-1"><span className="text-base">📦</span> Cargo Type</label>
                     <select
                       value={filterType}
                       onChange={(e) => setFilterType(e.target.value)}
                       className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
                     >
                       <option value="all">All Types</option>
-                      <option value="seafood">Seafood</option>
-                      <option value="produce">Produce</option>
+                      <option value="tomatoes">Tomatoes</option>
+                      <option value="mangoes">Mangoes</option>
+                      <option value="fish">Fish</option>
+                      <option value="flowers">Flowers</option>
                       <option value="dairy">Dairy</option>
+                      <option value="vegetables">Vegetables</option>
+                      <option value="seafood">Seafood</option>
                       <option value="meat">Meat</option>
-                      <option value="vaccines">Vaccines</option>
+                      <option value="poultry">Poultry</option>
+                      <option value="grains">Grains</option>
+                      <option value="spices">Spices</option>
+                      <option value="fruits">Fruits</option>
+                      <option value="pharmaceuticals">Pharmaceuticals</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Status</label>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider flex items-center gap-1"><span className="text-base">🚨</span> Status</label>
                     <div className="flex gap-4 py-2.5 px-3 border border-[var(--separator)] rounded-xl bg-[var(--fill-secondary)]">
                       <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]"><input type="checkbox" checked={filterStatus.emergency} onChange={(e) => setFilterStatus(s => ({...s, emergency: e.target.checked}))} /> Emergency</label>
                       <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]"><input type="checkbox" checked={filterStatus.warning} onChange={(e) => setFilterStatus(s => ({...s, warning: e.target.checked}))} /> Warning</label>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Price Range (₹/kg)</label>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider flex items-center gap-1"><span className="text-base">💰</span> Price Range (₹/kg)</label>
                     <div className="flex gap-2">
                       <input type="number" value={filterMinPrice} onChange={(e) => setFilterMinPrice(e.target.value ? Number(e.target.value) : "")} placeholder="Min" className="w-1/2 bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
                       <input type="number" value={filterMaxPrice} onChange={(e) => setFilterMaxPrice(e.target.value ? Number(e.target.value) : "")} placeholder="Max" className="w-1/2 bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Min Qty (kg)</label>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider flex items-center gap-1"><span className="text-base">⚖️</span> Min Qty (kg)</label>
                     <input type="number" value={filterMinQty} onChange={(e) => setFilterMinQty(e.target.value ? Number(e.target.value) : "")} placeholder="Any" className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Sort By</label>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider flex items-center gap-1"><span className="text-base">↕️</span> Sort By</label>
                     <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]">
                       <option value="default">Default</option>
                       <option value="price_asc">Price: Low to High</option>
@@ -794,6 +834,7 @@ export default function WholesalerDashboard() {
                         existingBid={existingBid}
                         distance={12}
                         etaMinutes={18}
+                        matchScore={sortBy === "best_match" ? Math.max(0, 95 - (idx * 15)) : undefined}
                         onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
                         onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
                         onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
@@ -825,6 +866,7 @@ export default function WholesalerDashboard() {
                         existingBid={existingBid}
                         distance={28}
                         etaMinutes={35}
+                        matchScore={sortBy === "best_match" ? Math.max(0, 90 - (idx * 15)) : undefined}
                         onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
                         onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
                         onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}

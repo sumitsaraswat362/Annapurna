@@ -18,7 +18,7 @@ export interface GeoPoint {
 
 // --- Cargo & Truck ---
 
-export type CargoType = "tomatoes" | "mangoes" | "fish" | "flowers" | "dairy" | "vegetables";
+export type CargoType = "tomatoes" | "mangoes" | "fish" | "flowers" | "dairy" | "vegetables" | "seafood" | "meat" | "poultry" | "grains" | "spices" | "fruits" | "pharmaceuticals";
 
 export type CargoStatus =
   | "in_transit"      // Normal delivery

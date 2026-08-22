@@ -13,6 +13,7 @@ interface CargoOfferCardProps {
   onCounterOffer: (cargoId: string, pricePerKg: number, quantity: number) => void;
   onNegotiate?: (cargoId: string) => void;
   existingBid?: Bid;
+  matchScore?: number;
 }
 
 export default function CargoOfferCard({
@@ -24,6 +25,7 @@ export default function CargoOfferCard({
   onCounterOffer,
   onNegotiate,
   existingBid,
+  matchScore,
 }: CargoOfferCardProps) {
   const [mode, setMode] = useState<"idle" | "partial" | "counter">("idle");
   const [partialQty, setPartialQty] = useState(Math.floor(cargo.quantityKg / 2));
@@ -154,6 +156,22 @@ export default function CargoOfferCard({
             </p>
           </div>
         </div>
+
+      {/* Match Score Bar */}
+      {matchScore !== undefined && (
+        <div className="mb-4 bg-[var(--fill-secondary)] p-3 rounded-xl border border-[var(--separator)]">
+          <div className="flex justify-between items-center mb-1.5">
+            <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">AI Best Match</span>
+            <span className={`text-xs font-bold ${matchScore > 70 ? 'text-[#34C759]' : matchScore >= 40 ? 'text-[#FF9500]' : 'text-[#FF3B30]'}`}>{Math.round(matchScore)}%</span>
+          </div>
+          <div className="h-2 w-full bg-[var(--bg-primary)] rounded-full overflow-hidden shadow-inner">
+            <div 
+              className={`h-full rounded-full transition-all duration-1000 ${matchScore > 70 ? 'bg-[#34C759]' : matchScore >= 40 ? 'bg-[#FF9500]' : 'bg-[#FF3B30]'}`} 
+              style={{ width: `${matchScore}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Quality Note */}
       <p className="text-xs text-[var(--text-tertiary)] mb-4 italic font-medium">

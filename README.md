@@ -117,7 +117,9 @@ Annapurna's intelligence layer, the **Neural Engine**, powers all AI reasoning a
 ### 📈 By the Numbers:
 - **8** Distinct AI Capabilities
 - **5** Autonomous AI Agents
-- **13** Server-Side API Routes
+- **18** Server-Side API Routes
+- **10+** Filter Criteria
+- **Real-time** AI Negotiation
 - **5** Physical IoT Sensors
 - **4** Data Input Modalities (IoT, Camera, Documents, Voice)
 - **14** Days of predictive spoilage forecasting (ARIMA+)
@@ -134,11 +136,20 @@ Watch AI agents communicate in real-time. **MonitorAgent**, **DecisionAgent**, a
 ### 📊 Fleet Dashboard & Live Map
 Monitor thousands of vehicles with pinpoint GPS accuracy on interactive Leaflet maps. Real-time telemetry streaming shows temperature, humidity, ethylene levels, and ETA for every truck in your fleet.
 
-### 🌡️ Cold-Chain Integrity Monitoring
-AI-powered temperature anomaly detection with predictive alerts. When a cooling unit shows early signs of failure, the system triggers autonomous rerouting protocols before the cargo spoils.
+### 🌡️ Cold-Chain Integrity Monitoring & Smart Rerouting
+AI-powered temperature anomaly detection with predictive alerts. When a cooling unit shows early signs of failure, the system triggers autonomous rerouting protocols (using Haversine distance and a 50km radius) to the nearest cold storage or wholesaler before the cargo spoils.
 
-### 🏪 Emergency Wholesaler Marketplace
-A revolutionized B2B marketplace. When cargo enters distress, nearby wholesalers are instantly notified and can bid to purchase the endangered load at a fair, AI-negotiated price — saving both the cargo and the farmer's revenue.
+### 🏪 Emergency Wholesaler Marketplace & AI Negotiation
+A revolutionized B2B marketplace. When cargo enters distress, nearby wholesalers are instantly notified and can bid to purchase the endangered load. The platform features **Real-time AI Negotiation** (a 3-round counter-offer system via Gemini) to ensure fair pricing, saving both the cargo and the farmer's revenue. 
+
+### 🔍 Advanced Multi-Criteria Search & Filter
+Wholesalers can filter distress cargo using 10+ criteria, including telemetry (temp, humidity, ethylene), geographic distance, temporal factors, price range, and multi-status toggles. Includes an **AI Smart Filter** with natural language parsing, **CSV Export** for filtered data, and **Saved Filter Templates** via localStorage.
+
+### 💬 Real-time Chat & AI Help Bot
+Firestore-backed real-time messaging allows wholesalers to chat directly with fleet managers when human intervention is needed. A floating Gemini-powered **AI Help Bot** is available on every page for instant assistance.
+
+### 📱 Multi-Channel Alerts
+Stakeholders are instantly notified of IoT emergencies via **Real Email Notifications** (Gmail SMTP via Nodemailer) and **WhatsApp Notifications** (Twilio integration).
 
 ### 📈 Conversational Analytics
 Ask your fleet questions in plain English: *"What was the average temperature of seafood shipments last week?"* The AI generates SQL, executes it against the data warehouse, and returns instant visual charts.
@@ -182,6 +193,7 @@ graph TD
     J -->|ARIMA+ Forecasting| K[🔮 Predictive Dashboard]
     J -->|Conversational SQL| L[💬 Natural Language Analytics]
     B --> M[📧 SMTP Email Alerts]
+    B --> P[📱 WhatsApp Alerts]
     B --> N[🌍 Translation API]
     F -->|Grounded AI| O[⚖️ Legal Compliance Engine]
 ```
@@ -198,7 +210,7 @@ graph TD
 | **Edge ML** | Z-Score Anomaly Detection, I2C Hot-Swap Architecture |
 | **Deployment** | Cloud Run (containerized Docker), CI/CD |
 | **Localization** | Cloud Translation API (Hindi, Marathi, Tamil, Telugu) |
-| **Notifications** | Nodemailer + SMTP |
+| **Notifications** | Nodemailer (SMTP), Twilio (WhatsApp) |
 
 ---
 
