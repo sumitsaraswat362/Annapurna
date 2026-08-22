@@ -17,9 +17,18 @@ export async function POST(req: Request) {
           type: "object",
           properties: {
             type: { type: "string", description: "Cargo type, e.g., seafood, produce, dairy, meat, vaccines. Null if not specified." },
+            minPrice: { type: "number", description: "Minimum price per kg. Null if not specified." },
             maxPrice: { type: "number", description: "Maximum price per kg. Null if not specified." },
             minQty: { type: "number", description: "Minimum quantity in kg. Null if not specified." },
-            maxSpoilage: { type: "number", description: "Maximum spoilage minutes. Null if not specified." }
+            maxSpoilage: { type: "number", description: "Maximum spoilage minutes. Null if not specified." },
+            tempMin: { type: "number", description: "Minimum temperature in Celsius. Null if not specified." },
+            tempMax: { type: "number", description: "Maximum temperature in Celsius. Null if not specified." },
+            humMin: { type: "number", description: "Minimum humidity percentage. Null if not specified." },
+            humMax: { type: "number", description: "Maximum humidity percentage. Null if not specified." },
+            ethyleneLevel: { type: "string", description: "Ethylene level: 'all', 'low', 'medium', or 'high'. Null if not specified." },
+            maxDistance: { type: "number", description: "Maximum distance in km. Null if not specified." },
+            temporal: { type: "string", description: "Temporal filter: 'all', 'loaded_under_2h', 'loaded_under_4h', or 'loaded_over_4h'. Null if not specified." },
+            sortBy: { type: "string", description: "Sort option: 'default', 'price_asc', 'price_desc', 'spoilage_asc', 'distance_asc', or 'best_match'. Null if not specified." }
           }
         }
       }

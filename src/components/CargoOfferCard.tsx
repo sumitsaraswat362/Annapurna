@@ -11,6 +11,7 @@ interface CargoOfferCardProps {
   onAcceptFull: (cargoId: string) => void;
   onAcceptPartial: (cargoId: string, quantity: number) => void;
   onCounterOffer: (cargoId: string, pricePerKg: number, quantity: number) => void;
+  onNegotiate?: (cargoId: string) => void;
   existingBid?: Bid;
 }
 
@@ -21,6 +22,7 @@ export default function CargoOfferCard({
   onAcceptFull,
   onAcceptPartial,
   onCounterOffer,
+  onNegotiate,
   existingBid,
 }: CargoOfferCardProps) {
   const [mode, setMode] = useState<"idle" | "partial" | "counter">("idle");
@@ -190,6 +192,14 @@ export default function CargoOfferCard({
             >
               Accept at ₹{existingBid.counterPricePerKg}/kg
             </button>
+            {onNegotiate && (
+              <button
+                onClick={() => onNegotiate(cargo.id)}
+                className="skeuomorphic-btn flex-1 text-sm py-3 font-bold text-[var(--text-primary)]"
+              >
+                Negotiate
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -197,7 +207,15 @@ export default function CargoOfferCard({
       {/* Pending Status */}
       {existingBid && existingBid.status === "pending" && mode === "idle" && (
         <div className="mb-5 p-4 rounded-xl glass bg-[#007AFF]/10 border border-[#007AFF]/30 text-center shadow-[0_4px_15px_rgba(0,122,255,0.15)]">
-           <span className="text-sm font-bold text-[#007AFF]">Your Bid is Pending Review...</span>
+           <span className="text-sm font-bold text-[#007AFF] block mb-3">Your Bid is Pending Review...</span>
+           {onNegotiate && (
+             <button
+               onClick={() => onNegotiate(cargo.id)}
+               className="skeuomorphic-btn skeuomorphic-primary w-full text-sm py-2 font-bold"
+             >
+               Open AI Negotiation Panel
+             </button>
+           )}
         </div>
       )}
 

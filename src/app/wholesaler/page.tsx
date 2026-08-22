@@ -9,6 +9,15 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, ScanLine, UploadCloud, CheckCircle2, FileJson } from "lucide-react";
 
+
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
 export default function WholesalerDashboard() {
   const { state, dispatch } = useAppState();
   const [activeTab, setActiveTab] = useState<"offers" | "orders" | "qa" | "doc-ai">("offers");
@@ -18,9 +27,23 @@ export default function WholesalerDashboard() {
   const [docResult, setDocResult] = useState<{ weight: string, tempRequired: string, price: string, date: string, type: string } | null>(null);
 
   const [filterType, setFilterType] = useState<string>("all");
+  const [filterMinPrice, setFilterMinPrice] = useState<number | "">("");
   const [filterMaxPrice, setFilterMaxPrice] = useState<number | "">("");
   const [filterMinQty, setFilterMinQty] = useState<number | "">("");
   const [filterMaxSpoilage, setFilterMaxSpoilage] = useState<number | "">("");
+  const [filterTempMin, setFilterTempMin] = useState<number | "">("");
+  const [filterTempMax, setFilterTempMax] = useState<number | "">("");
+  const [filterHumMin, setFilterHumMin] = useState<number | "">("");
+  const [filterHumMax, setFilterHumMax] = useState<number | "">("");
+  const [filterEthylene, setFilterEthylene] = useState<string>("all");
+  const [filterMaxDistance, setFilterMaxDistance] = useState<number | "">("");
+  const [filterTemporal, setFilterTemporal] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<{emergency: boolean, warning: boolean}>({emergency: true, warning: true});
+  const [sortBy, setSortBy] = useState<string>("default");
+  
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [savedFilters, setSavedFilters] = useState<Record<string, any>>({});
+  const [filterName, setFilterName] = useState("");
   const [aiFilterText, setAiFilterText] = useState("");
   const [isFilteringAI, setIsFilteringAI] = useState(false);
 
@@ -37,12 +60,30 @@ export default function WholesalerDashboard() {
         const data = await res.json();
         if (data.type) setFilterType(data.type);
         else setFilterType("all");
+        if (data.minPrice !== undefined && data.minPrice !== null) setFilterMinPrice(data.minPrice);
+        else setFilterMinPrice("");
         if (data.maxPrice !== undefined && data.maxPrice !== null) setFilterMaxPrice(data.maxPrice);
         else setFilterMaxPrice("");
         if (data.minQty !== undefined && data.minQty !== null) setFilterMinQty(data.minQty);
         else setFilterMinQty("");
         if (data.maxSpoilage !== undefined && data.maxSpoilage !== null) setFilterMaxSpoilage(data.maxSpoilage);
         else setFilterMaxSpoilage("");
+        if (data.tempMin !== undefined && data.tempMin !== null) setFilterTempMin(data.tempMin);
+        else setFilterTempMin("");
+        if (data.tempMax !== undefined && data.tempMax !== null) setFilterTempMax(data.tempMax);
+        else setFilterTempMax("");
+        if (data.humMin !== undefined && data.humMin !== null) setFilterHumMin(data.humMin);
+        else setFilterHumMin("");
+        if (data.humMax !== undefined && data.humMax !== null) setFilterHumMax(data.humMax);
+        else setFilterHumMax("");
+        if (data.ethyleneLevel) setFilterEthylene(data.ethyleneLevel);
+        else setFilterEthylene("all");
+        if (data.maxDistance !== undefined && data.maxDistance !== null) setFilterMaxDistance(data.maxDistance);
+        else setFilterMaxDistance("");
+        if (data.temporal) setFilterTemporal(data.temporal);
+        else setFilterTemporal("all");
+        if (data.sortBy) setSortBy(data.sortBy);
+        else setSortBy("default");
       }
     } catch (e) {
       console.error(e);
@@ -86,15 +127,148 @@ export default function WholesalerDashboard() {
            c.status !== "spoiled"
   );
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        (err) => console.error("Error getting location:", err)
+      );
+    }
+    const saved = localStorage.getItem('annapurna_saved_filters');
+    if (saved) {
+      try {
+        setSavedFilters(JSON.parse(saved));
+      } catch (e) {}
+    }
+  }, []);
+
+  const saveFilterTemplate = () => {
+    if (!filterName) return;
+    const currentFilters = {
+      filterType, filterMinPrice, filterMaxPrice, filterMinQty, filterMaxSpoilage,
+      filterTempMin, filterTempMax, filterHumMin, filterHumMax, filterEthylene,
+      filterMaxDistance, filterTemporal, filterStatus, sortBy
+    };
+    const newSaved = { ...savedFilters, [filterName]: currentFilters };
+    setSavedFilters(newSaved);
+    localStorage.setItem('annapurna_saved_filters', JSON.stringify(newSaved));
+    setFilterName("");
+  };
+
+  const loadFilterTemplate = (name: string) => {
+    const f = savedFilters[name];
+    if (f) {
+      setFilterType(f.filterType ?? "all");
+      setFilterMinPrice(f.filterMinPrice ?? "");
+      setFilterMaxPrice(f.filterMaxPrice ?? "");
+      setFilterMinQty(f.filterMinQty ?? "");
+      setFilterMaxSpoilage(f.filterMaxSpoilage ?? "");
+      setFilterTempMin(f.filterTempMin ?? "");
+      setFilterTempMax(f.filterTempMax ?? "");
+      setFilterHumMin(f.filterHumMin ?? "");
+      setFilterHumMax(f.filterHumMax ?? "");
+      setFilterEthylene(f.filterEthylene ?? "all");
+      setFilterMaxDistance(f.filterMaxDistance ?? "");
+      setFilterTemporal(f.filterTemporal ?? "all");
+      setFilterStatus(f.filterStatus ?? {emergency: true, warning: true});
+      setSortBy(f.sortBy ?? "default");
+    }
+  };
+
+  const clearAllFilters = () => {
+    setFilterType("all"); setFilterMinPrice(""); setFilterMaxPrice(""); 
+    setFilterMinQty(""); setFilterMaxSpoilage(""); setFilterTempMin(""); 
+    setFilterTempMax(""); setFilterHumMin(""); setFilterHumMax(""); 
+    setFilterEthylene("all"); setFilterMaxDistance(""); setFilterTemporal("all"); 
+    setFilterStatus({emergency: true, warning: true}); setSortBy("default");
+  };
+
+  const exportCSV = () => {
+    const allFiltered = [...emergencyCargos, ...upcomingCargos];
+    const headers = ["Type", "Qty (kg)", "Price (₹/kg)", "Temperature", "Humidity", "Spoilage (min)", "Status"];
+    const rows = allFiltered.map(c => [
+      c.type,
+      c.quantityKg,
+      c.askingPricePerKg ?? Math.round(c.estimatedCargoValue / c.quantityKg),
+      c.telemetry?.temperature ?? "N/A",
+      c.telemetry?.humidity ?? "N/A",
+      c.timeUntilSpoilageMinutes ?? "N/A",
+      c.status
+    ]);
+    
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "cargo_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const applyFilters = (cargos: any[]) => {
-    return cargos.filter(c => {
+    let filtered = cargos.filter(c => {
+      if (!filterStatus.emergency && c.status === "emergency") return false;
+      if (!filterStatus.warning && c.status === "warning") return false;
+
       if (filterType !== "all" && c.type.toLowerCase() !== filterType.toLowerCase()) return false;
       const price = c.askingPricePerKg ?? Math.round(c.estimatedCargoValue / c.quantityKg);
+      if (filterMinPrice !== "" && price < filterMinPrice) return false;
       if (filterMaxPrice !== "" && price > filterMaxPrice) return false;
       if (filterMinQty !== "" && c.quantityKg < filterMinQty) return false;
       if (filterMaxSpoilage !== "" && c.timeUntilSpoilageMinutes !== undefined && c.timeUntilSpoilageMinutes > filterMaxSpoilage) return false;
+      
+      if (c.telemetry) {
+        if (filterTempMin !== "" && c.telemetry.temperature < filterTempMin) return false;
+        if (filterTempMax !== "" && c.telemetry.temperature > filterTempMax) return false;
+        if (filterHumMin !== "" && c.telemetry.humidity < filterHumMin) return false;
+        if (filterHumMax !== "" && c.telemetry.humidity > filterHumMax) return false;
+        if (filterEthylene !== "all" && c.telemetry.ethyleneLevel?.toLowerCase() !== filterEthylene) return false;
+      }
+      
+      if (filterMaxDistance !== "" && userLocation && c.currentLocation) {
+        const dist = haversineDistance(userLocation.lat, userLocation.lng, c.currentLocation.lat, c.currentLocation.lng);
+        if (dist > filterMaxDistance) return false;
+      }
+      
+      if (filterTemporal !== "all" && c.loadedAt) {
+        const hoursAgo = (Date.now() - c.loadedAt) / (1000 * 60 * 60);
+        if (filterTemporal === "loaded_under_2h" && hoursAgo >= 2) return false;
+        if (filterTemporal === "loaded_under_4h" && hoursAgo >= 4) return false;
+        if (filterTemporal === "loaded_over_4h" && hoursAgo <= 4) return false;
+      }
+
       return true;
     });
+
+    if (sortBy !== "default") {
+      filtered.sort((a, b) => {
+        const pA = a.askingPricePerKg ?? Math.round(a.estimatedCargoValue / a.quantityKg);
+        const pB = b.askingPricePerKg ?? Math.round(b.estimatedCargoValue / b.quantityKg);
+        
+        if (sortBy === "price_asc") return pA - pB;
+        if (sortBy === "price_desc") return pB - pA;
+        if (sortBy === "spoilage_asc") return (a.timeUntilSpoilageMinutes || 999) - (b.timeUntilSpoilageMinutes || 999);
+        
+        if (sortBy === "distance_asc" && userLocation) {
+          const dA = a.currentLocation ? haversineDistance(userLocation.lat, userLocation.lng, a.currentLocation.lat, a.currentLocation.lng) : 999;
+          const dB = b.currentLocation ? haversineDistance(userLocation.lat, userLocation.lng, b.currentLocation.lat, b.currentLocation.lng) : 999;
+          return dA - dB;
+        }
+
+        if (sortBy === "best_match") {
+          const score = (cargo: any) => {
+            const price = cargo.askingPricePerKg ?? Math.round(cargo.estimatedCargoValue / cargo.quantityKg);
+            return (0.4 * (1 / (cargo.timeUntilSpoilageMinutes || 999))) + (0.3 * (1 / (price || 999))) + (0.3 * (cargo.quantityKg / 10000));
+          };
+          return score(b) - score(a);
+        }
+        
+        return 0;
+      });
+    }
+
+    return filtered;
   };
 
   const emergencyCargos = applyFilters(
@@ -413,8 +587,8 @@ export default function WholesalerDashboard() {
         {activeTab === "offers" ? (
           <>
             {/* Filter Section */}
-            <div className="glass liquid-glass p-5 rounded-2xl mb-8 border border-[var(--separator)] shadow-sm">
-              <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="glass liquid-glass p-5 rounded-2xl mb-8 border border-[var(--separator)] shadow-sm space-y-4">
+              <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <input
                     type="text"
@@ -431,82 +605,154 @@ export default function WholesalerDashboard() {
                     {isFilteringAI ? "Thinking..." : "Smart Filter"}
                   </button>
                 </div>
+                <div className="flex gap-2">
+                  <button onClick={exportCSV} className="bg-[var(--fill-secondary)] border border-[var(--separator)] px-4 py-2 rounded-xl text-xs font-bold hover:bg-[var(--fill-tertiary)] flex items-center justify-center">Export CSV</button>
+                  <div className="flex bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl overflow-hidden">
+                    <input
+                      type="text"
+                      placeholder="Template Name"
+                      value={filterName}
+                      onChange={(e) => setFilterName(e.target.value)}
+                      className="bg-transparent border-none py-2 px-3 text-xs w-28 focus:outline-none text-[var(--text-primary)] placeholder-[var(--text-tertiary)]"
+                    />
+                    <button onClick={saveFilterTemplate} className="bg-[#007AFF]/10 text-[#007AFF] px-3 py-2 text-xs font-bold border-l border-[var(--separator)] hover:bg-[#007AFF]/20">Save</button>
+                  </div>
+                  {Object.keys(savedFilters).length > 0 && (
+                    <select
+                      onChange={(e) => loadFilterTemplate(e.target.value)}
+                      value=""
+                      className="bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2 px-3 text-xs focus:outline-none"
+                    >
+                      <option value="" disabled>Load Filter</option>
+                      {Object.keys(savedFilters).map(k => <option key={k} value={k}>{k}</option>)}
+                    </select>
+                  )}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Cargo Type</label>
-                  <select
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
-                  >
-                    <option value="all">All Types</option>
-                    <option value="seafood">Seafood</option>
-                    <option value="produce">Produce</option>
-                    <option value="dairy">Dairy</option>
-                    <option value="meat">Meat</option>
-                    <option value="vaccines">Vaccines</option>
-                  </select>
+              <details className="group" open>
+                <summary className="cursor-pointer text-sm font-bold text-[var(--text-primary)] mb-2 flex items-center justify-between p-2 rounded-lg hover:bg-[var(--fill-secondary)]">
+                  Quick Filters (Type, Price, Qty)
+                  <span className="group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Cargo Type</label>
+                    <select
+                      value={filterType}
+                      onChange={(e) => setFilterType(e.target.value)}
+                      className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
+                    >
+                      <option value="all">All Types</option>
+                      <option value="seafood">Seafood</option>
+                      <option value="produce">Produce</option>
+                      <option value="dairy">Dairy</option>
+                      <option value="meat">Meat</option>
+                      <option value="vaccines">Vaccines</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Status</label>
+                    <div className="flex gap-4 py-2.5 px-3 border border-[var(--separator)] rounded-xl bg-[var(--fill-secondary)]">
+                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]"><input type="checkbox" checked={filterStatus.emergency} onChange={(e) => setFilterStatus(s => ({...s, emergency: e.target.checked}))} /> Emergency</label>
+                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]"><input type="checkbox" checked={filterStatus.warning} onChange={(e) => setFilterStatus(s => ({...s, warning: e.target.checked}))} /> Warning</label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Price Range (₹/kg)</label>
+                    <div className="flex gap-2">
+                      <input type="number" value={filterMinPrice} onChange={(e) => setFilterMinPrice(e.target.value ? Number(e.target.value) : "")} placeholder="Min" className="w-1/2 bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                      <input type="number" value={filterMaxPrice} onChange={(e) => setFilterMaxPrice(e.target.value ? Number(e.target.value) : "")} placeholder="Max" className="w-1/2 bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Min Qty (kg)</label>
+                    <input type="number" value={filterMinQty} onChange={(e) => setFilterMinQty(e.target.value ? Number(e.target.value) : "")} placeholder="Any" className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Sort By</label>
+                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]">
+                      <option value="default">Default</option>
+                      <option value="price_asc">Price: Low to High</option>
+                      <option value="price_desc">Price: High to Low</option>
+                      <option value="spoilage_asc">Spoilage: Urgent First</option>
+                      <option value="distance_asc">Distance: Nearest First</option>
+                      <option value="best_match">Best Match (AI Score)</option>
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Max Price (₹/kg)</label>
-                  <input
-                    type="number"
-                    value={filterMaxPrice}
-                    onChange={(e) => setFilterMaxPrice(e.target.value ? Number(e.target.value) : "")}
-                    placeholder="Any"
-                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
-                  />
+              </details>
+
+              <details className="group">
+                <summary className="cursor-pointer text-sm font-bold text-[var(--text-primary)] mb-2 flex items-center justify-between p-2 rounded-lg hover:bg-[var(--fill-secondary)]">
+                  Advanced Filters (Telemetry, Distance, Time)
+                  <span className="group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2 border-t border-[var(--separator)] pt-4 mt-2">
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Temp Range (°C)</label>
+                    <div className="flex gap-2">
+                      <input type="number" value={filterTempMin} onChange={(e) => setFilterTempMin(e.target.value ? Number(e.target.value) : "")} placeholder="Min" className="w-1/2 bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                      <input type="number" value={filterTempMax} onChange={(e) => setFilterTempMax(e.target.value ? Number(e.target.value) : "")} placeholder="Max" className="w-1/2 bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Humidity Range (%)</label>
+                    <div className="flex gap-2">
+                      <input type="number" value={filterHumMin} onChange={(e) => setFilterHumMin(e.target.value ? Number(e.target.value) : "")} placeholder="Min" className="w-1/2 bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                      <input type="number" value={filterHumMax} onChange={(e) => setFilterHumMax(e.target.value ? Number(e.target.value) : "")} placeholder="Max" className="w-1/2 bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Ethylene Level</label>
+                    <select value={filterEthylene} onChange={(e) => setFilterEthylene(e.target.value)} className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]">
+                      <option value="all">All</option>
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Max Distance (km)</label>
+                    <input type="number" value={filterMaxDistance} onChange={(e) => setFilterMaxDistance(e.target.value ? Number(e.target.value) : "")} placeholder="Any" className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Loaded Time</label>
+                    <select value={filterTemporal} onChange={(e) => setFilterTemporal(e.target.value)} className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]">
+                      <option value="all">All</option>
+                      <option value="loaded_under_2h">Loaded &lt; 2 hours ago</option>
+                      <option value="loaded_under_4h">Loaded &lt; 4 hours ago</option>
+                      <option value="loaded_over_4h">Loaded &gt; 4 hours ago</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Max Spoilage (mins)</label>
+                    <input type="number" value={filterMaxSpoilage} onChange={(e) => setFilterMaxSpoilage(e.target.value ? Number(e.target.value) : "")} placeholder="Any" className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#007AFF]" />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Min Qty (kg)</label>
-                  <input
-                    type="number"
-                    value={filterMinQty}
-                    onChange={(e) => setFilterMinQty(e.target.value ? Number(e.target.value) : "")}
-                    placeholder="Any"
-                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Max Spoilage (mins)</label>
-                  <input
-                    type="number"
-                    value={filterMaxSpoilage}
-                    onChange={(e) => setFilterMaxSpoilage(e.target.value ? Number(e.target.value) : "")}
-                    placeholder="Any"
-                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
-                  />
-                </div>
-              </div>
+              </details>
             </div>
 
               {/* Active Filter Chips & Clear Button */}
-              {(filterType !== "all" || filterMaxPrice !== "" || filterMinQty !== "" || filterMaxSpoilage !== "") && (
-                <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-[var(--separator)]">
+              {(filterType !== "all" || filterMinPrice !== "" || filterMaxPrice !== "" || filterMinQty !== "" || filterMaxSpoilage !== "" || filterTempMin !== "" || filterTempMax !== "" || filterHumMin !== "" || filterHumMax !== "" || filterEthylene !== "all" || filterMaxDistance !== "" || filterTemporal !== "all" || sortBy !== "default" || !filterStatus.emergency || !filterStatus.warning) && (
+                <div className="flex flex-wrap items-center gap-2 mb-6">
                   <span className="text-xs font-bold text-[var(--text-tertiary)] mr-2">ACTIVE FILTERS:</span>
-                  {filterType !== "all" && (
-                    <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">
-                      Type: {filterType} <button onClick={() => setFilterType("all")} className="ml-2 hover:text-[#FF3B30]">✕</button>
-                    </span>
-                  )}
-                  {filterMaxPrice !== "" && (
-                    <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">
-                      &lt; ₹{filterMaxPrice}/kg <button onClick={() => setFilterMaxPrice("")} className="ml-2 hover:text-[#FF3B30]">✕</button>
-                    </span>
-                  )}
-                  {filterMinQty !== "" && (
-                    <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">
-                      &gt; {filterMinQty}kg <button onClick={() => setFilterMinQty("")} className="ml-2 hover:text-[#FF3B30]">✕</button>
-                    </span>
-                  )}
-                  {filterMaxSpoilage !== "" && (
-                    <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">
-                      Spoils &lt; {filterMaxSpoilage}m <button onClick={() => setFilterMaxSpoilage("")} className="ml-2 hover:text-[#FF3B30]">✕</button>
-                    </span>
-                  )}
-                  <button onClick={() => { setFilterType("all"); setFilterMaxPrice(""); setFilterMinQty(""); setFilterMaxSpoilage(""); }} className="text-xs font-bold text-[#FF3B30] hover:underline ml-auto">
+                  {filterType !== "all" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Type: {filterType} <button onClick={() => setFilterType("all")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterMinPrice !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">&gt; ₹{filterMinPrice}/kg <button onClick={() => setFilterMinPrice("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterMaxPrice !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">&lt; ₹{filterMaxPrice}/kg <button onClick={() => setFilterMaxPrice("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterMinQty !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">&gt; {filterMinQty}kg <button onClick={() => setFilterMinQty("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterMaxSpoilage !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Spoils &lt; {filterMaxSpoilage}m <button onClick={() => setFilterMaxSpoilage("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterTempMin !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Temp &gt; {filterTempMin}°C <button onClick={() => setFilterTempMin("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterTempMax !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Temp &lt; {filterTempMax}°C <button onClick={() => setFilterTempMax("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterHumMin !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Hum &gt; {filterHumMin}% <button onClick={() => setFilterHumMin("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterHumMax !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Hum &lt; {filterHumMax}% <button onClick={() => setFilterHumMax("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterEthylene !== "all" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Ethylene: {filterEthylene} <button onClick={() => setFilterEthylene("all")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterMaxDistance !== "" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Dist &lt; {filterMaxDistance}km <button onClick={() => setFilterMaxDistance("")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {filterTemporal !== "all" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Time: {filterTemporal} <button onClick={() => setFilterTemporal("all")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {(!filterStatus.emergency || !filterStatus.warning) && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Status: {filterStatus.emergency ? (filterStatus.warning ? '' : 'Emergency') : 'Warning'} <button onClick={() => setFilterStatus({emergency: true, warning: true})} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  {sortBy !== "default" && <span className="px-3 py-1 bg-[#007AFF]/10 text-[#007AFF] rounded-full text-xs font-bold flex items-center">Sort: {sortBy} <button onClick={() => setSortBy("default")} className="ml-2 hover:text-[#FF3B30]">✕</button></span>}
+                  
+                  <button onClick={clearAllFilters} className="text-xs font-bold text-[#FF3B30] hover:underline ml-auto">
                     Clear Filters
                   </button>
                 </div>
@@ -521,7 +767,7 @@ export default function WholesalerDashboard() {
                 </div>
                 <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">No cargo matches these filters</h3>
                 <p className="text-sm text-[var(--text-secondary)] mb-4">Try widening your search criteria or clearing filters.</p>
-                <button onClick={() => { setFilterType("all"); setFilterMaxPrice(""); setFilterMinQty(""); setFilterMaxSpoilage(""); }} className="px-4 py-2 bg-[#007AFF] text-white text-sm font-bold rounded-lg shadow-sm">
+                <button onClick={clearAllFilters} className="px-4 py-2 bg-[#007AFF] text-white text-sm font-bold rounded-lg shadow-sm">
                   Clear All Filters
                 </button>
               </div>
@@ -537,19 +783,22 @@ export default function WholesalerDashboard() {
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {emergencyCargos.map((cargo) => {
+                  {emergencyCargos.map((cargo, idx) => {
                     const existingBid = state.bids.find(b => b.cargoId === cargo.id && b.wholesalerId === user?.name);
+                    const isRecommended = sortBy === "best_match" && idx === 0;
                     return (
-                    <CargoOfferCard
-                      key={cargo.id}
-                      cargo={cargo}
-                      existingBid={existingBid}
-                      distance={12}
-                      etaMinutes={18}
-                      onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
-                      onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
-                      onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
-                    />
+                    <div key={cargo.id} className="relative">
+                      {isRecommended && <div className="absolute -top-3 -right-3 z-10 bg-[#34C759] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-[var(--bg-primary)]">⭐ Recommended Pick</div>}
+                      <CargoOfferCard
+                        cargo={cargo}
+                        existingBid={existingBid}
+                        distance={12}
+                        etaMinutes={18}
+                        onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
+                        onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
+                        onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
+                      />
+                    </div>
                   )})}
                 </div>
               </div>
@@ -565,19 +814,22 @@ export default function WholesalerDashboard() {
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {upcomingCargos.map((cargo) => {
+                  {upcomingCargos.map((cargo, idx) => {
                     const existingBid = state.bids.find(b => b.cargoId === cargo.id && b.wholesalerId === user?.name);
+                    const isRecommended = sortBy === "best_match" && idx === 0 && emergencyCargos.length === 0;
                     return (
-                    <CargoOfferCard
-                      key={cargo.id}
-                      cargo={{...cargo, askingPricePerKg: cargo.askingPricePerKg ?? Math.round(cargo.estimatedCargoValue / cargo.quantityKg)}}
-                      existingBid={existingBid}
-                      distance={28}
-                      etaMinutes={35}
-                      onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
-                      onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
-                      onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
-                    />
+                    <div key={cargo.id} className="relative">
+                      {isRecommended && <div className="absolute -top-3 -right-3 z-10 bg-[#34C759] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border-2 border-[var(--bg-primary)]">⭐ Recommended Pick</div>}
+                      <CargoOfferCard
+                        cargo={{...cargo, askingPricePerKg: cargo.askingPricePerKg ?? Math.round(cargo.estimatedCargoValue / cargo.quantityKg)}}
+                        existingBid={existingBid}
+                        distance={28}
+                        etaMinutes={35}
+                        onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
+                        onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
+                        onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
+                      />
+                    </div>
                   )})}
                 </div>
               </div>

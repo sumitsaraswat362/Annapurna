@@ -56,6 +56,38 @@ export const NEARBY_MARKETS: Market[] = [
     etaMinutes: 42,
     type: "wholesale_market",
   },
+  {
+    id: "mkt-004",
+    name: "Delhi Azadpur Mandi",
+    location: { lat: 28.7373, lng: 77.1803 },
+    distanceKm: 1400,
+    etaMinutes: 1500,
+    type: "mandi",
+  },
+  {
+    id: "mkt-005",
+    name: "Chennai Koyambedu Market",
+    location: { lat: 13.0674, lng: 80.1952 },
+    distanceKm: 1300,
+    etaMinutes: 1400,
+    type: "wholesale_market",
+  },
+  {
+    id: "mkt-006",
+    name: "Kolkata Posta Market",
+    location: { lat: 22.5855, lng: 88.3562 },
+    distanceKm: 1900,
+    etaMinutes: 2100,
+    type: "wholesale_market",
+  },
+  {
+    id: "mkt-007",
+    name: "Kasara Emergency Cold Storage",
+    location: { lat: 19.3250, lng: 73.0850 },
+    distanceKm: 2,
+    etaMinutes: 5,
+    type: "cold_storage",
+  }
 ];
 
 // --- Demo Cargo (The Star of the Show) ---

@@ -202,7 +202,22 @@ Based on their findings, respond ONLY with a valid JSON object matching this str
     };
   }
 
-  const nearestMarket = findNearestViableMarket(reroutableMarkets || [], spoilageMinutes);
+  const nearestMarketResult = findNearestViableMarket(reroutableMarkets || [], spoilageMinutes, cargo.currentLocation);
+
+  if (nearestMarketResult === "NO_MARKET_IN_RANGE") {
+    return {
+      cargoId: cargo.id,
+      timestamp: Date.now(),
+      reasoning: 'No viable market in range — recommend emergency cold storage',
+      recommendation: "emergency_sell",
+      suggestedMarket: null,
+      estimatedRecoveryPercent: 20,
+      estimatedRecoveryValue: Math.round(cargo.estimatedCargoValue * 0.2),
+      confidence: 0.9,
+    };
+  }
+
+  const nearestMarket = nearestMarketResult as Market | null;
 
   if (!nearestMarket) {
     return {
@@ -232,13 +247,36 @@ Based on their findings, respond ONLY with a valid JSON object matching this str
   };
 }
 
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
 function findNearestViableMarket(
   markets: Market[],
-  spoilageMinutes: number
-): Market | null {
-  const viable = markets
+  spoilageMinutes: number,
+  currentLocation: { lat: number; lng: number }
+): Market | "NO_MARKET_IN_RANGE" | null {
+  const updatedMarkets = markets.map(m => {
+    const dist = haversineDistance(currentLocation.lat, currentLocation.lng, m.location.lat, m.location.lng);
+    return {
+      ...m,
+      distanceKm: dist,
+      etaMinutes: dist * 1.5
+    };
+  });
+
+  const withinRange = updatedMarkets.filter(m => m.distanceKm <= 50);
+  if (withinRange.length === 0) {
+    return "NO_MARKET_IN_RANGE";
+  }
+
+  const viable = withinRange
     .filter((m) => m.etaMinutes < spoilageMinutes - 10)
-    .sort((a, b) => a.etaMinutes - b.etaMinutes);
+    .sort((a, b) => a.distanceKm - b.distanceKm);
 
   return viable.length > 0 ? viable[0] : null;
 }

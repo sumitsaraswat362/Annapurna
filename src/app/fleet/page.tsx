@@ -8,6 +8,7 @@ import type { AIDecision } from "@/lib/types";
 import CargoHealthMonitor from "@/components/CargoHealthMonitor";
 import AIDecisionCard from "@/components/AIDecisionCard";
 import BidCard from "@/components/BidCard";
+import NegotiationPanel from "@/components/NegotiationPanel";
 import { useAuth } from "@/lib/auth";
 import { Bid, CargoType } from "@/lib/types";
 import Link from "next/link";
@@ -791,7 +792,9 @@ function FleetTrackingView() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [isOfflineZone, setIsOfflineZone] = useState(false);
   const [showMarketModal, setShowMarketModal] = useState(false);
+  const [isAlertAcknowledged, setIsAlertAcknowledged] = useState(false);
   const [activeMapBid, setActiveMapBid] = useState<Bid | null>(null);
+  const [negotiatingBidId, setNegotiatingBidId] = useState<string | null>(null);
   const [driverLocation, setDriverLocation] = useState<string | null>(null);
   const [locationStatus, setLocationStatus] = useState<string>("");
 
@@ -1263,6 +1266,10 @@ function FleetTrackingView() {
                     const b = state.bids.find(x => x.id === bidId); 
                     if (b) setActiveMapBid(b); 
                   }}
+                  onNegotiate={(bidId) => {
+                    const b = state.bids.find(x => x.id === bidId);
+                    if (b) setNegotiatingBidId(b.id);
+                  }}
                   onPaymentReceived={(bidId) => {
                     dispatch({ type: "UPDATE_BID_STATUS", bidId, status: "payment_cleared" });
                     // Mark the cargo as delivered so it disappears from Active Consignments
@@ -1714,6 +1721,17 @@ function FleetTrackingView() {
           </div>
         </div>
       )}
+
+      {/* NEGOTIATION PANEL */}
+      <AnimatePresence>
+        {negotiatingBidId && (
+          <NegotiationPanel
+            bid={state.bids.find(b => b.id === negotiatingBidId)!}
+            cargo={state.cargos.find(c => c.id === state.bids.find(b => b.id === negotiatingBidId)?.cargoId)!}
+            onClose={() => setNegotiatingBidId(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
