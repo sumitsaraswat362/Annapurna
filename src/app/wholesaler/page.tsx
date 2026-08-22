@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, ScanLine, UploadCloud, CheckCircle2, FileJson } from "lucide-react";
-
+import NegotiationPanel from "@/components/NegotiationPanel";
 
 function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371;
@@ -21,6 +21,7 @@ function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 export default function WholesalerDashboard() {
   const { state, dispatch } = useAppState();
   const [activeTab, setActiveTab] = useState<"offers" | "orders" | "qa" | "doc-ai">("offers");
+  const [negotiatingBidId, setNegotiatingBidId] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState<{ spoilagePercentage: number, reasoning: string } | null>(null);
   const [isScanningDoc, setIsScanningDoc] = useState(false);
@@ -860,6 +861,10 @@ export default function WholesalerDashboard() {
                         onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
                         onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
                         onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
+                        onNegotiate={(id) => {
+                          const b = state.bids.find(x => x.cargoId === id && x.wholesalerId === user?.name);
+                          if (b) setNegotiatingBidId(b.id);
+                        }}
                       />
                     </div>
                   )})}
@@ -892,6 +897,10 @@ export default function WholesalerDashboard() {
                         onAcceptFull={(id) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), cargo.quantityKg)}
                         onAcceptPartial={(id, qty) => handleSendBid(id, cargo.askingPricePerKg || Math.round(cargo.estimatedCargoValue / cargo.quantityKg), qty)}
                         onCounterOffer={(id, price, qty) => handleSendBid(id, price, qty)}
+                        onNegotiate={(id) => {
+                          const b = state.bids.find(x => x.cargoId === id && x.wholesalerId === user?.name);
+                          if (b) setNegotiatingBidId(b.id);
+                        }}
                       />
                     </div>
                   )})}
@@ -1355,6 +1364,22 @@ export default function WholesalerDashboard() {
         </div>
         <svg className="w-4 h-4 text-[#34C759] ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
       </div>
+
+      {/* NEGOTIATION PANEL */}
+      <AnimatePresence>
+        {negotiatingBidId && (() => {
+          const foundBid = state.bids.find(b => b.id === negotiatingBidId);
+          const foundCargo = foundBid ? state.cargos.find(c => c.id === foundBid.cargoId) : null;
+          if (!foundBid || !foundCargo) return null;
+          return (
+            <NegotiationPanel
+              bid={foundBid}
+              cargo={foundCargo}
+              onClose={() => setNegotiatingBidId(null)}
+            />
+          );
+        })()}
+      </AnimatePresence>
     </div>
   );
 }
