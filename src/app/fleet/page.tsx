@@ -1724,13 +1724,18 @@ function FleetTrackingView() {
 
       {/* NEGOTIATION PANEL */}
       <AnimatePresence>
-        {negotiatingBidId && (
-          <NegotiationPanel
-            bid={state.bids.find(b => b.id === negotiatingBidId)!}
-            cargo={state.cargos.find(c => c.id === state.bids.find(b => b.id === negotiatingBidId)?.cargoId)!}
-            onClose={() => setNegotiatingBidId(null)}
-          />
-        )}
+        {negotiatingBidId && (() => {
+          const foundBid = state.bids.find(b => b.id === negotiatingBidId);
+          const foundCargo = foundBid ? state.cargos.find(c => c.id === foundBid.cargoId) : null;
+          if (!foundBid || !foundCargo) return null;
+          return (
+            <NegotiationPanel
+              bid={foundBid}
+              cargo={foundCargo}
+              onClose={() => setNegotiatingBidId(null)}
+            />
+          );
+        })()}
       </AnimatePresence>
     </div>
   );
