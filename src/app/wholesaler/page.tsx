@@ -17,6 +17,40 @@ export default function WholesalerDashboard() {
   const [isScanningDoc, setIsScanningDoc] = useState(false);
   const [docResult, setDocResult] = useState<{ weight: string, tempRequired: string, price: string, date: string, type: string } | null>(null);
 
+  const [filterType, setFilterType] = useState<string>("all");
+  const [filterMaxPrice, setFilterMaxPrice] = useState<number | "">("");
+  const [filterMinQty, setFilterMinQty] = useState<number | "">("");
+  const [filterMaxSpoilage, setFilterMaxSpoilage] = useState<number | "">("");
+  const [aiFilterText, setAiFilterText] = useState("");
+  const [isFilteringAI, setIsFilteringAI] = useState(false);
+
+  const handleSmartFilter = async () => {
+    if (!aiFilterText) return;
+    setIsFilteringAI(true);
+    try {
+      const res = await fetch("/api/filter-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: aiFilterText })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.type) setFilterType(data.type);
+        else setFilterType("all");
+        if (data.maxPrice !== undefined && data.maxPrice !== null) setFilterMaxPrice(data.maxPrice);
+        else setFilterMaxPrice("");
+        if (data.minQty !== undefined && data.minQty !== null) setFilterMinQty(data.minQty);
+        else setFilterMinQty("");
+        if (data.maxSpoilage !== undefined && data.maxSpoilage !== null) setFilterMaxSpoilage(data.maxSpoilage);
+        else setFilterMaxSpoilage("");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsFilteringAI(false);
+    }
+  };
+
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace("#", "");
@@ -52,9 +86,22 @@ export default function WholesalerDashboard() {
            c.status !== "spoiled"
   );
 
-  const emergencyCargos = emergencyCargosRaw
-    .map(c => ({ ...c, quantityKg: getAvailableQuantity(c.id, c.quantityKg) }))
-    .filter(c => c.quantityKg > 0 && !isNaN(c.quantityKg));
+  const applyFilters = (cargos: any[]) => {
+    return cargos.filter(c => {
+      if (filterType !== "all" && c.type.toLowerCase() !== filterType.toLowerCase()) return false;
+      const price = c.askingPricePerKg ?? Math.round(c.estimatedCargoValue / c.quantityKg);
+      if (filterMaxPrice !== "" && price > filterMaxPrice) return false;
+      if (filterMinQty !== "" && c.quantityKg < filterMinQty) return false;
+      if (filterMaxSpoilage !== "" && c.timeUntilSpoilageMinutes !== undefined && c.timeUntilSpoilageMinutes > filterMaxSpoilage) return false;
+      return true;
+    });
+  };
+
+  const emergencyCargos = applyFilters(
+    emergencyCargosRaw
+      .map(c => ({ ...c, quantityKg: getAvailableQuantity(c.id, c.quantityKg) }))
+      .filter(c => c.quantityKg > 0 && !isNaN(c.quantityKg))
+  );
 
   const { user, logout } = useAuth();
   
@@ -67,9 +114,11 @@ export default function WholesalerDashboard() {
     (c) => c.status === "warning"
   );
 
-  const upcomingCargos = upcomingCargosRaw
-    .map(c => ({ ...c, quantityKg: getAvailableQuantity(c.id, c.quantityKg) }))
-    .filter(c => c.quantityKg > 0 && !isNaN(c.quantityKg));
+  const upcomingCargos = applyFilters(
+    upcomingCargosRaw
+      .map(c => ({ ...c, quantityKg: getAvailableQuantity(c.id, c.quantityKg) }))
+      .filter(c => c.quantityKg > 0 && !isNaN(c.quantityKg))
+  );
 
   const totalOffers = emergencyCargos.length + upcomingCargos.length;
 
@@ -363,6 +412,76 @@ export default function WholesalerDashboard() {
 
         {activeTab === "offers" ? (
           <>
+            {/* Filter Section */}
+            <div className="glass liquid-glass p-5 rounded-2xl mb-8 border border-[var(--separator)] shadow-sm">
+              <div className="flex flex-col md:flex-row gap-4 mb-4">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    placeholder="E.g., I need 500kg of seafood under 300 rupees"
+                    value={aiFilterText}
+                    onChange={(e) => setAiFilterText(e.target.value)}
+                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-3 px-4 text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 transition-all pr-32"
+                  />
+                  <button
+                    onClick={handleSmartFilter}
+                    disabled={isFilteringAI || !aiFilterText}
+                    className="absolute right-2 top-2 bottom-2 bg-[#007AFF] text-white px-4 rounded-lg text-xs font-bold flex items-center justify-center disabled:opacity-50 transition-opacity"
+                  >
+                    {isFilteringAI ? "Thinking..." : "Smart Filter"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Cargo Type</label>
+                  <select
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
+                  >
+                    <option value="all">All Types</option>
+                    <option value="seafood">Seafood</option>
+                    <option value="produce">Produce</option>
+                    <option value="dairy">Dairy</option>
+                    <option value="meat">Meat</option>
+                    <option value="vaccines">Vaccines</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Max Price (₹/kg)</label>
+                  <input
+                    type="number"
+                    value={filterMaxPrice}
+                    onChange={(e) => setFilterMaxPrice(e.target.value ? Number(e.target.value) : "")}
+                    placeholder="Any"
+                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Min Qty (kg)</label>
+                  <input
+                    type="number"
+                    value={filterMinQty}
+                    onChange={(e) => setFilterMinQty(e.target.value ? Number(e.target.value) : "")}
+                    placeholder="Any"
+                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">Max Spoilage (mins)</label>
+                  <input
+                    type="number"
+                    value={filterMaxSpoilage}
+                    onChange={(e) => setFilterMaxSpoilage(e.target.value ? Number(e.target.value) : "")}
+                    placeholder="Any"
+                    className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-xl py-2.5 px-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Emergency Offers */}
             {emergencyCargos.length > 0 && (
               <div className="mb-8">
