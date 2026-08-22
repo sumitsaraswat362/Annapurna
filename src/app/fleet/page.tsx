@@ -1463,6 +1463,11 @@ function FleetTrackingView() {
                         <div>
                           <p className="text-base font-bold text-[var(--text-primary)] capitalize tracking-tight flex items-center gap-2">
                             {cargo.type}
+                            {cargo.id === "cargo-001" && (
+                              <span className="badge bg-[#FF3B30] text-white animate-pulse shadow-sm scale-90">
+                                🔴 LIVE IoT
+                              </span>
+                            )}
                             <span className={`badge ${cargo.status === "in_transit" ? "badge-safe" : cargo.status === "warning" ? "badge-warning" : cargo.status === "emergency" ? "badge-danger" : cargo.status === "rerouting" ? "badge-safe" : "badge-info"} scale-90 origin-left`}>
                               {cargo.status === "in_transit" ? "In Transit" : cargo.status === "rerouting" ? "✓ Rerouting" : cargo.status?.toUpperCase() || "PENDING"}
                             </span>
