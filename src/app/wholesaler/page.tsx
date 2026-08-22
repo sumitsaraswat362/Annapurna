@@ -45,48 +45,43 @@ export default function WholesalerDashboard() {
   const [savedFilters, setSavedFilters] = useState<Record<string, any>>({});
   const [filterName, setFilterName] = useState("");
   const [aiFilterText, setAiFilterText] = useState("");
+  const [aiSummaryMsg, setAiSummaryMsg] = useState<string | null>(null);
   const [isFilteringAI, setIsFilteringAI] = useState(false);
 
   const handleSmartFilter = async () => {
-    if (!aiFilterText) return;
+    if (!aiFilterText.trim()) return;
     setIsFilteringAI(true);
     try {
       const res = await fetch("/api/filter-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: aiFilterText })
+        body: JSON.stringify({ query: aiFilterText.trim() })
       });
       if (res.ok) {
         const data = await res.json();
-        if (data.type) setFilterType(data.type);
-        else setFilterType("all");
+        if (data.type) setFilterType(data.type.toLowerCase());
         if (data.minPrice !== undefined && data.minPrice !== null) setFilterMinPrice(data.minPrice);
-        else setFilterMinPrice("");
         if (data.maxPrice !== undefined && data.maxPrice !== null) setFilterMaxPrice(data.maxPrice);
-        else setFilterMaxPrice("");
         if (data.minQty !== undefined && data.minQty !== null) setFilterMinQty(data.minQty);
-        else setFilterMinQty("");
         if (data.maxSpoilage !== undefined && data.maxSpoilage !== null) setFilterMaxSpoilage(data.maxSpoilage);
-        else setFilterMaxSpoilage("");
         if (data.tempMin !== undefined && data.tempMin !== null) setFilterTempMin(data.tempMin);
-        else setFilterTempMin("");
         if (data.tempMax !== undefined && data.tempMax !== null) setFilterTempMax(data.tempMax);
-        else setFilterTempMax("");
         if (data.humMin !== undefined && data.humMin !== null) setFilterHumMin(data.humMin);
-        else setFilterHumMin("");
         if (data.humMax !== undefined && data.humMax !== null) setFilterHumMax(data.humMax);
-        else setFilterHumMax("");
-        if (data.ethyleneLevel) setFilterEthylene(data.ethyleneLevel);
-        else setFilterEthylene("all");
+        if (data.ethyleneLevel) setFilterEthylene(data.ethyleneLevel.toLowerCase());
         if (data.maxDistance !== undefined && data.maxDistance !== null) setFilterMaxDistance(data.maxDistance);
-        else setFilterMaxDistance("");
         if (data.temporal) setFilterTemporal(data.temporal);
-        else setFilterTemporal("all");
         if (data.sortBy) setSortBy(data.sortBy);
-        else setSortBy("default");
+
+        if (data.aiSummary) {
+          setAiSummaryMsg(data.aiSummary);
+        } else {
+          setAiSummaryMsg(`Smart Filter applied for "${aiFilterText}"`);
+        }
       }
     } catch (e) {
       console.error(e);
+      setAiSummaryMsg(`Filter applied from query: "${aiFilterText}"`);
     } finally {
       setIsFilteringAI(false);
     }
@@ -211,12 +206,18 @@ export default function WholesalerDashboard() {
       if (!filterStatus.emergency && c.status === "emergency") return false;
       if (!filterStatus.warning && c.status === "warning") return false;
 
-      if (filterType !== "all" && c.type.toLowerCase() !== filterType.toLowerCase()) return false;
-      const price = c.askingPricePerKg ?? Math.round(c.estimatedCargoValue / c.quantityKg);
+      if (filterType !== "all") {
+        const cType = (c.type || "").toLowerCase();
+        const fType = filterType.toLowerCase();
+        if (cType !== fType && !cType.includes(fType) && !fType.includes(cType)) return false;
+      }
+      const price = c.askingPricePerKg ?? Math.round(c.estimatedCargoValue / (c.quantityKg || 1));
       if (filterMinPrice !== "" && price < filterMinPrice) return false;
       if (filterMaxPrice !== "" && price > filterMaxPrice) return false;
       if (filterMinQty !== "" && c.quantityKg < filterMinQty) return false;
-      if (filterMaxSpoilage !== "" && c.timeUntilSpoilageMinutes !== undefined && c.timeUntilSpoilageMinutes > filterMaxSpoilage) return false;
+      
+      const spoilage = c.spoilageTimeMinutes ?? c.timeUntilSpoilageMinutes;
+      if (filterMaxSpoilage !== "" && spoilage !== undefined && spoilage !== null && spoilage > filterMaxSpoilage) return false;
       
       if (c.telemetry) {
         if (filterTempMin !== "" && c.telemetry.temperature < filterTempMin) return false;
@@ -243,12 +244,15 @@ export default function WholesalerDashboard() {
 
     if (sortBy !== "default") {
       filtered.sort((a, b) => {
-        const pA = a.askingPricePerKg ?? Math.round(a.estimatedCargoValue / a.quantityKg);
-        const pB = b.askingPricePerKg ?? Math.round(b.estimatedCargoValue / b.quantityKg);
+        const pA = a.askingPricePerKg ?? Math.round(a.estimatedCargoValue / (a.quantityKg || 1));
+        const pB = b.askingPricePerKg ?? Math.round(b.estimatedCargoValue / (b.quantityKg || 1));
         
         if (sortBy === "price_asc") return pA - pB;
         if (sortBy === "price_desc") return pB - pA;
-        if (sortBy === "spoilage_asc") return (a.timeUntilSpoilageMinutes || 999) - (b.timeUntilSpoilageMinutes || 999);
+        
+        const spA = a.spoilageTimeMinutes ?? a.timeUntilSpoilageMinutes ?? 999;
+        const spB = b.spoilageTimeMinutes ?? b.timeUntilSpoilageMinutes ?? 999;
+        if (sortBy === "spoilage_asc") return spA - spB;
         
         if (sortBy === "distance_asc" && userLocation) {
           const dA = a.currentLocation ? haversineDistance(userLocation.lat, userLocation.lng, a.currentLocation.lat, a.currentLocation.lng) : 999;
@@ -258,8 +262,12 @@ export default function WholesalerDashboard() {
 
         if (sortBy === "best_match") {
           const score = (cargo: any) => {
-            const price = cargo.askingPricePerKg ?? Math.round(cargo.estimatedCargoValue / cargo.quantityKg);
-            return (0.4 * (1 / (cargo.timeUntilSpoilageMinutes || 999))) + (0.3 * (1 / (price || 999))) + (0.3 * (cargo.quantityKg / 10000));
+            const price = cargo.askingPricePerKg ?? Math.round(cargo.estimatedCargoValue / (cargo.quantityKg || 1));
+            const safePrice = Math.max(1, price);
+            const sp = cargo.spoilageTimeMinutes ?? cargo.timeUntilSpoilageMinutes ?? 60;
+            const safeSp = Math.max(1, sp);
+            // High urgency (lower sp) + Low price + high volume
+            return (0.4 * (120 / safeSp)) + (0.3 * (300 / safePrice)) + (0.3 * (cargo.quantityKg / 2000));
           };
           return score(b) - score(a);
         }
@@ -661,6 +669,20 @@ export default function WholesalerDashboard() {
                   )}
                 </div>
               </div>
+
+              {aiSummaryMsg && (
+                <div className="flex items-center justify-between bg-[#007AFF]/10 border border-[#007AFF]/30 px-4 py-2.5 rounded-xl text-xs font-medium text-[#007AFF]">
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm">✨</span> <strong>AI Filter Applied:</strong> {aiSummaryMsg}
+                  </span>
+                  <button 
+                    onClick={() => setAiSummaryMsg(null)}
+                    className="text-xs font-bold opacity-70 hover:opacity-100 ml-2 px-2 py-0.5 rounded hover:bg-black/5"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
 
               <details className="group" open>
                 <summary className="cursor-pointer text-sm font-bold text-[var(--text-primary)] mb-2 flex items-center justify-between p-2 rounded-lg hover:bg-[var(--fill-secondary)]">
