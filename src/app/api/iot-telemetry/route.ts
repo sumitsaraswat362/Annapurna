@@ -38,6 +38,9 @@ export async function POST(req: Request) {
     if (spoilageMinutes < 260 && tempNum > 12) newStatus = "emergency";
 
     if (cargoDoc.exists) {
+      const previousStatus = cargoDoc.data()?.status;
+      const finalStatus = previousStatus === "rerouting" ? "rerouting" : newStatus;
+      
       await cargoRef.set(
         {
           telemetry: {
@@ -47,10 +50,30 @@ export async function POST(req: Request) {
             timestamp,
           },
           spoilageTimeMinutes: spoilageMinutes,
-          status: cargoDoc.data()?.status === "rerouting" ? "rerouting" : newStatus,
+          status: finalStatus,
         },
         { merge: true }
       );
+
+      // Send real notifications when status escalates to emergency
+      if (newStatus === "emergency" && previousStatus !== "emergency" && previousStatus !== "rerouting") {
+        const alertMsg = `🚨 EMERGENCY: Cargo ${cargoId} temperature hit ${tempNum}°C (humidity: ${humNum}%). Spoilage in ~${spoilageMinutes} min. Immediate action required!`;
+        
+        // Fire-and-forget: don't block the IoT response
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://annapurna-web-887568501843.us-central1.run.app';
+        
+        fetch(`${baseUrl}/api/notify/email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subject: `🚨 EMERGENCY: Cargo ${cargoId} — ${tempNum}°C`, body: alertMsg }),
+        }).catch(e => console.warn('[Email Alert]:', e.message));
+
+        fetch(`${baseUrl}/api/notify/whatsapp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: alertMsg }),
+        }).catch(e => console.warn('[WhatsApp Alert]:', e.message));
+      }
     }
 
     // 2. Stream to BigQuery Telemetry Table

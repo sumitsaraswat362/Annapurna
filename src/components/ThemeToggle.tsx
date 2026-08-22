@@ -28,7 +28,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleDarkMode}
-      className="fixed bottom-6 right-6 z-[999] w-12 h-12 rounded-full flex items-center justify-center bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-lg border border-[var(--separator)] text-[var(--text-primary)] hover:scale-105 transition-transform"
+      className="fixed top-4 right-4 z-[999] w-10 h-10 rounded-full flex items-center justify-center bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-lg border border-[var(--separator)] text-[var(--text-primary)] hover:scale-105 transition-transform"
       title="Toggle Dark Mode"
     >
       {isDark ? (
