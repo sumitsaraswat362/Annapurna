@@ -15,7 +15,7 @@ interface AuthUser {
   uid: string;
   name: string;
   email: string;
-  role: 'farmer' | 'wholesaler';
+  role: 'director' | 'wholesaler';
 }
 
 interface AuthContextType {
@@ -23,7 +23,7 @@ interface AuthContextType {
   firebaseUser: FirebaseUser | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string, role: 'farmer' | 'wholesaler') => Promise<void>;
+  register: (email: string, password: string, name: string, role: 'director' | 'wholesaler') => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -45,12 +45,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       if (fbUser) {
         setFirebaseUser(fbUser);
-        const parts = fbUser.displayName?.split('|') || [fbUser.email || 'User', 'farmer'];
+        const parts = fbUser.displayName?.split('|') || [fbUser.email || 'User', 'director'];
         setUser({
           uid: fbUser.uid,
           name: parts[0],
           email: fbUser.email || '',
-          role: (parts[1] as 'farmer' | 'wholesaler') || 'farmer',
+          role: (parts[1] as 'director' | 'wholesaler') || 'director',
         });
       } else {
         setFirebaseUser(null);
@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const register = async (email: string, password: string, name: string, role: 'farmer' | 'wholesaler') => {
+  const register = async (email: string, password: string, name: string, role: 'director' | 'wholesaler') => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: `${name}|${role}` });
   };
