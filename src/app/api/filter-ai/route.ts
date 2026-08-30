@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ai, DEFAULT_MODEL } from "@/lib/vertex-client";
+import { getAI, DEFAULT_MODEL } from "@/lib/vertex-client";
 
 // Rule-based fallback parser in case Gemini has latency or network drop
 function fallbackParseQuery(q: string) {
@@ -61,6 +61,7 @@ function fallbackParseQuery(q: string) {
 }
 
 export async function POST(req: Request) {
+  const ai = await getAI();
   try {
     const { query } = await req.json();
 

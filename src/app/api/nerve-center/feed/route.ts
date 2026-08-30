@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { ai, DEFAULT_MODEL } from '@/lib/vertex-client';
+import { getAI, DEFAULT_MODEL } from '@/lib/vertex-client';
 
 export async function GET() {
+  const ai = await getAI();
   try {
     const prompt = `You are the backend logic for an autonomous "Nerve Center" dashboard that monitors a fleet of cold-chain logistics trucks.
 Generate a realistic sequence of 8-10 terminal log entries representing a sudden supply chain event and how the multi-agent system autonomously handled it.

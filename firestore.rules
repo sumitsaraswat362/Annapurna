@@ -1,9 +1,38 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read-only access to all documents (needed for onSnapshot real-time sync)
-    // Completely deny all direct client-side writes.
-    // All database updates must go through server-side Admin SDK endpoints to ensure authorization and security.
+    // Global marketplace data - read-only for real-time sync
+    // All writes go through server-side Admin SDK
+    match /cargos/{cargoId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /bids/{bidId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /carbon_tokens/{tokenId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // User-isolated journal conversations
+    // Zero cross-user leakage: each user can ONLY read/write their own entries
+    match /users/{userId}/journal/{entryId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // User-isolated negotiation history
+    match /users/{userId}/negotiations/{negotiationId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // User profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Default deny
     match /{document=**} {
       allow read: if true;
       allow write: if false;

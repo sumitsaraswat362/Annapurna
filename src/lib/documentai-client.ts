@@ -1,5 +1,5 @@
 import { DocumentProcessorServiceClient } from '@google-cloud/documentai';
-import { ai, DEFAULT_MODEL } from './vertex-client';
+import { getAI, DEFAULT_MODEL } from './vertex-client';
 
 const client = new DocumentProcessorServiceClient();
 const PROJECT_ID = 'project-a9c284f8-6bca-440a-a0c';
@@ -7,7 +7,8 @@ const LOCATION = 'us';
 
 let cachedProcessorName: string | null = null;
 
-export async function processDocument(fileBuffer: Buffer, mimeType: string): Promise<{text: string, entities: Array<{type: string, value: string, confidence: number}>}> {
+export async function processDocument(fileBuffer: Buffer, mimeType: string): Promise<{
+  const ai = await getAI();text: string, entities: Array<{type: string, value: string, confidence: number}>}> {
   try {
     if (!cachedProcessorName) {
       const parent = `projects/${PROJECT_ID}/locations/${LOCATION}`;

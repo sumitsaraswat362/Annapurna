@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { ai, DEFAULT_MODEL } from '@/lib/vertex-client';
+import { getAI, DEFAULT_MODEL } from '@/lib/vertex-client';
 import { BigQueryService } from '@/lib/bigquery';
 
 const PROJECT_ID = process.env.GCP_PROJECT_ID || 'project-a9c284f8-6bca-440a-a0c';
 const bqService = new BigQueryService();
 
 export async function POST(req: Request) {
+  const ai = await getAI();
   try {
     const { message } = await req.json();
     

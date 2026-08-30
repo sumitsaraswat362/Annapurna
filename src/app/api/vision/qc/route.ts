@@ -1,7 +1,8 @@
-import { ai, DEFAULT_MODEL } from "@/lib/vertex-client";
+import { getAI, DEFAULT_MODEL } from "@/lib/vertex-client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  const ai = await getAI();
   try {
     const { image } = await req.json();
 

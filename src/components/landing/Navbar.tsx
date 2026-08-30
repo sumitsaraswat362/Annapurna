@@ -35,6 +35,7 @@ export function Navbar() {
           <Link href="/features" className="hover:text-white transition-colors">Features</Link>
           <Link href="/tracking" className="hover:text-white transition-colors">Tracking</Link>
           <Link href="/bidding" className="hover:text-white transition-colors">Bidding</Link>
+          <Link href="/journal" className="hover:text-white transition-colors">AI Journal</Link>
         </div>
 
         <div className="flex items-center gap-3 text-sm font-medium">

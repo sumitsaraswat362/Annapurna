@@ -1,26 +1,39 @@
 import { GoogleGenAI } from '@google/genai';
+import { getGeminiApiKey } from './secrets';
 
-delete (process.env as any).GOOGLE_CLOUD_PROJECT;
-const project = 'project-a9c284f8-6bca-440a-a0c';
-const location = process.env.GCP_LOCATION || 'us-central1';
+export const DEFAULT_MODEL = 'gemini-2.5-flash';
 
 let _aiInstance: GoogleGenAI | null = null;
 
-export const ai = new Proxy({} as GoogleGenAI, {
-  get(target, prop) {
-    if (!_aiInstance) {
-      if (process.env.GEMINI_API_KEY) {
-        _aiInstance = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      } else {
-        _aiInstance = new GoogleGenAI({
-          vertexai: true,
-          project: project,
-          location: location
-        });
-      }
-    }
-    return (_aiInstance as any)[prop];
+export async function getAI(): Promise<GoogleGenAI> {
+  if (_aiInstance) return _aiInstance;
+  try {
+    const apiKey = await getGeminiApiKey();
+    _aiInstance = new GoogleGenAI({ apiKey });
+  } catch {
+    _aiInstance = new GoogleGenAI({
+      vertexai: true,
+      project: process.env.GCP_PROJECT_ID || 'project-a9c284f8-6bca-440a-a0c',
+      location: 'us-central1',
+    });
   }
-});
+  return _aiInstance;
+}
 
-export const DEFAULT_MODEL = 'gemini-2.5-flash';
+// Backward-compatible sync export for existing code
+let _syncInstance: GoogleGenAI | null = null;
+function getSyncAI(): GoogleGenAI {
+  if (_syncInstance) return _syncInstance;
+  if (process.env.GEMINI_API_KEY) {
+    _syncInstance = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  } else {
+    _syncInstance = new GoogleGenAI({
+      vertexai: true,
+      project: process.env.GCP_PROJECT_ID || 'project-a9c284f8-6bca-440a-a0c',
+      location: 'us-central1',
+    });
+  }
+  return _syncInstance;
+}
+
+export const ai = getSyncAI();

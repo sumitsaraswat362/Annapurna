@@ -1,4 +1,4 @@
-import { ai, DEFAULT_MODEL } from './vertex-client';
+import { getAI, DEFAULT_MODEL } from './vertex-client';
 
 export class LegalAdvisor {
   async queryLegalContext(question: string): Promise<string> {

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { ai, DEFAULT_MODEL } from '@/lib/vertex-client';
+import { getAI, DEFAULT_MODEL } from '@/lib/vertex-client';
 
 export async function POST(req: Request) {
+  const ai = await getAI();
   try {
     const { transcript } = await req.json();
 
