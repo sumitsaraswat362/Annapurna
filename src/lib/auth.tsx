@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { auth } from './firebase';
 import {
   onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -25,6 +27,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string, role: 'director' | 'wholesaler') => Promise<void>;
   logout: () => Promise<void>;
+  loginWithGoogle: (role: 'director' | 'wholesaler') => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -34,6 +37,7 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   register: async () => {},
   logout: async () => {},
+  loginWithGoogle: async () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -70,12 +74,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await updateProfile(cred.user, { displayName: `${name}|${role}` });
   };
 
+  
+  const loginWithGoogle = async (role: 'director' | 'wholesaler') => {
+    const provider = new GoogleAuthProvider();
+    const cred = await signInWithPopup(auth, provider);
+    const existingRole = cred.user.displayName?.split('|')[1];
+    if (!existingRole) {
+      const name = cred.user.displayName || 'User';
+      await updateProfile(cred.user, { displayName: `${name}|${role}` });
+    }
+  };
+  
   const logout = async () => {
     await signOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ user, firebaseUser, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, firebaseUser, loading, login, register, logout, loginWithGoogle }}>
       {children}
     </AuthContext.Provider>
   );
