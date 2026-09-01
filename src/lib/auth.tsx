@@ -6,6 +6,8 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -46,6 +48,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const handleRedirect = async () => {
+      try {
+        const cred = await getRedirectResult(auth);
+        if (cred && cred.user) {
+          const pendingRole = localStorage.getItem('annapurna_pending_role');
+          const existingRole = cred.user.displayName?.split('|')[1];
+          if (!existingRole && pendingRole) {
+            const name = cred.user.displayName || 'User';
+            await updateProfile(cred.user, { displayName: `${name}|${pendingRole}` });
+          }
+          localStorage.removeItem('annapurna_pending_role');
+        }
+      } catch (e) {
+        console.error('Redirect sign-in error', e);
+      }
+    };
+    handleRedirect();
+
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       if (fbUser) {
         setFirebaseUser(fbUser);
@@ -76,13 +96,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   
   const loginWithGoogle = async (role: 'director' | 'wholesaler') => {
-    const provider = new GoogleAuthProvider();
-    const cred = await signInWithPopup(auth, provider);
-    const existingRole = cred.user.displayName?.split('|')[1];
-    if (!existingRole) {
-      const name = cred.user.displayName || 'User';
-      await updateProfile(cred.user, { displayName: `${name}|${role}` });
+    // Store the selected role in localStorage so we can retrieve it after redirect
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('annapurna_pending_role', role);
     }
+    const provider = new GoogleAuthProvider();
+    await signInWithRedirect(auth, provider);
   };
   
   const logout = async () => {
