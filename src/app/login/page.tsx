@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { motion, AnimatePresence } from "motion/react";
@@ -45,10 +45,13 @@ export default function Home() {
   const { login, register, loginWithGoogle, user } = useAuth();
   const router = useRouter();
 
-  if (user) {
-    router.push(user.role === "wholesaler" ? "/wholesaler" : "/fleet");
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      router.push(user.role === "wholesaler" ? "/wholesaler" : "/fleet");
+    }
+  }, [user, router]);
+
+  if (user) return null;
   const [role, setRole] = useState<"director" | "wholesaler">("director");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
