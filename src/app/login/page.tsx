@@ -216,6 +216,17 @@ export default function Home() {
 
             <div>
               <label className="block mb-2 text-sm font-bold text-[var(--text-secondary)] ml-2 tracking-wide">
+                Email Address
+              </label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@company.com"
+                required
+                className="w-full bg-[var(--fill-secondary)] border border-[var(--separator)] rounded-[20px] px-6 py-4.5 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:bg-[var(--bg-primary)] focus:ring-2 focus:ring-[#007AFF] focus:border-transparent transition-all shadow-sm text-[16px] font-bold"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-bold text-[var(--text-secondary)] ml-2 tracking-wide">
                 Secure Key
               </label>
               <div className="relative">
