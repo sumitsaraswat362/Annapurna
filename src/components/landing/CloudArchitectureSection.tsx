@@ -17,7 +17,7 @@ export const CloudArchitectureSection = () => {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-medium text-sm mb-6"
           >
             <Cloud className="w-4 h-4" />
-            100% Cloud Native
+            100% Google Cloud Native
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -44,17 +44,17 @@ export const CloudArchitectureSection = () => {
             {
               icon: <BrainCircuit className="w-8 h-8 text-purple-500" />,
               title: "AI Agents",
-              desc: "Autonomous negotiation and legal risk analysis powered by Annapurna Neural Engine, executing real-time routing decisions."
+              desc: "Autonomous negotiation and legal risk analysis powered by Gemini 2.5 Flash & Vertex AI, executing real-time routing decisions."
             },
             {
               icon: <Database className="w-8 h-8 text-emerald-500" />,
               title: "ML Forecasting",
-              desc: "ARIMA forecasting models predicting spoilage risk windows 14 days in advance using massive historical telematics data."
+              desc: "BigQuery ML models predicting spoilage risk windows 14 days in advance using massive historical telematics data."
             },
             {
               icon: <Server className="w-8 h-8 text-blue-500" />,
               title: "Cloud Infrastructure",
-              desc: "Massively scalable containerized architecture serving real-time geospatial intelligence and sub-second cross-device state synchronization."
+              desc: "Massively scalable Cloud Run containerized architecture serving real-time geospatial intelligence and sub-second cross-device state synchronization."
             }
           ].map((feature, i) => (
             <motion.div

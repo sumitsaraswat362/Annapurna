@@ -9,7 +9,7 @@ import {
 const features = [
   {
     id: 1,
-    title: "Annapurna Neural Engine",
+    title: "Gemini 2.5 Flash",
     description: "Powers the autonomous multi-agent AI decision-making system. Used for real-time spoilage prediction, emergency rerouting, and conversational analytics.",
     icon: Brain,
     color: "bg-blue-500/10 text-blue-500",
@@ -135,7 +135,7 @@ const features = [
   },
   {
     id: 15,
-    title: "Document AI",
+    title: "Vertex AI Vision",
     description: "Automated processing of invoices, bills of lading, and compliance certificates using advanced OCR.",
     icon: FileText,
     color: "bg-blue-400/10 text-blue-400",
@@ -144,7 +144,7 @@ const features = [
   },
   {
     id: 16,
-    title: "Translation API",
+    title: "Cloud Translation API",
     description: "Real-time, multi-lingual support for regional drivers and farmers across diverse geographies.",
     icon: Languages,
     color: "bg-indigo-400/10 text-indigo-400",
@@ -153,7 +153,7 @@ const features = [
   },
   {
     id: 17,
-    title: "Dialogflow CX",
+    title: "Gemini Voice API",
     description: "Advanced conversational agent for managing driver queries and autonomous dispatch coordination.",
     icon: MessageSquare,
     color: "bg-teal-400/10 text-teal-400",
@@ -162,7 +162,7 @@ const features = [
   },
   {
     id: 18,
-    title: "Workspace API",
+    title: "Google Workspace API",
     description: "Seamless integration with Docs, Sheets, and Gmail for automated reporting and notifications.",
     icon: LayoutGrid,
     color: "bg-green-500/10 text-green-500",

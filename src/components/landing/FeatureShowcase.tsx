@@ -39,7 +39,7 @@ export function FeatureShowcase() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            Monitor thousands of vehicles with pinpoint accuracy. Powered by real-time database sync, AI instantly alerts you to temperature fluctuations, saving shipments before they spoil.
+            Monitor thousands of vehicles with pinpoint accuracy. Powered by Cloud Firestore real-time sync, AI instantly alerts you to temperature fluctuations, saving shipments before they spoil.
           </motion.p>
         </div>
 

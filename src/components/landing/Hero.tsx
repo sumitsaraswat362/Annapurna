@@ -44,7 +44,7 @@ export function Hero() {
             Autonomous <br /> Multi-Agent AI.
           </h1>
           <p className="text-xl text-[var(--text-secondary)] font-medium max-w-2xl mx-auto">
-            The ultimate Autonomous Agent Nerve Center for Logistics. Built for precision, powered by predictive analytics, Cloud Run, and real-time database sync.
+            The ultimate Autonomous Agent Nerve Center for Logistics. Built for precision, powered by Gemini 2.5 Flash, Cloud Run, and Cloud Firestore.
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-10">
             <a href="/nerve-center" className="relative group rounded-full">

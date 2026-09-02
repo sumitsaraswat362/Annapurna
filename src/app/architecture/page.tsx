@@ -40,8 +40,8 @@ type Node = {
 const nodes: Node[] = [
   {
     id: "iot",
-    title: "IoT Sensors",
-    subtitle: "IoT Core",
+    title: "IoT Telemetry (Pub/Sub)",
+    subtitle: "Google Cloud Pub/Sub",
     icon: Wifi,
     accent: "#4285F4",
     gradient: "from-[#4285F4] to-[#1A73E8]",
@@ -72,8 +72,8 @@ const nodes: Node[] = [
   },
   {
     id: "neuralengine",
-    title: "Annapurna Neural Engine",
-    subtitle: "Neural Engine • Generative AI",
+    title: "Gemini 2.5 Flash",
+    subtitle: "Google Vertex AI",
     icon: BrainCircuit,
     accent: "#AF52DE",
     gradient: "from-[#AF52DE] to-[#8E44AD]",
@@ -88,8 +88,8 @@ const nodes: Node[] = [
   },
   {
     id: "bigquery",
-    title: "Data Analytics",
-    subtitle: "Data Warehouse & ML",
+    title: "BigQuery Analytics",
+    subtitle: "Google BigQuery",
     icon: Database,
     accent: "#FBBC04",
     gradient: "from-[#FBBC04] to-[#F29900]",
@@ -104,8 +104,8 @@ const nodes: Node[] = [
   },
   {
     id: "firestore",
-    title: "Real-Time Database",
-    subtitle: "Real-Time NoSQL Database",
+    title: "Cloud Firestore",
+    subtitle: "Cloud Firestore",
     icon: Flame,
     accent: "#EA4335",
     gradient: "from-[#EA4335] to-[#D93025]",
@@ -120,8 +120,8 @@ const nodes: Node[] = [
   },
   {
     id: "documentai",
-    title: "Document AI",
-    subtitle: "Annapurna AI",
+    title: "Vertex AI Vision",
+    subtitle: "Google Cloud AI",
     icon: FileText,
     accent: "#4285F4",
     gradient: "from-[#4285F4] to-[#1A73E8]",
@@ -137,7 +137,7 @@ const nodes: Node[] = [
   {
     id: "translationapi",
     title: "Translation API",
-    subtitle: "Annapurna AI",
+    subtitle: "Google Cloud AI",
     icon: Languages,
     accent: "#EA4335",
     gradient: "from-[#EA4335] to-[#D93025]",
@@ -152,7 +152,7 @@ const nodes: Node[] = [
   },
   {
     id: "dialogflow",
-    title: "Dialogflow CX",
+    title: "Gemini Voice API",
     subtitle: "Conversational AI",
     icon: MessageSquare,
     accent: "#34A853",
@@ -162,7 +162,7 @@ const nodes: Node[] = [
     details: [
       "Handles tier-1 driver support and rerouting queries.",
       "Uses intent recognition for rapid issue resolution.",
-      "Integrates with Annapurna Neural Engine for complex reasoning."
+      "Integrates with Gemini 2.5 Flash for complex reasoning."
     ],
     stat: { label: "Queries/hr", value: "5,000" },
   },
@@ -214,7 +214,7 @@ export default function CloudStackPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-[var(--separator)] mb-6">
               <Globe className="w-4 h-4 text-[#4285F4]" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Powered by Annapurna AI</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Powered by Google Cloud AI</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-[var(--text-primary)] mb-4">
               Cloud Stack <br />
