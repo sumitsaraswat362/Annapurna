@@ -83,26 +83,28 @@ export default function Home() {
   
   const [googleLoading, setGoogleLoading] = useState(false);
   const handleGoogleLogin = async () => {
-    if (googleLoading) return; // Prevent double-click
+    if (googleLoading) return;
     setGoogleLoading(true);
     setError("");
     try {
       await loginWithGoogle(role);
-      router.push(role === "wholesaler" ? "/wholesaler" : "/fleet");
+      // loginWithGoogle uses signInWithPopup — if we get here, it succeeded
+      // The useEffect watching `user` will handle the redirect
     } catch (err: any) {
-      // These are not real errors — user just closed the popup or clicked again
-      if (err.code === 'auth/cancelled-popup-request' || 
-          err.code === 'auth/popup-closed-by-user') {
-        // Silently ignore
-      } else if (err.code === 'auth/operation-not-allowed') {
-        setError("Google Sign-In is not enabled yet. Use email/password instead.");
-      } else if (err.code === 'auth/unauthorized-domain') {
-        setError("This domain is not authorized for Google Sign-In. Try email/password.");
+      // Silently ignore popup-related "errors" that aren't real failures
+      const code = err?.code || '';
+      if (code === 'auth/cancelled-popup-request' || 
+          code === 'auth/popup-closed-by-user' ||
+          code === 'auth/popup-blocked') {
+        // Not errors — user just closed/blocked the popup
+      } else if (code === 'auth/unauthorized-domain') {
+        setError("This domain is not authorized for Google Sign-In. Contact the developer.");
       } else {
         setError(err.message || "Google Sign-In failed.");
       }
+    } finally {
+      setGoogleLoading(false);
     }
-    setGoogleLoading(false);
   };
   
   const handleLogin = async (e: React.FormEvent) => {
