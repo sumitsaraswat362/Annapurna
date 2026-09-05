@@ -13,7 +13,15 @@
   </p>
   
   <p>
-    <a href="https://github.com/sumitsaraswat362/Annapurna"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" /></a>
+    <a href="https://annapurna-887568501843.us-central1.run.app"><img src="https://img.shields.io/badge/Live_App-Cloud_Run-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="Live App" /></a>
+    <a href="https://youtu.be/-ZwasZpbZcE"><img src="https://img.shields.io/badge/YouTube-Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Demo Video" /></a>
+    <a href="https://github.com/sumitsaraswat362/Annapurna-Gemini-APAC"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" /></a>
+  </p>
+
+  <p>
+    <a href="https://annapurna-887568501843.us-central1.run.app"><strong>🌐 Live App: https://annapurna-887568501843.us-central1.run.app</strong></a>
+    <br/>
+    <a href="https://youtu.be/-ZwasZpbZcE"><strong>📺 Video Demo: https://youtu.be/-ZwasZpbZcE</strong></a>
   </p>
 
   <p>
